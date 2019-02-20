@@ -1,0 +1,80 @@
+﻿@charset "UTF-8";
+/*********************************************************************************
+Style sheet name: PBRaiders mobile browser
+     Description: mobile browser style sheet for PBRaiders website
+         Version: 1.0
+          Author: JOT - 2010-02-03
+The 'PBRaiders mobile browser style sheet' is released under: private licence.
+The logos 'PBRaiders' are under copyrights.
+**********************************************************************************/
+/** DEFAULT **/
+div{display:block;border:0;}
+body{font-family:Helvetica,sans-serif;font-size:106.3%;}
+ul{margin:0;padding:0;list-style:none;}
+h1{font-size:2.0em;text-align:center;}
+h2{font-size:1.5em;}
+h3,fieldset legend{font-size:1.125em;}
+h5{margin:0;padding:0;}
+p{font-size:1em;}
+hr{clear:both;border:0;color:#CECECE;background-color:#CECECE;height:1px;margin:5px 0 8px;}
+a,a:link,a:visited{outline:none;text-decoration:none;display:block;}
+/** PAGE **/
+#PAGE{overflow:hidden;width:240px;margin:0 auto;padding:0;}
+/** HEADER **/
+#HEADER{overflow:hidden;margin-top:5px;}
+/** CONTENT **/
+#CONTENT{background-color:#FDFDFD;}
+/** NAVIGATION **/
+.navigation{overflow:hidden;text-align:justify;font-weight:700;line-height:2.53;font-size:larger;}
+.navigation a,.navigation a:link,.navigation a:visited{color:#346B9E;}
+.navigation a:hover{color:#FF6600;background:#F8F9FA none repeat scroll 0 0;}
+/** MESSAGE **/
+#MESSAGE{margin-top:5px;}
+#MESSAGE p{font-weight:700;}
+#MESSAGE p.error{color:#FF0000;}
+#MESSAGE p.success{color:#0A8E13;}
+/** FORM **/
+fieldset{border-width:1px 0 0;border-style:solid none none;border-color:#CECECE;margin:5px 2px 0px;padding:5px 10px 12px;background-color:#F7F6FC;}
+fieldset.fieldsetsub{border:1px solid #CECECE;}
+fieldset.noborder{border:0px none none;}
+fieldset legend{color:#000;margin:0;padding:0 6px;}
+fieldset legend.legendmain{font-weight:700;}
+.fieldsetform li,.listbuttons li,.records li{overflow:hidden;}
+.listbuttons{margin-top:5px;}
+.listbuttons,.listbuttonitem{text-align:center;}
+.label,.labelF,.radio,.help{line-height:1.875;padding-right:5px;}
+.required{font-weight:700;}
+.inputText,.inputSelect,.inputParam{margin:2px;}
+.inputText,.inputTextarea,.inputRadio,.inputSelect,.inputButton,.inputParam{font-size:1.7em;}
+.inputText,.inputTextarea,.inputSelect{width:95%;}
+.inputButton{font-weight:700;}
+/** LIST **/
+.records li{font-size:larger;line-height:1.875;text-align:justify;border-top:1px solid #346B9E;}
+li.first{border-top:none;}
+.records div.real,.records div.planned,.records div.canceled{float:left;width:2.5em;}
+.records div.empty{float:left;width:2.813em;}
+.records a{color:#000;}
+.records a:hover{color:#FF6600;background:#F8F9FA none repeat scroll 0 0;}
+/** CALENDAR **/
+#CALENDARNAVIGATION{overflow:hidden;}
+#CALENDARNAVIGATION .inputButton{width:45%;}
+#DAYSHEADER,.hide{display:none;}
+.days{clear:both;overflow:hidden;padding-left:3px;}
+.day{overflow:hidden;border-right-style:solid;border-top-style:solid;border-width:1px;border-color:#FFF;}
+.dayinfo{background-color:#EEEEEE;font-weight:700;}
+.daytotal{margin-left:5px;}
+.daydate,.daydatenow{background-color:#A2ADBC;width:100%;}
+.daydate span,.daydatenow span{margin-right:5px;}
+.dayrent span{margin-right:5px;}
+.daydate a,.daydate a:link,.daydate a:visited{color:#FFF;}
+.daydatenow a,.daydatenow a:link,.daydatenow a:visited{color:#E4F920;}
+.dayrent a,.dayrent a:link,.dayrent a:visited{color:#000;}
+.daytotal a,.daytotal a:link,.daytotal a:visited{color:#000;}
+.days a:hover{color:#FF6600;}
+.real,.planned,.canceled,.maximum{border-left-style:solid;border-left-width:5px;}
+.real{border-left-color:#98D8A5;}
+.planned{border-left-color:#FEDE58;}
+.canceled{border-left-color:#FF4040;}
+.maximum{border-left-color:#000000;}
+/** FOOTER **/
+#FOOTER{font-size:smaller;font-style:italic;text-align:right;}

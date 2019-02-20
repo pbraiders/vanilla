@@ -1,0 +1,20 @@
+﻿@charset "UTF-8";
+/*
+Style sheet name: PBRaiders desktop browser
+     Description: desktop browser style sheet for PBRaiders website
+         Version: 1.0
+          Author: JOT - 2010-02-03
+The 'PBRaiders desktop browser style sheet' is released under: private licence. The logos 'PBRaiders' are under copyrights.
+*/
+div{display:block;border:0;}
+body{font-family:Helvetica,sans-serif;font-size:12pt;background:#FFF;}
+ul{margin:0;padding:0;list-style:none;}
+#PAGE{width:auto;margin:0 5%;padding:0;color:#000;float:none !important;background:transparent;}
+li{line-height:2.0;}
+span{margin-left:10px;text-align:justify;}
+.real,.planned,.canceled{border-left-style:solid;border-left-width:5px;text-align:left;}
+.real{border-left-color:#98D8A5;}
+.planned{border-left-color:#FEDE58;}
+.canceled{border-left-color:#FF4040;}
+.comment{width:98%;height:100px;line-height:1.2em;border:1px dashed #000;margin:5px 5px;padding:0;page-break-inside:avoid;}
+.pagebreakafter{page-break-after:right;}

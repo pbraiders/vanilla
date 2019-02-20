@@ -1,0 +1,20 @@
+﻿@charset "UTF-8";
+body{font-size:106.3%;}
+#PAGE{width:auto;}
+#PAGE.login{width:auto !important;}
+#HEADER{height:auto;background-image:none;}
+.navigation{line-height:2.53;font-size:larger;}
+.menu li{float:none;margin-right:auto;}
+.label,.labelF{float:none;width:auto;text-align:left;clear:none;}
+.inputText,.inputTextarea,.inputRadio,.inputSelect,.inputButton,.inputParam{font-size:1.7em;}
+.inputSelect{width:95%;}
+.listbuttons,.listbuttonitem{clear:none;}
+.fieldsetformgroup{float:none;width:auto;}
+.records li{font-size:larger;font-weight:400;}
+#CALENDARNAVIGATION li{float:none;}
+#CALENDARNAVIGATION .inputButton{width:45%;}
+#DAYSHEADER,.hide{display:none;}
+.day{float:none;width:auto;}
+.dayname{display:inline;}
+.daytotal{text-align:left;margin-left:5px;}
+.daydate,.daydatenow{text-align:left;}
