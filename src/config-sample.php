@@ -31,7 +31,7 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: contains configuration parameters
- * author: Olivier JULLIEN - 2010-02-04
+ * author: Olivier JULLIEN - 2010-05-24
  *************************************************************************/
 
 /**************************
@@ -57,12 +57,6 @@ define('PBR_DB_PWD','votre_mot_de_passe');
 /// Adresse de l'hébergement MySQL. Dans la plupart des cas, vous n'avez pas à modifier cette valeur.
 define('PBR_DB_HOST','localhost');
 
-// Procédure stockées
-// Si vous utilisez les procédures stockées: positionnez la valeur de PBR_USE_STOREDPROC à 1.
-// Si vous n'utilisez pas les procédures stockées: positionnez la valeur de PBR_USE_STOREDPROC à 0.
-// note: Si vous utilisez les procédures stockées: l'utilisateur (PBR_DB_USR) de la base de données (PBR_DB_DBN) doit posséder le privilége EXECUTE sur la base de données (PBR_DB_DBN).
-define('PBR_USE_STOREDPROC',0);
-
 // Drivers - ne pas modifier
 define('PBR_DB_DSN','mysql:host='.PBR_DB_HOST.';dbname=');
 
@@ -78,6 +72,9 @@ define('PBR_PAGE_LOGS',50);
 // PRINT PAGING - Number of rents to display before break page.
 define('PBR_PRINT_BREAK',6);
 
-// DEBUG MODE
-//define('PBR_DEBUG','ON');
+// LOG - Positionnez la valeur à 1 si vous souhaitez écrire les erreurs dans un fichier.
+define('PBR_LOG',0);
+
+// DEBUG MODE - Positionnez la valeur à 1 si vous souhaitez afficher les erreurs à l'écran.
+define('PBR_DEBUG',0);
 ?>

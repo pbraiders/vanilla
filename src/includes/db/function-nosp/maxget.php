@@ -48,6 +48,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   *         or
   *         ARRAY of none, one or more records (month, max)
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function MaxGet( $sLogin, $sSession, $sInet)
 {
@@ -88,7 +89,6 @@ function MaxGet( $sLogin, $sSession, $sInet)
             {
                 $iReturn=FALSE;
                 $sMessage=$e->getMessage();
-                CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
             }//try
 
             // Free resource
@@ -104,7 +104,7 @@ function MaxGet( $sLogin, $sSession, $sInet)
     if( is_scalar($tabResult) )
     {
         $iReturn=$tabResult;
-        CErrorList::GetInstance()->AddDB($iReturn,__FILE__,__LINE__,$sMessage);
+        ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
     }
     elseif( is_array($tabResult) )
     {

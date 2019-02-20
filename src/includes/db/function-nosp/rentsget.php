@@ -60,6 +60,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') || !defined('PBR_DATE_L
   *               reservation_planned,reservation_canceled,reservation_arrhes,
   *               contact_lastname,contact_firstname,contact_phone)
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function RentsGet( $sLogin, $sSession, $sInet, &$pDate, $iOffset, $iLimit)
 {
@@ -113,7 +114,6 @@ UNION (SELECT r.`idreservation` AS "reservation_id", r.`rent_real` AS "reservati
             {
                 $iReturn=FALSE;
                 $sMessage=$e->getMessage();
-                CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
             }//try
 
             // Free resource
@@ -128,7 +128,7 @@ UNION (SELECT r.`idreservation` AS "reservation_id", r.`rent_real` AS "reservati
     // Error
     if( is_scalar($iReturn) )
     {
-        CErrorList::GetInstance()->AddDB($iReturn,__FILE__,__LINE__,$sMessage);
+        ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
     }//if( is_scalar($iReturn) )
 
     return $iReturn;

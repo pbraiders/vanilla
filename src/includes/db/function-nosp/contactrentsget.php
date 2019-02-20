@@ -53,6 +53,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   *         reservation_month, reservation_day, reservation_real, reservation_planned,
   *         reservation_canceled, reservation_arrhes, reservation_age, reservation_comment)
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function ContactRentsGet( $sLogin, $sSession, $sInet, $iIdentifier, $iOffset, $iLimit )
 {
@@ -99,7 +100,6 @@ function ContactRentsGet( $sLogin, $sSession, $sInet, $iIdentifier, $iOffset, $i
             {
                 $iReturn=FALSE;
                 $sMessage=$e->getMessage();
-                CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
             }//try
 
             // Free resource
@@ -114,7 +114,7 @@ function ContactRentsGet( $sLogin, $sSession, $sInet, $iIdentifier, $iOffset, $i
     // Error
     if( is_scalar($iReturn) )
     {
-        CErrorList::GetInstance()->AddDB($iReturn,__FILE__,__LINE__,$sMessage);
+        ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
     }//if( is_scalar($iReturn) )
 
     return $iReturn;

@@ -32,8 +32,11 @@
  * file encoding: UTF-8
  * description: contain usefull functions
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - remove function: WriteTrace
+ *                                        remove function: TraceWarning
+ *                                        add new function: stripslashes_deep
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_PATH') )
+if( !defined('PBR_VERSION') )
     die('-1');
 
 /**
@@ -158,48 +161,6 @@ function GetIP($iFormat=1)
 }
 
 /**
-  * function: TraceWarning
-  * description: Display an user warning
-  * parameters: STRING|sValue - error description
-  *             STRING|sFile  - file name
-  *            INTEGER|iLine  - line
-  * return: none
-  * author: Olivier JULLIEN - 2010-02-04
-  */
-function TraceWarning($sValue, $sFile, $iLine)
-{
-    CErrorList::GetInstance()->Add($sValue, $sFile, $iLine);
-}
-
-/**
-  * function: WriteTrace
-  * description: Display the errorl list
-  * parameters: none
-  * return: none
-  * author: Olivier JULLIEN - 2010-02-04
-  */
-function WriteTrace()
-{
-    if( defined('PBR_DEBUG') )
-    {
-        echo '<div>',"\n";
-        if( CErrorList::GetInstance()->GetCount()>0 )
-        {
-            echo '<p>Error list</p>',"\n";
-            foreach( CErrorList::GetInstance() as $key=>$value )
-            {
-                trigger_error(htmlspecialchars($value),E_USER_WARNING);
-            }//foreach( CErrorList::GetInstance() as $key=>$value )
-        }
-        else
-        {
-            echo '<p>No error.</p>',"\n";
-        }//if( CErrorList::GetInstance()->GetCount()>0)
-        echo '</div>',"\n";
-    }//if( define('PBR_DEBUG') )
-}
-
-/**
   * function: GetMessageCode
   * description: Read input message code parameter
   * parameters: none
@@ -211,32 +172,25 @@ function GetMessageCode()
 	$iReturn = 0;
 	if( filter_has_var(INPUT_GET, 'error') )
 	{
-		$tFilter = array('options' => array('min_range' => 1, 'max_range' => 3));
+		$tFilter = array('options' => array('min_range' => 1, 'max_range' => 10));
 		$iReturn=(integer)filter_input( INPUT_GET, 'error', FILTER_VALIDATE_INT, $tFilter);
 	}//if( filter_has_var(INPUT_GET, 'error') )
     return $iReturn;
 }
 
 /**
-  * function: RedirectError
-  * description: Trace error and display logout page
-  * parameters: INTEGER|iError - error code
-  *              STRING|sFile  - file name
-  *             INTEGER|iLine  - line
-  * return: none
-  * author: Olivier JULLIEN - 2010-02-04
+  * function: stripslashes_deep
+  * description: Navigates through an array and removes slashes from the values.
+  *              If an array is passed, the array_map() function causes a callback to pass the
+  *              value back to the function. The slashes from this value will removed.
+  * parameters: ARRAY|STRING $value - The array or string to be striped.
+  * return: ARRAY|STRING - Stripped array (or string in the callback).
+  * author: WORDPRESS
   */
-function RedirectError( $iError, $sFile, $iLine)
+function stripslashes_deep($value)
 {
-	$sUrl=PBR_URL.'logout.php?error=';
-    $iOption=1;
-    if( ($iError==-2) || ($iError==-3) )
-	{
-		TraceWarning('Possible hacking attempt', $sFile, $iLine);
-		$iOption=2;
-	}//if( ($iError==-2) || ($iError==-3) )
-	include(PBR_PATH.'/includes/init/initclean.php');
-	header('Location: '.$sUrl.$iOption);
+    $value = is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
+    return $value;
 }
 
 ?>

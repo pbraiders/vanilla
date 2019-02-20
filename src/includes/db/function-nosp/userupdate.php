@@ -48,6 +48,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') || !defined('PBR_NEWUSE
   *                   -3 when an access denied error occures.
   *                   -4 when a duplicate error occures.
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function UserUpdate( $sLogin, $sSession, $sInet, &$pNewUser)
 {
@@ -99,7 +100,6 @@ function UserUpdate( $sLogin, $sSession, $sInet, &$pNewUser)
             {
                 $iReturn=FALSE;
                 $sMessage=$e->getMessage();
-				CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
             }//try
 
             // Free resource
@@ -113,7 +113,7 @@ function UserUpdate( $sLogin, $sSession, $sInet, &$pNewUser)
     }//if( IsParameterScalarNotEmpty(
 
     // Error
-    CErrorList::GetInstance()->AddDB($iReturn,__FILE__,__LINE__,$sMessage);
+    ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
 
     return $iReturn;
 }

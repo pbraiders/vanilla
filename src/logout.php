@@ -30,18 +30,15 @@
  *************************************************************************/
 /*************************************************************************
  * file encoding: UTF-8
- *   description: logout a connected user.
- *        author: Olivier JULLIEN - 2010-02-04
+ * description: logout a connected user.
+ * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.0');
+    define('PBR_VERSION','1.0.1');
     define('PBR_PATH',dirname(__FILE__));
-
-    /** Include stat
-     ***************/
-//    include(PBR_PATH.'/includes/stat.php');
 
     /** Include config
      *****************/
@@ -82,7 +79,8 @@
     }//if( CUser::GetInstance()->IsValid() )
     if( CCookie::GetInstance()->Write( $sUsername, CUser::DEFAULT_SESSION) ===FALSE )
     {
-        TraceWarning('Cannot write cookie.',__FILE__,__LINE__);
+        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+        ErrorLog( $sUsername, $sTitle, 'impossible d\'écrire le cookie', E_USER_NOTICE, FALSE);
     }// if( CCookie::GetInstance()->Write(...
 
     /** Invalidate user

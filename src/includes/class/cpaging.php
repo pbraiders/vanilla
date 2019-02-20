@@ -32,6 +32,7 @@
  * file encoding: UTF-8
  * description: describes values for paging
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -83,8 +84,9 @@ class CPaging
      * parameter: none
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
      */
-    public function __clone() { trigger_error( 'Attempting to clone CPaging', E_USER_NOTICE ); }
+    public function __clone(){}
 
    /**
      * function: GetInstance

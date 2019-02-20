@@ -48,6 +48,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   *         or
   *         ARRAY of none, one or more records (user_id, user_name, user_lastvisit, user_state)
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function UsersGet( $sLogin, $sSession, $sInet )
 {
@@ -87,7 +88,6 @@ function UsersGet( $sLogin, $sSession, $sInet )
             {
                 $iReturn=FALSE;
                 $sMessage=$e->getMessage();
-                CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
             }//try
 
             // Free resource
@@ -102,7 +102,7 @@ function UsersGet( $sLogin, $sSession, $sInet )
     // Error
     if( is_scalar($iReturn) )
     {
-        CErrorList::GetInstance()->AddDB($iReturn,__FILE__,__LINE__,$sMessage);
+        ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
     }//if( is_scalar($iReturn) )
 
     return $iReturn;

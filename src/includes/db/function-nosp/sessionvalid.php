@@ -44,6 +44,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   *         or
   *         INTEGER - >0 if the session is valid.
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function SessionValid( $sLogin, $sSession, $iRole, $sInet)
 {
@@ -116,7 +117,6 @@ function SessionValid( $sLogin, $sSession, $iRole, $sInet)
         {
             $iReturn=FALSE;
             $sMessage=$e->getMessage();
-            CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
         }//try
 
         // Free resource
@@ -127,7 +127,7 @@ function SessionValid( $sLogin, $sSession, $iRole, $sInet)
     // Error trace only for simple user
     if( ($iRole!=10) && ($iReturn!=-2) )
     {
-        CErrorList::GetInstance()->AddDB( $iReturn, $sErrorTitle, __LINE__, $sMessage);
+        ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
     }//if( ($iRole!=10) && ($iReturn!=-2) )
 
     return $iReturn;

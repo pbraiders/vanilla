@@ -32,6 +32,9 @@
  * file encoding: UTF-8
  * description: describes error list object
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - update function: Add
+ *                                        remove function: AddDB
+ *                                        update __clone()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -60,10 +63,7 @@ class CErrorList implements Iterator
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
-    private function __construct()
-    {
-        $this->Clean();
-    }
+    private function __construct(){}
 
     /** Public methods
      *****************/
@@ -86,11 +86,9 @@ class CErrorList implements Iterator
      * parameter: none
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
      */
-    public function __clone()
-    {
-        trigger_error( 'Attempting to clone CErrorList', E_USER_NOTICE );
-    }
+    public function __clone(){}
 
    /**
      * function: GetInstance
@@ -200,78 +198,17 @@ class CErrorList implements Iterator
 
    /**
      * function: Add
-     * description: Add the string in the error list
+     * description: Add the string into the error list
      * parameter: STRING|sMessage - message
-     *            STRING|sFile    - file name
-     *           INTEGER|iLine    - line
      * return: none
-     * author: Olivier JULLIEN - 2010-02-04
+     * author: Olivier JULLIEN - 2010-05-24
      */
-    public function Add( $sMessage, $sFile, $iLine)
+    public function Add( $sMessage)
     {
         if( is_scalar($sMessage) && (strlen($sMessage)>0) )
         {
-            $sMessage = 'PBRAIDERS - Error in '.basename($sFile).'(line:'.$iLine.'):'.$sMessage.'.';
-            if( !defined('PBR_DEBUG') )
-            {
-               trigger_error($sMessage,E_USER_WARNING);
-            }
-            else
-            {
-                $this->m_ErrorList[] = $sMessage;
-            }//if( !defined('PBR_DEBUG') )
+            $this->m_ErrorList[] = $sMessage;
         }//if( is_scalar($sMessage) && (strlen($sMessage)>0) )
-    }
-
-   /**
-     * function: AddDB
-     * description: Analyse an database error
-     * parameter: INTEGER|iCode    - error code
-     *             STRING|sFile    - file name
-     *            INTEGER|iLine    - line
-     *             STRING|sMessage - message
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function AddDB( $iCode, $sFile, $iLine, $sMessage)
-    {
-        $sFile=basename($sFile);
-        if( ($iCode===FALSE) || ($iCode<0) )
-        {
-            // Analyse
-            if( ($iCode===FALSE) )
-            {
-                $sBuffer = 'PBRAIDERS - PDOException in '.$sFile.'(line:'.$iLine.'):'.$sMessage.'.';
-            }
-            elseif( $iCode==-1 )
-            {
-                $sBuffer = 'PBRAIDERS - Error in '.$sFile.'(line:'.$iLine.'):Bad parameter(s).';
-            }
-            elseif( ($iCode==-2) || ($iCode==-3) )
-            {
-                $sBuffer = 'PBRAIDERS - Error in '.$sFile.' (line:'.$iLine.'):Authentication failed.';
-            }
-            elseif( $iCode==-4 )
-            {
-                $sBuffer = 'PBRAIDERS - Error in '.$sFile.' (line:'.$iLine.'):Unexpected duplicate data error.';
-            }
-            else
-            {
-                $sBuffer = 'PBRAIDERS - Error in '.$sFile.' (line:'.$iLine.'):Unexpected database error.';
-            }//if( ...
-            // Display
-            if( !defined('PBR_DEBUG') )
-            {
-                // Keept attention to ignore_repeated_errors (php.ini conf value)
-                // if ignore_repeated_errors=on => Do not log repeated errors which
-                // occures in same file on same line
-                trigger_error($sBuffer,E_USER_WARNING);
-            }
-            else
-            {
-                $this->m_ErrorList[] = $sBuffer;
-            }//if(...
-        }//if( ($iCode===FALSE) || ($iCode===FALSE)<0 )
     }
 
    /**

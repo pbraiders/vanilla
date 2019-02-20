@@ -37,12 +37,8 @@
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.0');
+    define('PBR_VERSION','1.0.1');
     define('PBR_PATH',dirname(__FILE__));
-
-    /** Include stat
-     ***************/
-//    require(PBR_PATH.'/includes/stat.php');
 
     /** Include config
      *****************/

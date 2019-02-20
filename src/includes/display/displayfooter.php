@@ -32,11 +32,32 @@
  * file encoding: UTF-8
  * description: Display the page footer.
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - write error(s)
  *************************************************************************/
 if ( !defined('PBR_VERSION') )
     die('-1');
 ?>
-   <p id="FOOTER">©JOT 2010</p>
+   <p id="FOOTER">Release CAMP ©JOT 2010</p>
   </div><!--PAGE-->
+<?php
+    if( defined('PBR_DEBUG') && (1==PBR_DEBUG) )
+    {
+        echo '<div>',"\n";
+        if( CErrorList::GetInstance()->GetCount()>0 )
+        {
+            echo '<p>Erreurs:</p><ol>',"\n";
+            foreach( CErrorList::GetInstance() as $key=>$value )
+            {
+                echo '<li>'.htmlspecialchars($value).'</li>';
+            }//foreach( CErrorList::GetInstance() as $key=>$value )
+            echo '</ol>',"\n";
+        }
+        else
+        {
+            echo '<p>Aucune erreur.</p>',"\n";
+        }//if( CErrorList::GetInstance()->GetCount()>0)
+        echo '</div>',"\n";
+    }//if( defined('PBR_DEBUG') && (1==PBR_DEBUG) )
+?>
  </body>
 </html>

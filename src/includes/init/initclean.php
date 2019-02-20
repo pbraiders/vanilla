@@ -32,19 +32,21 @@
  * file encoding: UTF-8
  * description: Delete instancied objects
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - Remove TraceWarning
+ *                                        Add CLog
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
 
     if(defined('PBR_DB_LOADED')) CDb::DeleteInstance();
     if(defined('PBR_CONTACT_LOADED')) CContact::DeleteInstance();
-    if(defined('PBR_SESSION_LOADED') ) CSession::DeleteInstance();
-    if(defined('PBR_DATE_LOADED') ) CDate::DeleteInstance();
-    if(defined('PBR_RENT_LOADED') ) CRent::DeleteInstance();
-    if(defined('PBR_PAGE_LOADED') ) CPaging::DeleteInstance();
-    if(defined('PBR_NEWUSER_LOADED') ) CNewUser::DeleteInstance();
+    if(defined('PBR_SESSION_LOADED')) CSession::DeleteInstance();
+    if(defined('PBR_DATE_LOADED')) CDate::DeleteInstance();
+    if(defined('PBR_RENT_LOADED')) CRent::DeleteInstance();
+    if(defined('PBR_PAGE_LOADED')) CPaging::DeleteInstance();
+    if(defined('PBR_NEWUSER_LOADED')) CNewUser::DeleteInstance();
+    if(defined('PBR_LOG_LOADED')) CLog::DeleteInstance();
     CUser::DeleteInstance();
     CCookie::DeleteInstance();
-    WriteTrace();
     CErrorList::DeleteInstance();
 ?>

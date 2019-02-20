@@ -52,6 +52,7 @@ require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentmax.php');
   *                   -3 when an access denied error occures.
   *                   -4 when a duplicate error occures.
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function RentAdd( $sLogin, $sSession, $sInet, $iIdentifier, &$pDate, &$pRent)
 {
@@ -108,7 +109,6 @@ function RentAdd( $sLogin, $sSession, $sInet, $iIdentifier, &$pDate, &$pRent)
             {
                 $iReturn=FALSE;
                 $sMessage=$e->getMessage();
-				CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
             }//try
 
             // Free resource
@@ -122,7 +122,7 @@ function RentAdd( $sLogin, $sSession, $sInet, $iIdentifier, &$pDate, &$pRent)
     }//if( IsParameterScalarNotEmpty(
 
     // Error
-    CErrorList::GetInstance()->AddDB($iReturn,__FILE__,__LINE__,$sMessage);
+    ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
 
     return $iReturn;
 }

@@ -32,6 +32,7 @@
  * file encoding: UTF-8
  * description: describes a new user
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -130,11 +131,9 @@ class CNewUser
      * parameter: none
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
      */
-    public function __clone()
-    {
-        trigger_error( 'Attempting to clone CNewUser', E_USER_NOTICE );
-    }
+    public function __clone(){}
 
    /**
      * function: GetInstance
@@ -319,7 +318,7 @@ class CNewUser
 	            // Get State (only POST)
 	            if( filter_has_var(INPUT_POST,'sta') )
 	            {
-                	$tFilter = array('options' => array('min_range' => 0, 'max_range' => 1));                
+                	$tFilter = array('options' => array('min_range' => 0, 'max_range' => 1));
 	            	$this->SetState(filter_input(INPUT_POST,'sta',FILTER_VALIDATE_INT,$tFilter));
                 }//if( filter_has_var(INPUT_POST,'usi') )
              }//if( $iFilter===INPUT_POST )

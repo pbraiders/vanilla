@@ -32,6 +32,7 @@
  * file encoding: UTF-8
  * description: describe an csv file
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
  *************************************************************************/
 if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_EXPORT_DIR') )
     die('-1');
@@ -85,8 +86,9 @@ class CCSV
      * parameter: none
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
      */
-    public function __clone() { trigger_error( 'Attempting to clone CCSV', E_USER_NOTICE ); }
+    public function __clone() {}
 
    /**
      * function: GetInstance
@@ -125,7 +127,7 @@ class CCSV
      * function: Open
      * description: create and open the file
      * parameter: none
-     * return: BOOLEAN - TRUE or FALSE if an error occures
+     * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
     public function Open()

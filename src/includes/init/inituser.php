@@ -32,6 +32,7 @@
  * file encoding: UTF-8
  * description: validate user with database
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
  *************************************************************************/
 if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_URL') || !defined('PBR_DB_DSN') || !defined('PBR_DB_USR') || !defined('PBR_DB_PWD') )
     die('-1');
@@ -46,7 +47,8 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_URL') || !d
         if( CDb::GetInstance()->Open(PBR_DB_DSN.PBR_DB_DBN,PBR_DB_USR,PBR_DB_PWD)===FALSE )
         {
             // Trace
-            TraceWarning('Cannot open the database.',__FILE__,__LINE__);
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        ErrorLog( CUser::DEFAULT_USER, $sTitle, 'impossible d\'ouvrir la base de données', E_USER_ERROR, FALSE);
         }
         else
         {
@@ -62,8 +64,10 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_URL') || !d
             }
             else
             {
-				CUser::GetInstance()->Invalidate();
-				TraceWarning('Possible hacking attempt',__FILE__,__LINE__);
+	        	$sUser=(CUser::GetInstance()->GetUsername()===FALSE?CUser::DEFAULT_USER:CUser::GetInstance()->GetUsername());
+	            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        	ErrorLog( $sUser, $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
+                CUser::GetInstance()->Invalidate();
                 include(PBR_PATH.'/includes/init/initclean.php');
                 header('Location: '.PBR_URL.'login.php');
                 exit;

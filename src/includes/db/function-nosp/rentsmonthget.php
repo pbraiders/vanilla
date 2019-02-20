@@ -50,6 +50,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') || !defined('PBR_DATE_L
   *         or
   *         ARRAY of none, one or more records (day,real,planned,canceled,max)
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function RentsMonthGet( $sLogin, $sSession, $sInet, &$pDate)
 {
@@ -97,7 +98,6 @@ function RentsMonthGet( $sLogin, $sSession, $sInet, &$pDate)
             {
                 $iReturn=FALSE;
                 $sMessage=$e->getMessage();
-				CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
             }//try
 
             // Free resource
@@ -113,7 +113,7 @@ function RentsMonthGet( $sLogin, $sSession, $sInet, &$pDate)
     if( is_scalar($tabResult) )
     {
         $iReturn=$tabResult;
-        CErrorList::GetInstance()->AddDB($iReturn,__FILE__,__LINE__,$sMessage);
+        ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
     }
     elseif( is_array($tabResult) )
     {

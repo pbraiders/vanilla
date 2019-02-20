@@ -32,6 +32,7 @@
  * file encoding: UTF-8
  * description: manage export directory
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
  *************************************************************************/
 if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
     die('-1');
@@ -52,7 +53,9 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
          *******************/
         if( mkdir($sExportDir,0770)===FALSE )
         {
-            TraceWarning('Cannot create export directory:'.$sExportDir,__FILE__,__LINE__);
+        	$sUser=(CUser::GetInstance()->GetUsername()===FALSE?CUser::DEFAULT_USER:CUser::GetInstance()->GetUsername());
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        ErrorLog( $sUser, $sTitle, 'impossible de créer le répertoire '.$sExportDir, E_USER_WARNING, TRUE);
         }//if( mkdir($sExportDir,0770)===FALSE )
     }
     else
@@ -64,7 +67,9 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
         $pFiles=glob( $sExportPathnames, GLOB_BRACE );
         if( $pFiles===FALSE )
         {
-            TraceWarning('Cannot find pathnames:'.$sExportPathnames,__FILE__,__LINE__);
+        	$sUser=(CUser::GetInstance()->GetUsername()===FALSE?CUser::DEFAULT_USER:CUser::GetInstance()->GetUsername());
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        ErrorLog( $sUser, $sTitle, 'impossible de trouver les fichiers '.$sExportPathnames, E_USER_WARNING, TRUE);
         }
         else
         {
@@ -76,7 +81,9 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
                 {
                     if( unlink($sFile)===FALSE )
                     {
-                        TraceWarning('Cannot delete file:'.$sFile,__FILE__,__LINE__);
+			        	$sUser=(CUser::GetInstance()->GetUsername()===FALSE?CUser::DEFAULT_USER:CUser::GetInstance()->GetUsername());
+			            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+				        ErrorLog( $sUser, $sTitle, 'impossible de d\'effacer le fichier '.$sFile, E_USER_WARNING, TRUE);
                     }//if( unlink($pFile) )
                 }//if( (filemtime($sFile)<=$iTime) || (filectime($sFile)<=$iTime) )
             }//foreach( $pFiles as $sFile )

@@ -31,19 +31,15 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: database layer
- * author: Olivier JULLIEN - 2010-02-04
+ * author: Olivier JULLIEN - 2010-05-24
+ * update: Olivier JULLIEN - 2010-05-24 - update __clone()
+ *                                        update Open()
+ *                                        update and rename ErrorInsert()
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_USE_STOREDPROC') )
+if( !defined('PBR_VERSION') )
     die('-1');
 
-if( PBR_USE_STOREDPROC===1 )
-{
-    define('PBR_DB_DIR','function');
-}
-else
-{
-    define('PBR_DB_DIR','function-nosp');
-}//if( PBR_USE_STOREDPROC===1 )
+define('PBR_DB_DIR','function-nosp');
 
 /** Class
  ********/
@@ -91,11 +87,9 @@ class CDb
      * parameter: none
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
      */
-    public function __clone()
-    {
-        trigger_error( 'Attempting to clone CDb', E_USER_NOTICE );
-    }
+    public function __clone(){}
 
    /**
      * function: GetInstance
@@ -138,6 +132,7 @@ class CDb
      *             string|sPwd - password
      * return: BOOLEAN - TRUE or FALSE
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::Add(...)
      */
     public function Open($sDSN, $sUsr, $sPwd)
     {
@@ -163,8 +158,9 @@ class CDb
             }
             catch(PDOException $e)
             {
-                $sMessage='PDOException in '.__CLASS__.'.'.__METHOD__.'():'.$e->getMessage();
-                CErrorList::GetInstance()->Add($sMessage,__FILE__,__LINE__);
+		        $sUser=(CUser::GetInstance()->GetUsername()===FALSE?CUser::DEFAULT_USER:CUser::GetInstance()->GetUsername());
+		        $sTitle=__CLASS__ . '::' . __METHOD__ . '()';
+                ErrorDBLog( $sUser, $sTitle, $e->getMessage(), FALSE, FALSE);
             }//try
         }//if ...
         return $bReturn;
@@ -214,19 +210,22 @@ class CDb
     }
 
    /**
-     * function: LogEror
-     * description: Log in the database
-     * parameter: STRING|sDBName       - database name
-     *            STRING|sLogin        - logged user
-     *            STRING|sTitle        - error title
-     *            STRING|sDescription  - error description
+     * function: ErrorInsert
+     * description: Insert error message in the database
+     * parameter: STRING|sDBName      - database name
+     *            STRING|sLogin       - logged user
+     *            STRING|sType        - error type
+     *            STRING|sTitle       - error title
+     *            STRING|sDescription - error description
      * return: BOOLEAN
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::Add(...)
      */
-    public function LogError( $sDBName, $sLogin, $sTitle, $sDescription)
+    public function ErrorInsert( $sDBName, $sLogin, $sType, $sTitle, $sDescription)
     {
         $bReturn=FALSE;
-        $sSQL='INSERT INTO `'.$sDBName.'`.`log`(`logged`,`username`,`type`,`title`,`description`,`mysqluser`,`mysqlcurrentuser`) VALUES (SYSDATE(),:sLogin,"ERROR",:sTitle,:sDescription,USER(),CURRENT_USER())';
+        $sType=strtoupper($sType);
+        $sSQL='INSERT INTO `'.$sDBName.'`.`log`(`logged`,`username`,`type`,`title`,`description`,`mysqluser`,`mysqlcurrentuser`) VALUES (SYSDATE(),:sLogin,:sType,:sTitle,:sDescription,USER(),CURRENT_USER())';
 
         if( $this->IsOpen() )
         {
@@ -236,6 +235,7 @@ class CDb
                 $pPDOStatement = $this->m_pPDO->prepare($sSQL);
                 // Bind
                 $pPDOStatement->bindParam(':sLogin',$sLogin,PDO::PARAM_STR,45);
+                $pPDOStatement->bindParam(':sType',$sType,PDO::PARAM_STR,15);
                 $pPDOStatement->bindParam(':sTitle',$sTitle,PDO::PARAM_LOB);
                 $pPDOStatement->bindParam(':sDescription',$sDescription,PDO::PARAM_LOB);
                 // Execute
@@ -244,8 +244,9 @@ class CDb
             }
             catch(PDOException $e)
             {
-                $sMessage='PDOException in CDb::LogError():'.$e->getMessage();
-                CErrorList::GetInstance()->Add( $sMessage, __FILE__, __LINE__);
+		        $sUser=(CUser::GetInstance()->GetUsername()===FALSE?CUser::DEFAULT_USER:CUser::GetInstance()->GetUsername());
+		        $sTitle= __CLASS__ . '::' . __METHOD__ .'()';
+                ErrorDBLog( $sUser, $sTitle, $e->getMessage(), FALSE, FALSE);
             }//try
             $pPDOStatement=NULL;
         }//if( $this->IsOpen() )

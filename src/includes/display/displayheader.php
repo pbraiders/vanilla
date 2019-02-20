@@ -34,6 +34,7 @@
  *              The following object(s) should exist:
  *                  - CHeader
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-21 - Case: short_open_tag is on
  *************************************************************************/
 if ( !defined('PBR_VERSION') || !defined('PBR_URL')  )
     die('-1');
@@ -57,8 +58,9 @@ if ( !defined('PBR_VERSION') || !defined('PBR_URL')  )
     header('Cache-Control: post-check=0, pre-check=0', FALSE);
     header('Pragma: no-cache');     // For HTTP/1.0 compability
     header('Content-type: text/html; charset=UTF-8');
+    // In case of short_open_tag is on
+    echo '<?xml version="1.0" encoding="utf-8"?>',"\n";
 ?>
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>

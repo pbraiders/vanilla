@@ -33,11 +33,12 @@
  * description: build and display the reservation list for a day.
  *         GET: act=print, rey=<year>, rem=<month>, red=<day>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.0');
+    define('PBR_VERSION','1.0.1');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -79,8 +80,9 @@
         else
         {
             // Parameters are not valid
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        ErrorLog( CUser::GetInstance()->GetUsername(), $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
             CUser::GetInstance()->Invalidate();
-            TraceWarning('Possible hacking attempt',__FILE__,__LINE__);
         }// if( ($sAction=='update') || ($sAction=='show') )
     }//action = show
 

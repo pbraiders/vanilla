@@ -33,16 +33,13 @@
  *   description: build and display the login page.
  *          POST: act=login, usr=<username>, pwd=<password>, tok=<token>
  *        author: Olivier JULLIEN - 2010-02-04
+ *        update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.0');
+    define('PBR_VERSION','1.0.1');
     define('PBR_PATH',dirname(__FILE__));
-
-    /** Include stat
-     ***************/
-//    include(PBR_PATH.'/includes/stat.php');
 
     /** Include config
      *****************/
@@ -90,7 +87,8 @@
         else
         {
 			// Parameters are not valid
-			TraceWarning('Possible hacking attempt',__FILE__,__LINE__);
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        ErrorLog( CUser::DEFAULT_USER, $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
         }//if( ($sAction=='login') && ($sToken==CSession::GetToken()) )
     }//if( filter_has_var(...
 
@@ -102,7 +100,8 @@
         require(PBR_PATH.'/includes/db/class/cdb.php');
 		if( CDb::GetInstance()->Open(PBR_DB_DSN.PBR_DB_DBN,PBR_DB_USR,PBR_DB_PWD)===FALSE )
 		{
-			TraceWarning('Cannot open the database.',__FILE__,__LINE__);
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        ErrorLog( $sUsername, $sTitle, 'impossible d\'ouvrir la base de données', E_USER_ERROR, FALSE);
         }
         else
         {
@@ -116,7 +115,8 @@
 				// Set cookie
 				if( CCookie::GetInstance()->Write($sUsername,$sSession)===FALSE )
                 {
-                	TraceWarning('Cannot write cookie.',__FILE__,__LINE__);
+		            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+			        ErrorLog( $sUsername, $sTitle, 'impossible d\'écrire le cookie', E_USER_WARNING, TRUE);
                 }//if(...
                 // Redirect
 				include(PBR_PATH.'/includes/init/initclean.php');
@@ -126,7 +126,8 @@
             // Trace
 			if( ($iReturn==-2)||($iReturn==-3) )
             {
-				TraceWarning('Possible hacking attempt.',__FILE__,__LINE__);
+	            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+		        ErrorLog( $sUsername, $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
 			}//if( ($iReturn==-2)||($iReturn==-3) )
 			// Set Message
 			$iMessageCode=1;

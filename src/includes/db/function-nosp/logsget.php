@@ -51,6 +51,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   *         ARRAY of none, one or more records (log_date, log_user, log_type
   *         , log_title, log_description, log_mysqluser, log_mysqlcurrentuser)
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-05-24 - use ErrorDBLog instead of CErrorList::AddDB(...) and CDb::GetInstance()->LogError(...)
   */
 function LogsGet( $sLogin, $sSession, $sInet, $iOffset, $iLimit)
 {
@@ -95,7 +96,6 @@ function LogsGet( $sLogin, $sSession, $sInet, $iOffset, $iLimit)
             {
                 $iReturn=FALSE;
                 $sMessage=$e->getMessage();
-                CDb::GetInstance()->LogError( PBR_DB_DBN, $sLogin, $sErrorTitle, $sMessage);
             }//try
 
             // Free resource
@@ -110,7 +110,7 @@ function LogsGet( $sLogin, $sSession, $sInet, $iOffset, $iLimit)
     // Error
     if( is_scalar($iReturn) )
     {
-        CErrorList::GetInstance()->AddDB($iReturn,__FILE__,__LINE__,$sMessage);
+        ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
     }//if( is_scalar($iReturn) )
 
     return $iReturn;

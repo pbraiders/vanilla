@@ -33,11 +33,12 @@
  * description: build and display the contact export page.
  *         GET: act=export, ctl=<search>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.0');
+    define('PBR_VERSION','1.0.1');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -122,7 +123,8 @@
                  ************/
                 if( CCSV::GetInstance()->Open()===FALSE )
                 {
-                    TraceWarning('Cannot open file',__FILE__,__LINE__);
+		            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+			        ErrorLog( CUser::GetInstance()->GetUsername(), $sTitle, 'impossible d\'ouvrir le fichier', E_USER_WARNING, TRUE);
                 }//if( CCSV::GetInstance()->Open($sExportDir)===FALSE )
 
                 /** Write data
@@ -134,7 +136,8 @@
 
                     if( $sSended===FALSE )
                     {
-                        TraceWarning('Cannot write to the export file:'.CCSV::GetInstance()->GetFilename(),__FILE__,__LINE__);
+			            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+				        ErrorLog( CUser::GetInstance()->GetUsername(), $sTitle, 'impossible d\'exporter le fichier '.CCSV::GetInstance()->GetFilename(), E_USER_WARNING, TRUE);
                     }
                     else
                     {
@@ -166,7 +169,8 @@
         else
         {
             // Parameters are not good
-            TraceWarning('Possible hacking attempt',__FILE__,__LINE__);
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        ErrorLog( CUser::GetInstance()->GetUsername(), $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
         }//if( $sAction=='export' )
     }//if( filter_has_var(...
 
