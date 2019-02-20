@@ -35,6 +35,7 @@
  * update: Olivier JULLIEN - 2010-05-24 - remove function: WriteTrace
  *                                        remove function: TraceWarning
  *                                        add new function: stripslashes_deep
+ *                                        add new function: GetRegExPatternName
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -191,6 +192,18 @@ function stripslashes_deep($value)
 {
     $value = is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
     return $value;
+}
+
+/**
+  * function: GetRegExPatternName
+  * description: Return regex filter for input name
+  * parameters: none
+  * return: STRING
+  * author: Olivier JULLIEN - 2010-06-11
+  */
+function GetRegExPatternName()
+{
+    return '/^[^\s'.preg_quote('!"#$%&()*+,/:;<=>?[\]^`{|}~','/').']+$/';
 }
 
 ?>

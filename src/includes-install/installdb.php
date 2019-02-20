@@ -191,77 +191,6 @@ function LoadData()
     return $bReturn;
 }
 
-/**
-  * function: CreateStoredProc
-  * description: Create stored procedure
-  * parameters: none
-  * return: BOOLEAN
-  * author: Olivier JULLIEN - 2010-02-04
-  */
-function CreateStoredProc()
-{
-    $bReturn=FALSE;
-    $sSQL=$sText='';
-    $tFiles=array(
-                'sp_parameterget'
-                 ,'sp_sessionvalid'
-                 ,'sp_configget'
-                 ,'sp_configupdate'
-                 ,'sp_contactdel'
-                 ,'sp_contactget'
-                 ,'sp_contactrentsget'
-                 ,'sp_contactrentsgetcount'
-                 ,'sp_contactset'
-                 ,'sp_contactsget'
-                 ,'sp_contactsgetcount'
-                 ,'sp_contactupdate'
-                 ,'sp_logsdel'
-                 ,'sp_logsget'
-                 ,'sp_logsgetcount'
-                 ,'sp_maxget'
-                 ,'sp_rentcontactset'
-                 ,'sp_rentdel'
-                 ,'sp_rentget'
-                 ,'sp_rentsdel'
-                 ,'sp_rentset'
-                 ,'sp_rentsget'
-                 ,'sp_rentsgetcount'
-                 ,'sp_rentsmonthget'
-                 ,'sp_rentupdate'
-                 ,'sp_sessiondelete'
-                 ,'sp_sessionlogoff'
-                 ,'sp_sessionset'
-                 ,'sp_userget'
-                 ,'sp_userset'
-                 ,'sp_usersget'
-                 ,'sp_userupdate'
-                );
-    // Read files
-    foreach( $tFiles as $sFile )
-    {
-        // Read file
-        if( ReadSQLFile($sFile, $sText)==TRUE )
-        {
-            // Sanitise text
-            $sSQL=str_replace('_PBR_DB_DBN_',PBR_DB_DBN,$sText);
-            $sSQL=str_replace('DELIMITER $$','',$sSQL);
-            $sSQL=str_replace('$$',';',$sSQL);
-            // Execute sql
-            $bReturn=ExecuteSQL($sSQL);
-            if( $bReturn===FALSE )
-            {
-                break;
-            }// if( ExecuteSQL($sSQL)===FALSE )
-        }
-        else
-        {
-            $bReturn=FALSE;
-            break;
-        }//if( ReadSQLFile('schema', $sSQL) )
-    }//foreach( $tFiles as $sFile )
-    return $bReturn;
-}
-
 ?>
  <div id="PAGE" class="login">
   <div id="HEADER"></div>
@@ -281,37 +210,6 @@ function CreateStoredProc()
          echo '<p class="error">Cr&#233;ation du sch&#233;ma:ECHEC</p>',"\n";
     }//if( $bSuccess )
     sleep(1);
-
-    /** Create stored procedures
-     ***************************/
-    if( $bSuccess )
-    {
-        $bSuccess2 = CreateStoredProc();
-        if( $bSuccess2 )
-        {
-            echo '<p class="success">Cr&#233;ation des proc&#233;dures stock&#233;es:OK</p>',"\n";
-            if( PBR_USE_STOREDPROC===0 )
-            {
-                echo '<p><em>Note: PBRaiders est configur&#233; et est compl&#232;tement op&#233;rationnel pour fonctionner sans. Si vous souhaitez forcer PBRaiders &#224; les utiliser vous devez modifier le fichier config.php.</em></p>',"\n";
-            }
-            else
-            {
-                echo '<p><em>Note: PBRaiders est correctement configur&#233; pour les utiliser.</em></p>',"\n";
-            }//if( PBR_USE_STOREDPROC===0 )
-        }
-        else
-        {
-            echo '<p class="error">Cr&#233;ation des proc&#233;dures stock&#233;es:ECHEC</p>',"\n";
-            if( PBR_USE_STOREDPROC===0 )
-            {
-                echo '<p><em>Note: cela ne pose aucun probl&#232;me car PBRaiders est configur&#233; et est compl&#232;tement op&#233;rationnel pour fonctionner sans.</em></p>',"\n";
-            }
-            else
-            {
-                echo '<p class="error"><em>ATTENTION: vous devez modifier le fichier config.php pour forcer PBRaiders &#224; fonctionner sans.</em></p>',"\n";
-            }//if( PBR_USE_STOREDPROC===0 )
-        }//if( $bSuccess2 )
-    }//if( $bSuccess )
 
     /** Create admin
      ***************/
@@ -348,6 +246,7 @@ function CreateStoredProc()
     if( $bSuccess )
     {
         echo '<p class="success">Installation r&#233ussie.</p>',"\n";
+        echo '<p>Une fois que vous aurez v&#233;rifi&#233; que tout fonctionne correctement, vous devez effacer le fichier install.php et le dossier includes-install</p>',"\n";
     }
     else
     {

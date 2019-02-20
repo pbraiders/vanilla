@@ -31,14 +31,8 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: describes a new user
- * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - update __clone()
- * update: Olivier JULLIEN - 2010-06-11 - add password check field
- *                                        add SetPasswordCheck()
- *                                        update IsValidNew()
- *                                        update IsValidUpdate()
- *                                        update ReadInput()
- *                                        update SetUsername()
+ * author: Olivier JULLIEN - 2010-05-24
+ * update: Olivier JULLIEN - 2010-06-11 - update SetUsername()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -51,20 +45,14 @@ class CNewUser
     // Singleton
     private static $m_pInstance = NULL;
 
-    // User identifier
-    private $m_iIdentifier = 0;
-
     // Username
     private $m_sUsername = NULL;
 
-    // Password
-    private $m_sPassword = NULL;
+    // Password 1
+    private $m_sPassword1 = NULL;
 
-    // Password check
-    private $m_sPasswordCheck = NULL;
-
-    // State
-    private $m_iState=0;
+    // Password 2
+    private $m_sPassword2 = NULL;
 
     /** Private methods
      ******************/
@@ -77,23 +65,6 @@ class CNewUser
      * author: Olivier JULLIEN - 2010-02-04
      */
     private function __construct(){}
-
-    /**
-     * function: SanitizeInt
-     * description: return sanitized integer value
-     * parameter: INTEGER|iValue - value to sanitize
-     * return: INTEGER
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    private function SanitizeInt($iValue)
-    {
-        $iReturn=0;
-        if( is_numeric($iValue) )
-        {
-            $iReturn=$iValue+0;
-        }//if( is_numeric($iValue) )
-        return $iReturn;
-    }
 
     /**
      * function: Sanitize
@@ -205,106 +176,39 @@ class CNewUser
      * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function GetPassword(){return $this->m_sPassword;}
+    public function GetPassword(){return $this->m_sPassword1;}
 
    /**
-     * function: SetPassword
-     * description: set password value
+     * function: SetPassword1
+     * description: set password1 value
      * parameter: STRING|sValue - password
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function SetPassword($sValue){$this->m_sPassword=$this->Sanitize($sValue);}
+    public function SetPassword1($sValue){$this->m_sPassword1=$this->Sanitize($sValue);}
 
    /**
-     * function: SetPasswordCheck
-     * description: set password check value
+     * function: SetPassword2
+     * description: set password2 value
      * parameter: STRING|sValue - password
      * return: none
-     * author: Olivier JULLIEN - 2010-06-11
-     */
-    public function SetPasswordCheck($sValue){$this->m_sPasswordCheck=$this->Sanitize($sValue);}
-
-    /**
-     * function: GetIdentifier
-     * description: return user identifier
-     * parameter: none
-     * return: INTEGER
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function GetIdentifier(){return (integer)$this->m_iIdentifier;}
-
-    /**
-     * function: SetIdentifier
-     * description: Set user identifier
-     * parameter: INTEGER|iValue - identifier
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function SetIdentifier($iValue){$this->m_iIdentifier=$this->SanitizeInt($iValue);}
-
-   /**
-     * function: GetState
-     * description: return user state
-     * parameter: none
-     * return: INTEGER
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function GetState(){return (integer)$this->m_iState;}
-
-    /**
-     * function: SetState
-     * description: Set user state
-     * parameter: INTEGER|iValue - state
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function SetState($iValue)
-    {
-    	$this->m_iState=$this->SanitizeInt($iValue);
-        if( ($this->m_iState<0) || ($this->m_iState>1) )
-        {
-        	$this->m_iState=0;
-        }//if( (m_iState<0) || (m_iState>1) )
-    }
+    public function SetPassword2($sValue){$this->m_sPassword2=$this->Sanitize($sValue);}
 
    /**
      * function: IsValidNew
-     * description: return true if username and passwords are set and valid
+     * description: return true if username and password are set
      * parameter:
      * return: TRUE or FALSE
      * author: Olivier JULLIEN - 2010-02-04
-     * update: Olivier JULLIEN - 2010-06-11 - add password check
      */
     public function IsValidNew()
     {
-        return (!is_null($this->m_sUsername) && (strlen($this->m_sUsername)>0)
-             && !is_null($this->m_sPassword) && (strlen($this->m_sPassword)>0)
-             && !is_null($this->m_sPasswordCheck) && (strlen($this->m_sPasswordCheck)>0)
-             && ($this->m_sPassword===$this->m_sPasswordCheck) );
-    }
-
-   /**
-     * function: IsValidUpdate
-     * description: return true if username and identifier are set
-     * parameter:
-     * return: TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function IsValidUpdate()
-    {
-        // Check name and identifier
-        $bReturn = !is_null($this->m_sUsername) && (strlen($this->m_sUsername)>0) && ($this->m_iIdentifier>0);
-        // Check password
-        if( !is_null($this->m_sPassword) && (strlen($this->m_sPassword)>0) )
-        {
-            $bReturn = $bReturn && ($this->m_sPassword===$this->m_sPasswordCheck);
-        }
-        elseif( !is_null($this->m_sPasswordCheck) && (strlen($this->m_sPasswordCheck)>0) )
-        {
-            $bReturn = FALSE;
-        }//if( !is_null($this->m_sPassword) && (strlen($this->m_sPassword)>0) )
-        return $bReturn;
+        return ( !is_null($this->m_sUsername) && (strlen($this->m_sUsername)>0)
+        	  && !is_null($this->m_sPassword1) && (strlen($this->m_sPassword1)>0)
+              && !is_null($this->m_sPassword2) && (strlen($this->m_sPassword2)>0)
+			  && ($this->m_sPassword1===$this->m_sPassword2) );
     }
 
    /**
@@ -317,61 +221,46 @@ class CNewUser
     public function ReadInput($iFilter)
     {
         $bReturn = FALSE;
-        if( ($iFilter===INPUT_POST) || ($iFilter===INPUT_GET) )
-        {
-            // Get identifier
-            if( filter_has_var($iFilter,'usi') )
+		if( $iFilter===INPUT_POST )
+		{
+			// Get user name (only POST)
+			if( filter_has_var(INPUT_POST,'usr') )
+			{
+				$this->SetUsername(filter_input(INPUT_POST,'usr',FILTER_UNSAFE_RAW));
+			}//if( filter_has_var(INPUT_POST,'usi') )
+
+            // Get Password1 (only POST)
+            if( filter_has_var(INPUT_POST,'pwd1') )
             {
-                $this->SetIdentifier(filter_input($iFilter,'usi',FILTER_VALIDATE_INT));
-            }//if( filter_has_var($iFilter,'usi') )
-
-            if( $iFilter===INPUT_POST )
-            {
-            	// Get user name (only POST)
-	            if( filter_has_var(INPUT_POST,'usr') )
-	            {
-	            	$this->SetUsername(filter_input(INPUT_POST,'usr',FILTER_UNSAFE_RAW));
-                }//if( filter_has_var(INPUT_POST,'usi') )
-
-            	// Get Password (only POST)
-	            if( filter_has_var(INPUT_POST,'pwd') )
-	            {
-                    $sBuffer=trim(filter_input(INPUT_POST,'pwd',FILTER_UNSAFE_RAW));
-                    if( strlen($sBuffer)>0 )
-                    {
-    	            	$this->SetPassword(sha1($sBuffer));
-                    }
-                    else
-                    {
-                        $this->m_sPassword=NULL;
-                    }//if( strlen($sBuffer)>0 )
-                }//if( filter_has_var(INPUT_POST,'pwd') )
-
-                // Get Password check (only POST)
-                if( filter_has_var(INPUT_POST,'pwdc') )
+                $sBuffer=trim(filter_input(INPUT_POST,'pwd1',FILTER_UNSAFE_RAW));
+                if( strlen($sBuffer)>0 )
                 {
-                    $sBuffer=trim(filter_input(INPUT_POST,'pwdc',FILTER_UNSAFE_RAW));
-                    if( strlen($sBuffer)>0 )
-                    {
-                        $this->SetPasswordCheck(sha1($sBuffer));
-                    }
-                    else
-                    {
-                        $this->m_sPasswordCheck=NULL;
-                    }//if( strlen($sBuffer)>0 )
-                }//if( filter_has_var(INPUT_POST,'pwdc') )
+                    $this->SetPassword1(sha1($sBuffer));
+                }
+                else
+                {
+                    $this->m_sPassword1=NULL;
+                }//if( strlen($sBuffer)>0 )
+            }//if( filter_has_var(INPUT_POST,'pwd1') )
 
-	            // Get State (only POST)
-	            if( filter_has_var(INPUT_POST,'sta') )
-	            {
-                	$tFilter = array('options' => array('min_range' => 0, 'max_range' => 1));
-	            	$this->SetState(filter_input(INPUT_POST,'sta',FILTER_VALIDATE_INT,$tFilter));
-                }//if( filter_has_var(INPUT_POST,'usi') )
-             }//if( $iFilter===INPUT_POST )
+			// Get Password2 (only POST)
+			if( filter_has_var(INPUT_POST,'pwd2') )
+			{
+				$sBuffer=trim(filter_input(INPUT_POST,'pwd2',FILTER_UNSAFE_RAW));
+				if( strlen($sBuffer)>0 )
+				{
+					$this->SetPassword2(sha1($sBuffer));
+				}
+				else
+				{
+					$this->m_sPassword2=NULL;
+				}//if( strlen($sBuffer)>0 )
+			}//if( filter_has_var(INPUT_POST,'pwd2') )
 
             $bReturn = TRUE;
 
-        }//if( ($iFilter===INPUT_POST) || ($iFilter===INPUT_GET) )
+		}//if( $iFilter===INPUT_POST )
+
         return $bReturn;
     }
 

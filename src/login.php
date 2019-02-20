@@ -38,7 +38,7 @@
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.0.1');
+    define('PBR_VERSION',' ');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config

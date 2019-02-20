@@ -36,8 +36,9 @@
  *************************************************************************/
 if ( !defined('PBR_VERSION') )
     die('-1');
+    $sVersion='Release CAMP '.PBR_VERSION.' ©JOT 2010'
 ?>
-   <p id="FOOTER">Release CAMP ©JOT 2010</p>
+   <p id="FOOTER"><?php echo $sVersion;?></p>
   </div><!--PAGE-->
 <?php
     if( defined('PBR_DEBUG') && (1==PBR_DEBUG) )

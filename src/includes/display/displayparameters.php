@@ -45,6 +45,7 @@ if ( !defined('PBR_VERSION') || !defined('PBR_URL') )
   * parameters: INTEGER|iCode - message code
   * return: none
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-06-11 - spelling error
   */
 function BuildMessage($iCode)
 {
@@ -57,7 +58,7 @@ function BuildMessage($iCode)
         }
         elseif($iCode===2)
         {
-            $sBuffer.='<p class="success">Suppression r&#233;ussi.</p>';
+            $sBuffer.='<p class="success">Suppression r&#233;ussie.</p>';
         }
         elseif($iCode===3)
         {
@@ -136,7 +137,7 @@ function BuildMessage($iCode)
     <input type="hidden" name="act" value="delete" />
     <fieldset class="fieldsetsub fieldsetform">
      <legend>Purge</legend>
-     <p>Supprimer les r&#233;servations ant&#233;rieures &#224;: &nbsp;<input id="paramyear" class="inputTextS" type="text" value="" maxlength="4" size="4" name="rey" /></p>
+     <p>Supprimer les r&#233;servations ant&#233;rieures &#224; l&#39ann&#233;e: &nbsp;<input id="paramyear" class="inputTextS" type="text" value="" maxlength="4" size="4" name="rey" /></p>
      <ul class="listbuttons"><li><input class="inputButton" type="submit" value="Envoyer" /></li></ul>
     </fieldset>
    </form>

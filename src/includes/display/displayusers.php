@@ -35,6 +35,7 @@
  *                  - $tRecordset
  *                  - CNewUser
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-11 - add password check
  *************************************************************************/
 if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_NEWUSER_LOADED') )
     die('-1');
@@ -53,7 +54,7 @@ function BuildMessage($iCode)
         $sBuffer='<div id="MESSAGE">';
         if( $iCode===1 )
         {
-            $sBuffer.='<p class="error">Le nom d&#39;utilisateur ou le mot de passe que vous avez saisi est incorrect.</p>';
+            $sBuffer.='<p class="error">Le nom d&#39;utilisateur ou les mots de passe que vous avez saisis sont incorrects.</p>';
         }
         elseif($iCode===2)
         {
@@ -116,7 +117,9 @@ function BuildUser(&$tRecord)
     	$sFormHidden='<input type="hidden" name="act" value="update" />';
         $sFormHidden.='<input type="hidden" name="usr" value="'.CNewUser::GetInstance()->GetUsername().'" />';
         $sFormHidden.='<input type="hidden" name="usi" value="'.CNewUser::GetInstance()->GetIdentifier().'" />';
-		$sDisable='disabled="disabled"';
+        // Build name label
+        $sDisable='disabled="disabled"';
+        $sLabelName='Nom';
         $sHelp='';
         // Build state control
         $sState='<li class="label required">Actif</li>';
@@ -135,8 +138,11 @@ function BuildUser(&$tRecord)
         $sFormLegend='Nouvel utilisateur';
 	    // Build hidden control
     	$sFormHidden='<input type="hidden" name="act" value="new" />';
+        // Build name label
         $sDisable='';
-        $sHelp='<li class="help"><em>Seuls les caract&#232;res alphanum&#233;riques, &quot;@&quot;,&quot;.&quot;,&quot;-&quot; et &quot;_&quot; sont autoris&#233;s.</em></li>';
+        $sLabelName='Nom*';
+        $sHelp='<li class="help"><em>* Seuls les caract&#232;res alphanum&#233;riques, &quot;@&quot;,&quot;.&quot;,&quot;-&quot; et &quot;_&quot; sont autoris&#233;s.</em></li>';
+        // Build state control
         $sState='';
     }//if( $sAction=='select' )
 
@@ -164,11 +170,13 @@ function BuildUser(&$tRecord)
      <legend class="legendmain"><?php echo $sFormLegend; ?></legend>
 <?php echo $sFormHidden,"\n"; ?>
      <ul>
-      <li class="label required">Nom</li>
+      <li class="label required"><?php echo $sLabelName; ?></li>
       <li><input id="loginusr" class="inputText" type="text" value="<?php echo $sFormUsername; ?>" maxlength="45" size="10" name="usr" <?php echo $sDisable;?> /></li>
 <?php if(!empty($sHelp)) echo $sHelp,"\n"; ?>
       <li class="label required">Mot de passe</li>
       <li><input id="loginpwd" class="inputText" type="password" value="" maxlength="40" size="10" name="pwd"/></li>
+      <li class="label required">Confirmez</li>
+      <li><input id="loginpwdc" class="inputText" type="password" value="" maxlength="40" size="10" name="pwdc"/></li>
 <?php if(!empty($sState)) echo $sState,"\n"; ?>    
       <li class="listbuttonitem"><input class="inputButton" type="submit" value="Envoyer" name="new"/></li>
      </ul>

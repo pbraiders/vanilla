@@ -33,6 +33,7 @@
  * description: describe a cookie
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
+ * update: Olivier JULLIEN - 2010-06-11 - update Sanitize()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -92,7 +93,7 @@ class CCookie
         $bReturn=FALSE;
         if( is_scalar($sValue) )
         {
-            if( preg_match('/^[[:alnum:]@\.\-_]+$/',$sValue) )
+            if( preg_match(GetRegExPatternName(),$sValue) )
             {
                 $bReturn=TRUE;
             }//if( preg_match('/^[[:alnum:]@\.\-_]+$/',$sValue) )
@@ -191,6 +192,7 @@ class CCookie
     public function Write($sUsername, $sSessionId, $iExpire=NULL)
     {
         $bReturn = FALSE;
+
         if( ($this->Sanitize($sUsername)===TRUE) &&
             ($this->Sanitize($sSessionId)===TRUE) )
         {

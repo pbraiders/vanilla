@@ -32,7 +32,8 @@
  * file encoding: UTF-8
  * description: describes an user
  * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
+ * update: Olivier JULLIEN - 2010-05-24 - update __clone()
+ * update: Olivier JULLIEN - 2010-06-11 - update SetUsername()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -187,7 +188,7 @@ class CUser
     {
         $this->UnsetAuthentication();
         $this->m_sUsername=NULL;
-        if( $this->Sanitize($sValue,'/^[[:alnum:]@\.\-_éèêëẽēÉÈÊËẼĒáàâäãāåÁÀÂÄÃĀÅíìîïĩīÍÌÎÏĨĪúùûüũūÚÙÛÜŨŪóòôöõðōÓÒÔÖÕÐŌýÿÝŸçÇñÑœŒ]+$/')===TRUE )
+        if( $this->Sanitize($sValue,GetRegExPatternName())===TRUE )
         {
             $this->m_sUsername = $sValue;
         }//if( $this->Sanitize($sValue)===TRUE )

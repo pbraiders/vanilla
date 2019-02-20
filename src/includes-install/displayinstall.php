@@ -57,7 +57,7 @@ function BuildMessage($iCode)
         }
         elseif($iCode===2)
         {
-            $sBuffer.='<p class="error">PBRaiders est d&#233;j&#224; install&#233;e. Si vous souhaitez la re-installer, vous devez d&#146;abord la d&#233;truire.</p>';
+            $sBuffer.='<p class="error">L&#39;application PBRaiders est d&#233;j&#224; install&#233;e. Si vous souhaitez la re-installer, vous devez d&#146;abord d&#233;truire la base de donn&#233;es, effacer le dossier qui contient l&#39;application puis suivre les instructions du fichier lisezmoi.txt.</p>';
         }
         elseif($iCode===3)
         {
@@ -65,7 +65,7 @@ function BuildMessage($iCode)
         }
         elseif($iCode===4)
         {
-            $sBuffer.='<p class="error">Le nom d&#39;utilisateur ou le mot de passe que vous avez saisi est incorrect.</p>';
+            $sBuffer.='<p class="error">Le nom d&#39;utilisateur ou les mots de passe que vous avez saisis sont incorrects.</p>';
         }
         elseif($iCode===0)
         {
@@ -102,7 +102,9 @@ function BuildMessage($iCode)
       <li class="label required">Nom</li>
       <li><input id="loginusr" class="inputText" type="text" value="" maxlength="45" size="10" name="usr"/></li>
       <li class="label required">Mot de passe</li>
-      <li><input id="loginpwd" class="inputText" type="password" value="" maxlength="40" size="10" name="pwd"/></li>
+      <li><input id="loginpwd1" class="inputText" type="password" value="" maxlength="40" size="10" name="pwd1"/></li>
+      <li class="label required">Confirmer</li>
+      <li><input id="loginpwd2" class="inputText" type="password" value="" maxlength="40" size="10" name="pwd2"/></li>
       <li class="listbuttonitem"><input class="inputButton" type="submit" value="Lancer l'installation" name="install"/></li>
      </ul>
     </fieldset>

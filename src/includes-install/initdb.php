@@ -31,9 +31,9 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: validate initialize database connection
- * author: Olivier JULLIEN - 2010-02-04
+ * author: Olivier JULLIEN - 2010-05-24
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_URL') || !defined('PBR_DB_DSN') || !defined('PBR_DB_USR') || !defined('PBR_DB_PWD') )
+if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_DB_DSN') || !defined('PBR_DB_USR') || !defined('PBR_DB_PWD') )
     die('-1');
 
     // Open database
@@ -42,6 +42,8 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_URL') || !d
     {
         // Error
         $iMessageCode=1;
+		$sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+		ErrorLog( 'install', $sTitle, 'impossible d\'ouvrir la base de données', E_USER_ERROR, FALSE);
     }
     else
     {
@@ -66,6 +68,8 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_URL') || !d
         }
         catch(PDOException $e)
         {
+//        	$sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+//            ErrorLog( 'install', $sTitle, $e->getMessage(), E_USER_NOTICE, FALSE);
             $iMessageCode=0;
         }//try
 

@@ -34,13 +34,15 @@
  *         GET: act=show
  *         GET: act=select, usi<user identifier>
  *        POST: act=new, usr=<username>, pwd=<password>
- *        POST: act=update, usi<user identifier>, pwd=<password>, sta=<state>
+ *        POST: act=update, usi<user identifier>, pwd=<password>, pwdc=<password>, sta=<state>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-11 - add password check
+ *                                      - fixed minor bug
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.0.1');
+    define('PBR_VERSION','1.1.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -119,8 +121,14 @@
          ****************/
         if( $sAction=='update' )
         {
-        	$iReturn=-2;
-            if( CNewUser::GetInstance()->IsValidUpdate()==TRUE )
+            if( CNewUser::GetInstance()->IsValidUpdate()==FALSE )
+            {
+                $iMessageCode=1;
+                $sAction='select';
+                CNewUser::GetInstance()->SetPassword(null);
+                CNewUser::GetInstance()->SetPasswordCheck(null);
+            }
+            else
             {
                 require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/userupdate.php');
                 $iReturn = UserUpdate( CUser::GetInstance()->GetUsername()
@@ -133,17 +141,14 @@
                     $iMessageCode=2;
                     $sAction='show';
                     CNewUser::DeleteInstance();
-                }//if( $iReturn>0 )
-			}//if( (CNewUser::GetInstance()->IsValidUpdate()==TRUE) )
-
-            //Error
-            if( $iReturn<0 )
-			{
-				// Failed
-				RedirectError( $iReturn, __FILE__, __LINE__ );
-				exit;
-			}//if( $iReturn<1 )
-
+                }
+                else
+                {
+                    // Failed
+                    RedirectError( $iReturn, __FILE__, __LINE__ );
+                    exit;
+                }//if( $iReturn>=0 )
+			}//if( (CNewUser::GetInstance()->IsValidUpdate()==FALSE) )
         }//if( $sAction=='update' )
 
         /** Action=new
@@ -153,7 +158,9 @@
             if( CNewUser::GetInstance()->IsValidNew()==FALSE )
             {
                 $iMessageCode=1;
-                $sAction=='show';
+                $sAction='show';
+                CNewUser::GetInstance()->SetPassword(null);
+                CNewUser::GetInstance()->SetPasswordCheck(null);
             }
             else
             {

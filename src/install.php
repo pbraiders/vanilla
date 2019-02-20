@@ -36,7 +36,7 @@
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.0');
+    define('PBR_VERSION','1.1.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -49,16 +49,17 @@
 
     /** Initialize
      *************/
-    error_reporting(E_ALL); // Disable error reporting for uninitialized variables
-    @set_time_limit(0); // Turn off PHP time limit
-    $iMessageCode=0;
+    require(PBR_PATH.'/includes-install/init.php');
     $sAction=NULL;
-    require(PBR_PATH.'/includes/class/cerrorlist.php');
-    require(PBR_PATH.'/includes-install/initdb.php');
+    $iMessageCode=0;
 
     /** Include main object(s)
      *************************/
-    require(PBR_PATH.'/includes/class/cnewuser.php');
+    require(PBR_PATH.'/includes-install/cnewuser.php');
+
+    /** Initialize database
+     **********************/
+    require(PBR_PATH.'/includes-install/initdb.php');
 
     /** Prerequiste test
      ******************/
@@ -69,6 +70,8 @@
     if( !version_compare( $sPHPVersion, $sPHPVersionRequired, '>=')
         && !version_compare( $sMYSQLVersion, $sMYSQLVersionRequired, '>=') )
     {
+        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+		ErrorLog( 'install', $sTitle, 'les versions ne sont pas valides', E_USER_ERROR, FALSE);
         $iMessageCode=3;
     }//if( !version_compare( $sPHPVersion, $sPHPVersionRequired, '>=') )
 
@@ -76,7 +79,8 @@
      ************************/
     if( filter_has_var(INPUT_POST, 'act')
         && filter_has_var(INPUT_POST, 'usr')
-        && filter_has_var(INPUT_POST, 'pwd') )
+        && filter_has_var(INPUT_POST, 'pwd1')
+        && filter_has_var(INPUT_POST, 'pwd2') )
     {
         // Get action
         $sAction = trim(filter_input( INPUT_POST, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
@@ -86,6 +90,8 @@
         if( ($sAction!='install') || (CNewUser::GetInstance()->IsValidNew()==FALSE) )
         {
             // Parameters are not valid
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+	        ErrorLog( 'install', $sTitle, 'les paramètres ne sont pas valides', E_USER_ERROR, FALSE);
             $iMessageCode=4;
             $sAction=NULL;
         }//if( ($sAction=='login') && ($sToken==CSession::GetToken()) )
@@ -95,8 +101,8 @@
      ***************/
     require(PBR_PATH.'/includes/class/cheader.php');
     CHeader::GetInstance()->SetNoCache();
-    CHeader::GetInstance()->SetTitle('Installation');
-    CHeader::GetInstance()->SetDescription('Installation de PBRaiders');
+    CHeader::GetInstance()->SetTitle('Installation de PBRaiders '.PBR_VERSION);
+    CHeader::GetInstance()->SetDescription('Installation de PBRaiders '.PBR_VERSION);
     CHeader::GetInstance()->SetKeywords('install,installation,installer');
 
     /** Display or install
@@ -119,5 +125,6 @@
     CHeader::DeleteInstance();
     if(defined('PBR_DB_LOADED')) CDb::DeleteInstance();
     if(defined('PBR_NEWUSER_LOADED') ) CNewUser::DeleteInstance();
-
+    if(defined('PBR_LOG_LOADED')) CLog::DeleteInstance();
+    CErrorList::DeleteInstance();
 ?>
