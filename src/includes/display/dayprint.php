@@ -35,11 +35,14 @@
  *                  - $pDate (instance of CDate)
  *                  - $sFormTitle (string)
  *                  - $tRecordset (array)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !isset($pDate) || !isset($sFormTitle) ||!is_array($tRecordset) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !isset($pDate) || !isset($sFormTitle) ||!is_array($tRecordset) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -55,6 +58,7 @@ if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !isset($pDate) || !isset(
   */
 function BuildCurrentRent(&$tRecord, $bPageBreak)
 {
+    global $pHeader;
     if( is_array($tRecord) && array_key_exists('reservation_id', $tRecord)
                            && array_key_exists('reservation_real', $tRecord)
                            && array_key_exists('reservation_planned', $tRecord)
@@ -73,7 +77,7 @@ function BuildCurrentRent(&$tRecord, $bPageBreak)
             $sBuffer.='<span class="planned">&nbsp;'.$tRecord['reservation_planned'].'</span>';
             $sBuffer.='<span class="canceled">&nbsp;'.$tRecord['reservation_canceled'].'</span>';
             $iTotal=(integer)$tRecord['reservation_real']+(integer)$tRecord['reservation_planned'];
-            $sBuffer.='<span>Total: '.$iTotal.' / '.$tRecord['reservation_arrhes'].'</span><hr/>';
+            $sBuffer.='<span>Total: '.$iTotal.' / '.$tRecord['reservation_arrhes'].'</span>'.$pHeader->GetHR();
         }
         else
         {
@@ -125,7 +129,7 @@ function BuildCurrentRent(&$tRecord, $bPageBreak)
 <li><a title="Retour" href="<?php echo $sHRef; ?>">Retour</a></li>
 </ul>
 <h1><?php echo htmlentities($sFormTitle,ENT_QUOTES,'UTF-8');?></h1>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <ul>
 <?php
     if( is_array($tRecordset) )

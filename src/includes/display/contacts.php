@@ -38,11 +38,14 @@
  *                  - $iMessageCode (integer)
  *                  - $pOrder (instance of COption)
  *                  - $pSort (instance of COption)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pPaging) || !is_array($tRecordset) || !is_integer($iMessageCode) || !isset($pSearch) || !isset($pOrder) || !isset($pSort) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pPaging) || !is_array($tRecordset) || !is_integer($iMessageCode) || !isset($pSearch) || !isset($pOrder) || !isset($pSort) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -139,9 +142,10 @@ function BuildContact( &$tRecord )
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagetop'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en bas de la page" name="pagetop" href="#pagebottom">&#8595;</a></li>
+<li><a title="Aller en bas de la page" href="#pagebottom">&#8595;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Afficher le calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <?php if(strlen($pSearch->GetLastName())>0) { ?>
@@ -149,17 +153,17 @@ function BuildContact( &$tRecord )
 <?php }//if(strlen($pSearch->GetLastName())>0) ?>
 <li><a title="Cr&#233;er un contact" href="<?php echo PBR_URL;?>contactnew.php">Cr&#233;er un contact</a></li>
 </ul>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <?php BuildMessage($iMessageCode); ?>
 <h1>Contacts</h1>
 <form id="FORMCONTACTS" method="get" action="<?php echo PBR_URL;?>contacts.php">
 <fieldset class="fieldsetsub fieldsetform">
 <legend class="legendmain">Chercher</legend>
-<input type="hidden" name="<?php echo CAction::ACTIONTAG; ?>" value="search" />
+<input type="hidden" name="<?php echo CAction::ACTIONTAG; ?>" value="search"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
 <ul>
 <li class="label required">Nom</li>
-<li><input id="contactsname" class="inputText" type="text" value="<?php echo $pSearch->GetLastName(1); ?>" maxlength="<?php echo CContact::LASTNAMEMAX; ?>" size="10" name="<?php echo CContact::LASTNAMETAG; ?>"/></li>
+<li><input id="contactsname" class="inputText" type="text" value="<?php echo $pSearch->GetLastName(1); ?>" maxlength="<?php echo CContact::LASTNAMEMAX; ?>" size="10" name="<?php echo CContact::LASTNAMETAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="help"><em>Utilisez le joker * pour des recherches partielles.</em></li>
 <li class="label">Trier par</li>
 <li><select class="inputSelect" name="<?php echo $pOrder->GetName(); ?>">
@@ -199,7 +203,7 @@ function BuildContact( &$tRecord )
     }//for( $iIndex=0;$iIndex<2;$iIndex++)
 ?>
 </select></li>
-<li class="listbuttonitem"><input class="inputButton" type="submit" value="Envoyer" /></li>
+<li class="listbuttonitem"><input class="inputButton" type="submit" value="Envoyer"<?php echo $pHeader->GetCloseTag(); ?></li>
 </ul>
 </fieldset>
 </form>
@@ -211,7 +215,7 @@ function BuildContact( &$tRecord )
     $sBuffer  = '<legend class="legendmain">Liste des contacts';
     if( $pPaging->GetMax()>1 )
     {
-        $sBuffer .= ' <em>(page '.$pPaging->GetCurrent().' sur '.$pPaging->GetMax().')</em>';
+        $sBuffer .= ' <em class="hide">(page '.$pPaging->GetCurrent().' sur '.$pPaging->GetMax().')</em>';
     }//if( $pPaging->GetMax()>1 )
     $sBuffer .= '</legend>';
     echo $sBuffer,"\n";
@@ -275,9 +279,10 @@ function BuildContact( &$tRecord )
 ?>
 </fieldset>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagebottom'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en haut de la page" href="#pagetop" name="pagebottom">&#8593;</a></li>
+<li><a title="Aller en haut de la page" href="#pagetop">&#8593;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Afficher le calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <?php if(strlen($pSearch->GetLastName())>0) { ?>

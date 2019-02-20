@@ -34,13 +34,21 @@
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-05-24 - write error(s)
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') )
+if( !defined('PBR_VERSION') )
     die('-1');
 
     // Version
-    $sVersion='Release CAMP '.PBR_VERSION.' ©JOT 2010';
+    $sVersion = PBR_VERSION;
+    $sVersion = trim($sVersion);
+    if( !empty($sVersion) )
+        $sVersion = 'Version '.$sVersion;
+    if( isset($pHeader) && $pHeader->AcceptXML() )
+        $sVersion.=' xhtml';
+    $sVersion.=' ©JOT 2010';
 
     // Mobile
     if( isset($pHeader) && $pHeader->IsMobile() && CAuth::GetInstance()->IsAuthenticated() )

@@ -5,6 +5,7 @@ Style sheet name: PBRaiders mobile browser
          Version: 1.1
           Author: Olivier JULLIEN - 2010-02-03
           Update: Olivier JULLIEN - 2010-06-15 - improvement
+          Update: Olivier JULLIEN - 2010-09-01 - improvement
 The 'PBRaiders mobile browser style sheet' is released under: private licence.
 The logos 'PBRaiders' are under copyrights.
 W3C: This document was successfully checked as CSS level 3!
@@ -49,7 +50,7 @@ fieldset legend.legendmain{font-weight:700;}
 .inputText,.inputTextS,.inputSelect,.inputParam{margin:2px;}
 .inputText,.inputTextS,.inputTextarea,.inputRadio,.inputSelect,.inputButton,.inputParam{font-size:1.7em;}
 .inputText,.inputTextarea,.inputSelect{width:95%;}
-.inputButton{font-weight:700;}
+.inputButton{font-weight:700;width:45%;}
 .graph{height:470px;overflow:auto;white-space:nowrap;overflow-y:hidden;}
 /** LIST **/
 .records li{font-size:larger;line-height:1.875;text-align:justify;border-top:1px solid #346B9E;}

@@ -36,11 +36,14 @@
  *                  - $pDate (instance of CDate)
  *                  - $pContact ( instance of CContact)
  *                  - $iMessageCode (integer)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !is_integer($iMessageCode) || !isset($pRent) || !isset($pContact) || !isset($pDate) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !is_integer($iMessageCode) || !isset($pRent) || !isset($pContact) || !isset($pDate) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -116,9 +119,10 @@ function BuildMessage($iCode)
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagetop'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en bas de la page" name="pagetop" href="#pagebottom">&#8595;</a></li>
+<li><a title="Aller en bas de la page" href="#pagebottom">&#8595;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Aller au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <?php
@@ -131,32 +135,32 @@ function BuildMessage($iCode)
 ?>
 <li><a title="Afficher tous les contacts" href="<?php echo PBR_URL;?>contacts.php">Contacts</a></li>
 </ul>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <?php BuildMessage($iMessageCode); ?>
 <h1><?php echo $sFormTitle;?></h1>
 <form id="FORMRENT" method="post" action="<?php echo PBR_URL.'rent.php'; ?>">
 <fieldset class="fieldsetform">
 <legend class="legendmain">Contact</legend>
-<input type="hidden" name="<?php echo CRent::IDENTIFIERTAG; ?>" value="<?php echo $pRent->GetIdentifier(); ?>" />
+<input type="hidden" name="<?php echo CRent::IDENTIFIERTAG; ?>" value="<?php echo $pRent->GetIdentifier(); ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
 <ul>
 <li class="label required">Nom</li>
-<li><input id="contactlastname" class="inputText" type="text" value="<?php echo $sEncodedLastName; ?>" maxlength="<?php echo CContact::LASTNAMEMAX; ?>" size="10" name="<?php echo CContact::LASTNAMETAG; ?>"  disabled="disabled" /></li>
+<li><input id="contactlastname" class="inputText" type="text" value="<?php echo $sEncodedLastName; ?>" maxlength="<?php echo CContact::LASTNAMEMAX; ?>" size="10" name="<?php echo CContact::LASTNAMETAG; ?>"  disabled="disabled"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="navigation"><a title="Voir la fiche" href="<?php echo $sContactHRef;?>"><em>Voir la fiche</em></a></li>
 <li class="label required">Pr&eacute;nom</li>
-<li><input id="contactfirstname" class="inputText" type="text" value="<?php echo $sEncodedFirstName; ?>" maxlength="<?php echo CContact::FIRSTNAMEMAX; ?>" size="10" name="<?php echo CContact::FIRSTNAMETAG; ?>" disabled="disabled" /></li>
+<li><input id="contactfirstname" class="inputText" type="text" value="<?php echo $sEncodedFirstName; ?>" maxlength="<?php echo CContact::FIRSTNAMEMAX; ?>" size="10" name="<?php echo CContact::FIRSTNAMETAG; ?>" disabled="disabled"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="label required">T&#233;l&#233;phone</li>
-<li><input id="contactphone" class="inputText" type="text" value="<?php echo $pContact->GetTel(1);?>" maxlength="<?php echo CContact::TELMAX; ?>" size="10" name="<?php echo CContact::TELTAG; ?>" disabled="disabled" /></li>
+<li><input id="contactphone" class="inputText" type="text" value="<?php echo $pContact->GetTel(1);?>" maxlength="<?php echo CContact::TELMAX; ?>" size="10" name="<?php echo CContact::TELTAG; ?>" disabled="disabled"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="label">Email</li>
-<li><input id="contactemail" class="inputText" type="text" value="<?php echo $pContact->GetEmail(1);?>" maxlength="<?php echo CContact::EMAILMAX; ?>" size="10" name="<?php echo CContact::EMAILTAG; ?>" disabled="disabled" /></li>
+<li><input id="contactemail" class="inputText" type="text" value="<?php echo $pContact->GetEmail(1);?>" maxlength="<?php echo CContact::EMAILMAX; ?>" size="10" name="<?php echo CContact::EMAILTAG; ?>" disabled="disabled"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="label">Adresse</li>
-<li><input id="contactaddress_1" class="inputText" type="text" value="<?php echo $pContact->GetAddress(1);?>" maxlength="<?php echo CContact::ADDRESSMAX; ?>" size="10" name="<?php echo CContact::ADDRESSTAG; ?>" disabled="disabled" /></li>
+<li><input id="contactaddress_1" class="inputText" type="text" value="<?php echo $pContact->GetAddress(1);?>" maxlength="<?php echo CContact::ADDRESSMAX; ?>" size="10" name="<?php echo CContact::ADDRESSTAG; ?>" disabled="disabled"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="label hide">&nbsp;</li>
-<li><input id="contactaddress_2" class="inputText" type="text" value="<?php echo $pContact->GetAddressMore(1);?>" maxlength="<?php echo CContact::ADDRESSMOREMAX; ?>" size="10" name="<?php echo CContact::ADDRESSMORETAG; ?>" disabled="disabled" /></li>
+<li><input id="contactaddress_2" class="inputText" type="text" value="<?php echo $pContact->GetAddressMore(1);?>" maxlength="<?php echo CContact::ADDRESSMOREMAX; ?>" size="10" name="<?php echo CContact::ADDRESSMORETAG; ?>" disabled="disabled"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="label">Ville</li>
-<li><input id="contactcity" class="inputText" type="text" value="<?php echo $pContact->GetCity(1);?>" maxlength="<?php echo CContact::CITYMAX; ?>" size="10" name="<?php echo CContact::CITYTAG; ?>" disabled="disabled" /></li>
+<li><input id="contactcity" class="inputText" type="text" value="<?php echo $pContact->GetCity(1);?>" maxlength="<?php echo CContact::CITYMAX; ?>" size="10" name="<?php echo CContact::CITYTAG; ?>" disabled="disabled"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="label">Code postal</li>
-<li><input id="contactzip" class="inputText" type="text" value="<?php echo $pContact->GetZip(1);?>" maxlength="<?php echo CContact::ZIPMAX; ?>" size="10" name="<?php echo CContact::ZIPTAG; ?>" disabled="disabled" /></li>
+<li><input id="contactzip" class="inputText" type="text" value="<?php echo $pContact->GetZip(1);?>" maxlength="<?php echo CContact::ZIPMAX; ?>" size="10" name="<?php echo CContact::ZIPTAG; ?>" disabled="disabled"<?php echo $pHeader->GetCloseTag(); ?></li>
 </ul>
 </fieldset>
 <fieldset class="fieldsetform">
@@ -165,31 +169,31 @@ function BuildMessage($iCode)
 <legend>Taille du groupe</legend>
 <ul>
 <li class="labelF real">R&#233;el</li>
-<li><input id="rentsizereal" class="inputText" type="text" value="<?php echo $iCountReal;?>" maxlength="3" size="3" name="<?php echo CRent::REALTAG; ?>" /></li>
+<li><input id="rentsizereal" class="inputText" type="text" value="<?php echo $iCountReal;?>" maxlength="3" size="3" name="<?php echo CRent::REALTAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="labelF planned">Suppos&#233;</li>
-<li><input id="rentsizeplanned" class="inputText" type="text" value="<?php echo $iCountPlanned;?>" maxlength="3" size="3" name="<?php echo CRent::PLANNEDTAG; ?>" /></li>
-<li class="labelF canceled">Annul&#233;e</li>
-<li><input id="rentsizecanceled" class="inputText" type="text" value="<?php echo $iCountCanceled;?>" maxlength="3" size="3" name="<?php echo CRent::CANCELEDTAG; ?>" /></li>
+<li><input id="rentsizeplanned" class="inputText" type="text" value="<?php echo $iCountPlanned;?>" maxlength="3" size="3" name="<?php echo CRent::PLANNEDTAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
+<li class="labelF canceled">Annul&#233;</li>
+<li><input id="rentsizecanceled" class="inputText" type="text" value="<?php echo $iCountCanceled;?>" maxlength="3" size="3" name="<?php echo CRent::CANCELEDTAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="labelF maximum">Maximum</li>
-<li><input id="maxsize" class="inputText" type="text" value="<?php echo $iMax;?>" maxlength="3" size="3" name="<?php echo CRent::MAXTAG; ?>" /></li>
+<li><input id="maxsize" class="inputText" type="text" value="<?php echo $iMax;?>" maxlength="3" size="3" name="<?php echo CRent::MAXTAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
 </ul>
 </fieldset>
 <fieldset class="fieldsetsub fieldsetform fieldsetformgroup">
 <legend>&#194;ge</legend>
 <ul>
-<li class="radio"><input id="rentage1" class="inputRadio" type="radio" name="<?php echo CRent::AGETAG; ?>" value="1" <?php if($iAge===1) echo 'checked="checked"';?> />16-25 ans</li>
-<li class="radio"><input id="rentage2" class="inputRadio" type="radio" name="<?php echo CRent::AGETAG; ?>" value="2" <?php if(($iAge===2)||($iAge===0)) echo 'checked="checked"';?> />26-35 ans</li>
-<li class="radio"><input id="rentage3" class="inputRadio" type="radio" name="<?php echo CRent::AGETAG; ?>" value="3" <?php if($iAge===3) echo 'checked="checked"';?> />35 ans et +</li>
+<li class="radio"><input id="rentage1" class="inputRadio" type="radio" name="<?php echo CRent::AGETAG; ?>" value="1" <?php if($iAge===1) echo 'checked="checked"'; echo $pHeader->GetCloseTag(); ?>16-25 ans</li>
+<li class="radio"><input id="rentage2" class="inputRadio" type="radio" name="<?php echo CRent::AGETAG; ?>" value="2" <?php if(($iAge===2)||($iAge===0)) echo 'checked="checked"'; echo $pHeader->GetCloseTag(); ?>26-35 ans</li>
+<li class="radio"><input id="rentage3" class="inputRadio" type="radio" name="<?php echo CRent::AGETAG; ?>" value="3" <?php if($iAge===3) echo 'checked="checked"'; echo $pHeader->GetCloseTag(); ?>35 ans et +</li>
 <li class="label hide">&nbsp;</li>
 </ul>
 </fieldset>
 <fieldset class="fieldsetsub fieldsetform">
 <legend>Arrhes</legend>
 <ul>
-<li class="radio"><input id="rentarrhre1" class="inputRadio" type="radio" name="<?php echo CRent::ARRHESTAG; ?>" value="1" <?php if($iArrhes===1) echo 'checked="checked"';?> />Esp&#232;ce</li>
-<li class="radio"><input id="rentarrhre2" class="inputRadio" type="radio" name="<?php echo CRent::ARRHESTAG; ?>" value="2" <?php if($iArrhes===2) echo 'checked="checked"';?> />Ch&#232;que</li>
-<li class="radio"><input id="rentarrhre3" class="inputRadio" type="radio" name="<?php echo CRent::ARRHESTAG; ?>" value="3" <?php if($iArrhes===3) echo 'checked="checked"';?> />CB</li>
-<li class="radio"><input id="rentarrhre4" class="inputRadio" type="radio" name="<?php echo CRent::ARRHESTAG; ?>" value="0" />Aucune</li>
+<li class="radio"><input id="rentarrhre1" class="inputRadio" type="radio" name="<?php echo CRent::ARRHESTAG; ?>" value="1" <?php if($iArrhes===1) echo 'checked="checked"'; echo $pHeader->GetCloseTag(); ?>Esp&#232;ce</li>
+<li class="radio"><input id="rentarrhre2" class="inputRadio" type="radio" name="<?php echo CRent::ARRHESTAG; ?>" value="2" <?php if($iArrhes===2) echo 'checked="checked"'; echo $pHeader->GetCloseTag(); ?>Ch&#232;que</li>
+<li class="radio"><input id="rentarrhre3" class="inputRadio" type="radio" name="<?php echo CRent::ARRHESTAG; ?>" value="3" <?php if($iArrhes===3) echo 'checked="checked"'; echo $pHeader->GetCloseTag(); ?>CB</li>
+<li class="radio"><input id="rentarrhre4" class="inputRadio" type="radio" name="<?php echo CRent::ARRHESTAG; ?>" value="0"<?php echo $pHeader->GetCloseTag(); ?>Aucune</li>
 </ul>
 </fieldset>
 <ul>
@@ -205,13 +209,14 @@ function BuildMessage($iCode)
 <p class="small"><em><?php echo CRent::COMMENTLENGTH; ?> caract&#232;res ou moins</em></p>
 </fieldset>
 <ul class="listbuttons">
-<li><input class="inputButton" type="submit" value="Enregistrer" name="upd"/>&nbsp;<input class="inputButton" type="submit" value="&nbsp;Supprimer" name="del"/></li>
+<li><input class="inputButton" type="submit" value="Enregistrer" name="upd"<?php echo $pHeader->GetCloseTag(); ?>&nbsp;<input class="inputButton" type="submit" value="Supprimer" name="del"<?php echo $pHeader->GetCloseTag(); ?></li>
 </ul>
 </form>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagebottom'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en haut de la page" href="#pagetop" name="pagebottom">&#8593;</a></li>
+<li><a title="Aller en haut de la page" href="#pagetop">&#8593;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Aller au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <?php

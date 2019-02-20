@@ -41,6 +41,10 @@
  *                                        update GetKeyword()
  *                                        add AcceptXML()
  *                                        add AnalyseMIMEType()
+ * update: Olivier JULLIEN - 2010-09-01 - add GetCloseTag()
+ *                                        add GetBR()
+ *                                        add GetHR()
+ *                                        add GetAnchor()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -325,6 +329,71 @@ final class CHeader
         $this->m_bPrint       = FALSE;
         $this->m_bAcceptXML   = FALSE;
     }
+
+   /**
+     * function: GetCloseTag
+     * description: return the close tag depending of the doctype
+     * parameter: none
+     * return: STRING
+     * author: Olivier JULLIEN - 2010-09-01
+     */
+    public function GetCloseTag()
+    {
+        if( $this->m_bAcceptXML )
+            $sReturn = ' />';
+        else
+            $sReturn = '>';
+        return $sReturn;
+    }
+
+   /**
+     * function: GetBR
+     * description: return the BR tag depending of the doctype
+     * parameter: none
+     * return: STRING
+     * author: Olivier JULLIEN - 2010-09-01
+     */
+    public function GetBR()
+    {
+        if( $this->m_bAcceptXML )
+            $sReturn = '<br />';
+        else
+            $sReturn = '<br>';
+        return $sReturn;
+    }
+
+   /**
+     * function: GetHR
+     * description: return the HR tag depending of the doctype
+     * parameter: none
+     * return: STRING
+     * author: Olivier JULLIEN - 2010-09-01
+     */
+    public function GetHR()
+    {
+        if( $this->m_bAcceptXML )
+            $sReturn = '<hr />';
+        else
+            $sReturn = '<hr>';
+        return $sReturn;
+    }
+
+   /**
+     * function: GetAnchor
+     * description: return the anchor tag depending of the doctype
+     * parameter: none
+     * return: STRING
+     * author: Olivier JULLIEN - 2010-09-01
+     */
+    public function GetAnchor($sAnchor)
+    {
+        if( $this->m_bAcceptXML )
+            $sReturn = '<a id="'.$sAnchor.'"></a>';
+        else
+            $sReturn = '<a name="'.$sAnchor.'"></a>';
+        return $sReturn;
+    }
+
 }
 
 ?>

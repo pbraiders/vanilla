@@ -36,11 +36,14 @@
  *                  - $pDate (instance of CDate)
  *                  - $tRecordset (array)
  *                  - $bAdmin (boolean)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pDate) || !is_array($tRecordset) || !is_bool($bAdmin) )
+if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pDate) || !is_array($tRecordset) || !is_bool($bAdmin) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -163,16 +166,17 @@ function BuildDay($iDayName,$iDayNum,$iMonth,$iYear,$iReal,$iPlanned,$iCanceled,
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagetop'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en bas de la page" name="pagetop" href="#pagebottom">&#8595;</a></li>
+<li><a title="Aller en bas de la page" href="#pagebottom">&#8595;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Afficher tous les contacts" href="<?php echo PBR_URL;?>contacts.php">Contacts</a></li>
 <?php if( $bAdmin===TRUE ){ ?>
 <li><a title="Options" href="<?php echo PBR_URL;?>parameters.php">Options</a></li>
 <?php }//if( $bAdmin===TRUE ) ?>
 </ul>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <form id="FORMCALENDAR" method="post" action="<?php echo PBR_URL;?>">
 <?php
@@ -180,10 +184,10 @@ function BuildDay($iDayName,$iDayNum,$iMonth,$iYear,$iReal,$iPlanned,$iCanceled,
 ?>
 <ul id="CALENDARNAVIGATION" class="listbuttons">
 <li>
-<input type="hidden" name="<?php echo CDate::CURRENTYEARTAG; ?>" value="<?php echo $pDate->GetRequestYear();?>" />
-<input type="hidden" name="<?php echo CDate::CURRENTMONTHTAG; ?>" value="<?php echo $pDate->GetRequestMonth();?>" />
-<input class="inputButton" type="submit" value="&nbsp;&nbsp;&#60;&#60;&nbsp;&nbsp;" name="<?php echo CDate::NAXPREVTAG; ?>"/>
-<input class="inputButton" type="submit" value="&nbsp;&nbsp;&#62;&#62;&nbsp;&nbsp;" name="<?php echo CDate::NAXNEXTTAG; ?>"/>
+<input type="hidden" name="<?php echo CDate::CURRENTYEARTAG; ?>" value="<?php echo $pDate->GetRequestYear(); ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
+<input type="hidden" name="<?php echo CDate::CURRENTMONTHTAG; ?>" value="<?php echo $pDate->GetRequestMonth(); ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
+<input class="inputButton" type="submit" value="&#60;&#60;" name="<?php echo CDate::NAXPREVTAG; ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
+<input class="inputButton" type="submit" value="&#62;&#62;" name="<?php echo CDate::NAXNEXTTAG; ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
 </li>
 <li><select class="inputSelect" name="<?php echo CDate::MONTHTAG; ?>">
 <?php
@@ -238,7 +242,7 @@ function BuildDay($iDayName,$iDayNum,$iMonth,$iYear,$iReal,$iPlanned,$iCanceled,
 ?>
 </select></li>
 <li>
-<input class="inputButton" type="submit" value="&nbsp;Aller&nbsp;" name="<?php echo CDate::NAVGOTOTAG; ?>"/>
+<input class="inputButton" type="submit" value="Aller" name="<?php echo CDate::NAVGOTOTAG; ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
 </li>
 </ul>
 </form>
@@ -321,9 +325,10 @@ function BuildDay($iDayName,$iDayNum,$iMonth,$iYear,$iReal,$iPlanned,$iCanceled,
     }//if( $iDayOfTheWeek>0 )
 ?>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagebottom'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en haut de la page" href="#pagetop" name="pagebottom">&#8593;</a></li>
+<li><a title="Aller en haut de la page" href="#pagetop">&#8593;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Afficher tous les contacts" href="<?php echo PBR_URL;?>contacts.php">Contacts</a></li>
 <?php if( $bAdmin===TRUE ){ ?>

@@ -36,11 +36,14 @@
  *                  - $pSearch (instance of CContact)
  *                  - $pPaging (instance of CPaging)
  *                  - $pDate (instance of CDate)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pPaging) || !is_array($tRecordset) || !isset($pDate) || !isset($pSearch) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pPaging) || !is_array($tRecordset) || !isset($pDate) || !isset($pSearch) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -124,9 +127,10 @@ function BuildContact( &$tRecord, $iPagingMax, $iIndex, CDate $pDate)
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagetop'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en bas de la page" name="pagetop" href="#pagebottom">&#8595;</a></li>
+<li><a title="Aller en bas de la page" href="#pagebottom">&#8595;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Afficher au calendrier" href="<?php echo $sCalendarHRef;?>"><?php echo $sCalendarTitle;?></a></li>
 <?php if(strlen($pSearch->GetLastName())>0) { ?>
@@ -134,20 +138,20 @@ function BuildContact( &$tRecord, $iPagingMax, $iIndex, CDate $pDate)
 <?php }//if(strlen($pSearch->GetLastName())>0) ?>
 <li><a title="Cr&#233;er un contact" href="<?php echo PBR_URL;?>contactnew.php">Cr&#233;er un contact</a></li>
 </ul>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <h1>S&#233;lectionner un contact</h1>
 <form id="FORMCONTACTS" method="get" action="<?php echo PBR_URL.'select.php'; ?>">
 <fieldset class="fieldsetsub fieldsetform">
 <legend class="legendmain">Chercher</legend>
-<input type="hidden" name="<?php echo CDate::MONTHTAG; ?>" value="<?php echo $pDate->GetRequestMonth();?>" />
-<input type="hidden" name="<?php echo CDate::DAYTAG; ?>" value="<?php echo $pDate->GetRequestDay();?>" />
-<input type="hidden" name="<?php echo CDate::YEARTAG; ?>" value="<?php echo $pDate->GetRequestYear();?>" />
+<input type="hidden" name="<?php echo CDate::MONTHTAG; ?>" value="<?php echo $pDate->GetRequestMonth();?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
+<input type="hidden" name="<?php echo CDate::DAYTAG; ?>" value="<?php echo $pDate->GetRequestDay();?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
+<input type="hidden" name="<?php echo CDate::YEARTAG; ?>" value="<?php echo $pDate->GetRequestYear();?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
 <ul>
 <li class="label required">Nom</li>
-<li><input id="contactsname" class="inputText" type="text" value="<?php echo $pSearch->GetLastName(1); ?>" maxlength="<?php echo CContact::LASTNAMEMAX; ?>" size="10" name="<?php echo CContact::LASTNAMETAG; ?>"/></li>
+<li><input id="contactsname" class="inputText" type="text" value="<?php echo $pSearch->GetLastName(1); ?>" maxlength="<?php echo CContact::LASTNAMEMAX; ?>" size="10" name="<?php echo CContact::LASTNAMETAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="help"><em>Utilisez le joker * pour des recherches partielles.</em></li>
-<li class="listbuttonitem"><input class="inputButton" type="submit" value="Envoyer" /></li>
+<li class="listbuttonitem"><input class="inputButton" type="submit" value="Envoyer"<?php echo $pHeader->GetCloseTag(); ?></li>
 </ul>
 </fieldset>
 </form>
@@ -159,7 +163,7 @@ function BuildContact( &$tRecord, $iPagingMax, $iIndex, CDate $pDate)
     $sBuffer  = '<legend class="legendmain">Liste des contacts';
     if( $pPaging->GetMax()>1 )
     {
-        $sBuffer .= ' <em>(page '.$pPaging->GetCurrent().' sur '.$pPaging->GetMax().')</em>';
+        $sBuffer .= ' <em class="hide">(page '.$pPaging->GetCurrent().' sur '.$pPaging->GetMax().')</em>';
     }//if( $pPaging->GetMax()>1 )
     $sBuffer .= '</legend>';
     echo $sBuffer,"\n";
@@ -221,9 +225,10 @@ function BuildContact( &$tRecord, $iPagingMax, $iIndex, CDate $pDate)
 ?>
 </fieldset>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagebottom'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en haut de la page" href="#pagetop" name="pagebottom">&#8593;</a></li>
+<li><a title="Aller en haut de la page" href="#pagetop">&#8593;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Afficher le calendrier" href="<?php echo $sCalendarHRef;?>"><?php echo $sCalendarTitle;?></a></li>
 <?php if(strlen($pSearch->GetLastName())>0) { ?>

@@ -36,7 +36,9 @@
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-05-21 - Case: short_open_tag is on
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
 if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !isset($pHeader) )
     die('-1');
@@ -59,59 +61,69 @@ if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !isset($pHeader) )
     header('Cache-Control: post-check=0, pre-check=0', FALSE);
     header('Pragma: no-cache');     // For HTTP/1.0 compability
 
-    /** Send content-type header
-     ***************************/
+    /** Build header
+     ***************/
     $sContentType = '<meta http-equiv="Content-Type" content="';
     if( $pHeader->AcceptXML()===TRUE )
     {
+
+        /** XHTML 1.0 strict
+         *******************/
+
+        // Send content-type header
         header('Content-type: application/xhtml+xml; charset=UTF-8');
-        $sContentType .= 'application/xhtml+xml';
+        echo '<?xml version="1.0" encoding="utf-8"?>',"\n";
+        echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',"\n";
+        echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">',"\n";
+        $sContentType .= 'application/xhtml+xml;charset=utf-8" />';
     }
     else
     {
-        header('Content-type: text/html; charset=UTF-8');
-        $sContentType .= 'text/html';
-    }//if( $pHeader->AcceptXML()===TRUE )
-    $sContentType .= ';charset=utf-8" />';
 
-    // In case of short_open_tag is on
-    echo '<?xml version="1.0" encoding="utf-8"?>',"\n";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-<head>
-<title><?php echo $pHeader->GetTitle(); ?></title>
-<?php echo $sContentType,"\n"; ?>
-<link rel="shortcut icon" href="<?php echo PBR_URL; ?>favicon.ico" type="image/x-icon" />
-<link rel="apple-touch-icon" href="<?php echo PBR_URL; ?>apple-touch-icon.png" />
-<meta http-equiv="expires" content="<?php echo $sExpire_RFC822; ?>" />
-<?php
+        /** HTML 4.01 strict
+         *******************/
+
+        // Send content-type header
+        header('Content-type: text/html; charset=UTF-8');
+        echo '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',"\n";
+        echo '<html lang="fr">',"\n";
+        $sContentType .= 'text/html;charset=utf-8">';
+    }//if( $pHeader->AcceptXML()===TRUE )
+
+    /** COMMON
+     *********/
+    echo '<head>',"\n";
+    echo '<title>'.$pHeader->GetTitle().'</title>',"\n";
+    echo $sContentType,"\n";
+    echo '<link rel="shortcut icon" href="'.PBR_URL.'favicon.ico" type="image/x-icon"'.$pHeader->GetCloseTag(),"\n";
+    echo '<link rel="apple-touch-icon" href="'.PBR_URL.'apple-touch-icon.png"'.$pHeader->GetCloseTag(),"\n";
+    echo '<meta http-equiv="expires" content="'.$sExpire_RFC822.'"'.$pHeader->GetCloseTag(),"\n";
     if( $pHeader->ForPrinting() )
     {
-        echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/prints.css" media="screen" />',"\n";
-        echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/printp.css" media="print" />',"\n";
+        echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/prints.css" media="screen"'.$pHeader->GetCloseTag(),"\n";
+        echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/printp.css" media="print"'.$pHeader->GetCloseTag(),"\n";
     }
     elseif( $pHeader->IsMobile() )
     {
         if( CAuth::GetInstance()->GetForceDesktop() )
         {
-            echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/style.css" media="all" />',"\n";
+            echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/style.css" media="all"'.$pHeader->GetCloseTag(),"\n";
         }
         else
         {
-            echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/mobile.css" />',"\n";
+            echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/mobile.css"'.$pHeader->GetCloseTag(),"\n";
         }
     }
     else
     {
-        echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/style.css" media="all" />',"\n";
-        echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/mobilize.css" media="only screen and (max-device-width: 480px)" />',"\n";
+        echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/style.css" media="all"'.$pHeader->GetCloseTag(),"\n";
+        echo '<link rel="stylesheet" type="text/css" href="'.PBR_URL.'css/mobilize.css" media="only screen and (max-device-width: 480px)"'.$pHeader->GetCloseTag(),"\n";
     }//if( $pHeader->ForPrinting() )
+    echo '<meta http-equiv="Content-Language" content="fr"'.$pHeader->GetCloseTag(),"\n";
+    echo '<meta name="description" content="'.$pHeader->GetDescription().'"'.$pHeader->GetCloseTag(),"\n";
+    echo '<meta name="keywords"  content="'.$pHeader->GetKeywords().'"'.$pHeader->GetCloseTag(),"\n";
+    echo '<meta name="robots" content="'.$pHeader->GetRobot().'"'.$pHeader->GetCloseTag(),"\n";
+    echo '<meta name="copyright" content="Olivier JULLIEN"'.$pHeader->GetCloseTag(),"\n";
 ?>
-<meta http-equiv="Content-Language" content="fr" />
-<meta name="description" content="<?php echo $pHeader->GetDescription(); ?>" />
-<meta name="keywords"  content="<?php echo $pHeader->GetKeywords(); ?>" />
-<meta name="robots" content="<?php echo $pHeader->GetRobot(); ?>" />
-<meta name="copyright" content="Olivier JULLIEN" />
 </head>
 <body>

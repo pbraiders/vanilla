@@ -36,11 +36,14 @@
  *                  - $tRecordsetDB (array)
  *                  - $iMessageCode (integer)
  *                  - $pDate (instance of CDate)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !is_array($tRecordset) || !is_integer($iMessageCode) || !isset($pDate) || !is_array($tRecordsetDB) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !is_array($tRecordset) || !is_integer($iMessageCode) || !isset($pDate) || !is_array($tRecordsetDB) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -83,17 +86,17 @@ function BuildMessage($iCode)
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagetop'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller aux r&#233;servations courantes" name="pagetop" href="#pagemiddle">&#8595;</a></li>
+<li><a title="Aller aux r&#233;servations courantes" href="#pagemiddle">&#8595;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Retourner au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
-<li><a title="Configurer" href="<?php echo PBR_URL;?>parameters.php">Param&#232;tres</a></li>
 <li><a title="Gestion des utilisateurs" href="<?php echo PBR_URL;?>users.php">Utilisateurs</a></li>
 <li><a title="Voir les graphes" href="<?php echo PBR_URL;?>graphs.php">Graphes</a></li>
 <li><a title="Voir les logs" href="<?php echo PBR_URL;?>logs.php">Logs</a></li>
 </ul>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <?php BuildMessage($iMessageCode); ?>
 <h1>Param&#232;tres</h1>
@@ -101,46 +104,50 @@ function BuildMessage($iCode)
 <fieldset class="fieldsetsub">
 <legend>Maximum</legend>
 <fieldset class="fieldsetform fieldsetformgroup noborder">
+<legend class="hide"></legend>
 <ul>
 <?php
     for( $iIndex=1; $iIndex<5; $iIndex++ )
     {
         echo '<li class="labelF">'.$pDate->GetMonthName($iIndex,1).'</li>',"\n";
-        echo '<li><input id="param'.$iIndex.'" class="inputParam" type="text" value="'.$tRecordset[$iIndex].'" maxlength="3" size="3" name="'.CMaxRentPerMonthList::PARAMETERTAG.$iIndex.'" /></li>',"\n";
+        echo '<li><input id="param'.$iIndex.'" class="inputParam" type="text" value="'.$tRecordset[$iIndex].'" maxlength="3" size="3" name="'.CMaxRentPerMonthList::PARAMETERTAG.$iIndex.'"'.$pHeader->GetCloseTag().'</li>',"\n";
     }//for( $iIndex=1; $iIndex<5; $iIndex++ )
 ?>
 </ul>
 </fieldset>
 <fieldset class="noborder fieldsetform fieldsetformgroup">
+<legend class="hide"></legend>
 <ul>
 <?php
     for( $iIndex=5; $iIndex<9; $iIndex++ )
     {
         echo '<li class="labelF">'.$pDate->GetMonthName($iIndex,1).'</li>',"\n";
-        echo '<li><input id="param'.$iIndex.'" class="inputParam" type="text" value="'.$tRecordset[$iIndex].'" maxlength="3" size="3" name="'.CMaxRentPerMonthList::PARAMETERTAG.$iIndex.'" /></li>',"\n";
+        echo '<li><input id="param'.$iIndex.'" class="inputParam" type="text" value="'.$tRecordset[$iIndex].'" maxlength="3" size="3" name="'.CMaxRentPerMonthList::PARAMETERTAG.$iIndex.'"'.$pHeader->GetCloseTag().'</li>',"\n";
     }//for( $iIndex=1; $iIndex<5; $iIndex++ )
 ?>
 </ul>
 </fieldset>
 <fieldset class="noborder fieldsetform">
+<legend class="hide"></legend>
 <ul>
 <?php
     for( $iIndex=9; $iIndex<13; $iIndex++ )
     {
         echo '<li class="label">'.$pDate->GetMonthName($iIndex,1).'</li>',"\n";
-        echo '<li><input id="param'.$iIndex.'" class="inputParam" type="text" value="'.$tRecordset[$iIndex].'" maxlength="3" size="3" name="'.CMaxRentPerMonthList::PARAMETERTAG.$iIndex.'" /></li>',"\n";
+        echo '<li><input id="param'.$iIndex.'" class="inputParam" type="text" value="'.$tRecordset[$iIndex].'" maxlength="3" size="3" name="'.CMaxRentPerMonthList::PARAMETERTAG.$iIndex.'"'.$pHeader->GetCloseTag().'</li>',"\n";
     }//for( $iIndex=1; $iIndex<5; $iIndex++ )
 ?>
 </ul>
 </fieldset>
-<ul class="listbuttons"><li><input class="inputButton" type="submit" value="Modifier" name="update" /></li></ul>
+<ul class="listbuttons"><li><input class="inputButton" type="submit" value="Modifier" name="update"<?php echo $pHeader->GetCloseTag(); ?></li></ul>
 </fieldset>
 </form>
+<?php echo $pHeader->GetAnchor('pagemiddle'),"\n"; ?>
 <form id="FORMDELETE" method="post" action="<?php echo PBR_URL;?>rentsdelete.php">
 <fieldset class="fieldsetsub fieldsetform">
 <legend>Purge</legend>
-<p>Supprimer les r&#233;servations ant&#233;rieures &#224; l&#39;ann&#233;e: &nbsp;<input id="paramyear" class="inputTextS" type="text" value="" maxlength="4" size="4" name="<?php echo CDate::YEARTAG; ?>" /><?php echo ' ( &le; '.$pDate->GetCurrentYear().' )';?></p>
-<ul class="listbuttons"><li><input class="inputButton" type="submit" value="Envoyer" /></li></ul>
+<p>Supprimer les r&#233;servations ant&#233;rieures &#224; l&#39;ann&#233;e: &nbsp;<input id="paramyear" class="inputTextS" type="text" value="" maxlength="4" size="4" name="<?php echo CDate::YEARTAG; ?>"<?php echo $pHeader->GetCloseTag().' ( &le; '.$pDate->GetCurrentYear().' )';?></p>
+<ul class="listbuttons"><li><input class="inputButton" type="submit" value="Envoyer"<?php echo $pHeader->GetCloseTag(); ?></li></ul>
 </fieldset>
 </form>
 <fieldset class="fieldsetsub fieldsetform">
@@ -170,12 +177,12 @@ function BuildMessage($iCode)
 ?>
 </fieldset>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagebottom'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en haut de la page" href="#pagetop" name="pagebottom">&#8593;</a></li>
+<li><a title="Aller en haut de la page" href="#pagetop">&#8593;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Retourner au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
-<li><a title="Configurer" href="<?php echo PBR_URL;?>parameters.php">Param&#232;tres</a></li>
 <li><a title="Gestion des utilisateurs" href="<?php echo PBR_URL;?>users.php">Utilisateurs</a></li>
 <li><a title="Voir les graphes" href="<?php echo PBR_URL;?>graphs.php">Graphes</a></li>
 <li><a title="Voir les logs" href="<?php echo PBR_URL;?>logs.php">Logs</a></li>

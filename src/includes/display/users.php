@@ -35,12 +35,15 @@
  *                  - $tRecordset (array)
  *                  - $pUser (instance of CUser or null)
  *                  - $iMessageCode (integer)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-11 - add password check
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !is_array($tRecordset) || !is_integer($iMessageCode) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !is_array($tRecordset) || !is_integer($iMessageCode) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -120,9 +123,9 @@ function BuildUser(&$tRecord)
         // Build legend
         $sFormLegend   = 'Modifier';
         // Build hidden control
-        $sFormHidden   = '<input type="hidden" name="'.CAction::ACTIONTAG.'" value="update" />';
-        $sFormHidden  .= '<input type="hidden" name="'.CUser::USERNAMETAG.'" value="'.$pUser->GetUsername().'" />';
-        $sFormHidden  .= '<input type="hidden" name="'.CUser::IDENTIFIERTAG.'" value="'.$pUser->GetIdentifier().'" />';
+        $sFormHidden   = '<input type="hidden" name="'.CAction::ACTIONTAG.'" value="update"'.$pHeader->GetCloseTag();
+        $sFormHidden  .= '<input type="hidden" name="'.CUser::USERNAMETAG.'" value="'.$pUser->GetUsername().'"'.$pHeader->GetCloseTag();
+        $sFormHidden  .= '<input type="hidden" name="'.CUser::IDENTIFIERTAG.'" value="'.$pUser->GetIdentifier().'"'.$pHeader->GetCloseTag();
         // Build name label
         $sDisable      = 'disabled="disabled"';
         $sLabelName    = 'Nom';
@@ -134,7 +137,7 @@ function BuildUser(&$tRecord)
         {
             $sState   .= 'checked="checked"';
         }//if( $pUser->GetState()===1 )
-        $sState .= ' /></li>';
+        $sState .= $pHeader->GetCloseTag().'</li>';
     }
     else
     {
@@ -148,7 +151,7 @@ function BuildUser(&$tRecord)
         // Build legend
         $sFormLegend = 'Nouvel utilisateur';
 	    // Build hidden control
-    	$sFormHidden = '<input type="hidden" name="'.CAction::ACTIONTAG.'" value="new" />';
+    	$sFormHidden = '<input type="hidden" name="'.CAction::ACTIONTAG.'" value="new"'.$pHeader->GetCloseTag();
         // Build name label
         $sDisable    = '';
         $sLabelName  = 'Nom*';
@@ -162,17 +165,17 @@ function BuildUser(&$tRecord)
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagetop'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller &#224; la liste des utilisateurs" name="pagetop" href="#pagemiddle">&#8595;</a></li>
+<li><a title="Aller &#224; la liste des utilisateurs" href="#pagemiddle">&#8595;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Retourner au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <li><a title="Configurer" href="<?php echo PBR_URL;?>parameters.php">Param&#232;tres</a></li>
-<li><a title="Gestion des utilisateurs" href="<?php echo PBR_URL;?>users.php">Utilisateurs</a></li>
 <li><a title="Voir les graphes" href="<?php echo PBR_URL;?>graphs.php">Graphes</a></li>
 <li><a title="Voir les logs" href="<?php echo PBR_URL;?>logs.php">Logs</a></li>
 </ul>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <?php BuildMessage($iMessageCode); ?>
 <h1><?php echo $sFormTitle; ?></h1>
@@ -182,18 +185,18 @@ function BuildUser(&$tRecord)
 <?php echo $sFormHidden,"\n"; ?>
 <ul>
 <li class="label required"><?php echo $sLabelName; ?></li>
-<li><input id="loginusr" class="inputText" type="text" value="<?php echo $sFormUsername; ?>" maxlength="<?php echo CUser::USERNAMEMAX; ?>" size="10" name="<?php echo CUser::USERNAMETAG; ?>" <?php echo $sDisable;?> /></li>
+<li><input id="loginusr" class="inputText" type="text" value="<?php echo $sFormUsername; ?>" maxlength="<?php echo CUser::USERNAMEMAX; ?>" size="10" name="<?php echo CUser::USERNAMETAG; ?>" <?php echo $sDisable.$pHeader->GetCloseTag(); ?></li>
 <?php if(!empty($sHelp)) echo $sHelp,"\n"; ?>
 <li class="label required">Mot de passe</li>
-<li><input id="loginpwd" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDTAG; ?>"/></li>
+<li><input id="loginpwd" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDTAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
 <li class="label required">Confirmez</li>
-<li><input id="loginpwdc" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDCHECKTAG; ?>"/></li>
+<li><input id="loginpwdc" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDCHECKTAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
 <?php if(!empty($sState)) echo $sState,"\n"; ?>
-<li class="listbuttonitem"><input class="inputButton" type="submit" value="Envoyer" name="new"/></li>
+<li class="listbuttonitem"><input class="inputButton" type="submit" value="Envoyer" name="new"<?php echo $pHeader->GetCloseTag(); ?></li>
 </ul>
 </fieldset>
 </form>
-<a name="pagemiddle"></a>
+<?php echo $pHeader->GetAnchor('pagemiddle'),"\n"; ?>
 <fieldset>
 <legend class="legendmain">Liste des utilisateurs</legend>
 <ul class="records">
@@ -207,13 +210,13 @@ function BuildUser(&$tRecord)
 </ul>
 </fieldset>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagebottom'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en haut de la page" href="#pagetop" name="pagebottom">&#8593;</a></li>
+<li><a title="Aller en haut de la page" href="#pagetop">&#8593;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Retourner au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <li><a title="Configurer" href="<?php echo PBR_URL;?>parameters.php">Param&#232;tres</a></li>
-<li><a title="Gestion des utilisateurs" href="<?php echo PBR_URL;?>users.php">Utilisateurs</a></li>
 <li><a title="Voir les graphes" href="<?php echo PBR_URL;?>graphs.php">Graphes</a></li>
 <li><a title="Voir les logs" href="<?php echo PBR_URL;?>logs.php">Logs</a></li>
 </ul>

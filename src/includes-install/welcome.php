@@ -38,9 +38,13 @@
  *                  - $sPHPVersion (string)
  *                  - $sMYSQLVersion (string)
  *                  - $pUser (instance of CUser)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_URL') || !is_array($tMessageCode) || !isset($sPHPVersionRequired) || !isset($sMYSQLVersionRequired) || !isset($sPHPVersion) || !isset($sMYSQLVersion) || !isset($pUser) )
+if( !defined('PBR_VERSION') || !defined('PBR_URL') || !is_array($tMessageCode) || !isset($sPHPVersionRequired) || !isset($sMYSQLVersionRequired) || !isset($sPHPVersion) || !isset($sMYSQLVersion) || !isset($pUser) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -62,7 +66,7 @@ function BuildMessage($iCode)
         }
         elseif($iCode===2)
         {
-            $sBuffer.='<p class="error">L&#39;application PBRaiders est d&#233;j&#224; install&#233;e. Si vous souhaitez la re-installer, vous devez d&#146;abord d&#233;truire la base de donn&#233;es, effacer le dossier qui contient l&#39;application puis suivre les instructions du fichier lisezmoi.txt.</p>';
+            $sBuffer.='<p class="error">L&#39;application PBRaiders est d&#233;j&#224; install&#233;e. Si vous souhaitez la re-installer, vous devez d&#39;abord d&#233;truire la base de donn&#233;es, effacer le dossier qui contient l&#39;application puis suivre les instructions du fichier lisezmoi.txt.</p>';
         }
         elseif($iCode===3)
         {
@@ -104,19 +108,19 @@ function BuildMessage($iCode)
       <p>MYSQL version: <b><?php echo $sMYSQLVersion; ?></b></p>
       <p>Addresse du serveur: <b><?php echo PBR_DB_HOST; ?></b></p>
       <p>Nom de la base de donn&#233;es: <b><?php echo PBR_DB_DBN; ?></b></p>
-      <p>Nom de l&#146;utilisateur de la base de donn&#233;es: <b><?php echo PBR_DB_USR; ?></b></p>
+      <p>Nom de l&#39;utilisateur de la base de donn&#233;es: <b><?php echo PBR_DB_USR; ?></b></p>
     </fieldset>
     <fieldset class="fieldsetform">
      <legend class="legendmain">Administrateur</legend>
      <p>Veuillez saisir le nom et le mot de passe de l'utilisateur administrateur de PBRaiders. Pour le nom, seuls les caract&#232;res alphanum&#233;riques, &quot;@&quot;,&quot;.&quot;,&quot;-&quot; et &quot;_&quot; sont autoris&#233;s.</p>
      <ul>
       <li class="label required">Nom</li>
-      <li><input id="loginusr" class="inputText" type="text" value="<?php echo $pUser->GetUsername(1); ?>" maxlength="<?php echo CUser::USERNAMEMAX; ?>" size="10" name="<?php echo CUser::USERNAMETAG; ?>"/></li>
+      <li><input id="loginusr" class="inputText" type="text" value="<?php echo $pUser->GetUsername(1); ?>" maxlength="<?php echo CUser::USERNAMEMAX; ?>" size="10" name="<?php echo CUser::USERNAMETAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
       <li class="label required">Mot de passe</li>
-      <li><input id="loginpwd1" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDTAG; ?>"/></li>
+      <li><input id="loginpwd1" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDTAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
       <li class="label required">Confirmer</li>
-      <li><input id="loginpwd2" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDCHECKTAG; ?>"/></li>
-      <li class="listbuttonitem"><input class="inputButton" type="submit" value="Lancer l'installation" name="install"/></li>
+      <li><input id="loginpwd2" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDCHECKTAG; ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
+      <li class="listbuttonitem"><input class="inputButton" type="submit" value="Installer" name="install"<?php echo $pHeader->GetCloseTag(); ?></li>
      </ul>
     </fieldset>
    </form>

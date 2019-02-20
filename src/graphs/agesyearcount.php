@@ -37,7 +37,7 @@
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.2.0');
+    define('PBR_VERSION','1.2.1');
     define('PBR_PATH',dirname(__FILE__).'/..');
     define('PBR_FONT_PATH',dirname(__FILE__));
 

@@ -35,11 +35,14 @@
  *                  - $sToken
  *                  - CUser
  *                  - $iMessageCode
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pUser) || !isset($iMessageCode) && !isset($sToken) )
+if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pUser) || !isset($iMessageCode) && !isset($sToken) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -80,14 +83,14 @@ function BuildMessage($iCode)
 <form id="FORMLOGIN" method="post" action="<?php echo PBR_URL;?>login.php">
 <fieldset class="fieldsetform">
 <legend class="legendmain">Connexion</legend>
-<input type="hidden" name="<?php echo CAction::ACTIONTAG; ?>" value="login" />
-<input type="hidden" name="<?php echo CPHPSession::TOKENTAG; ?>" value="<?php echo $sToken; ?>" />
+<input type="hidden" name="<?php echo CAction::ACTIONTAG; ?>" value="login"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
+<input type="hidden" name="<?php echo CPHPSession::TOKENTAG; ?>" value="<?php echo $sToken; ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
 <ul>
 <li class="label required">Nom</li>
-<li><input id="loginusr" class="inputText" type="text" value="<?php echo $sUsername; ?>" maxlength="<?php echo CUser::USERNAMEMAX; ?>" size="10" name="<?php echo CUser::USERNAMETAG; ?>"/></li>
+<li><input id="loginusr" class="inputText" type="text" value="<?php echo $sUsername; ?>" maxlength="<?php echo CUser::USERNAMEMAX; ?>" size="10" name="<?php echo CUser::USERNAMETAG; ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?></li>
 <li class="label required">Mot de passe</li>
-<li><input id="loginpwd" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDTAG; ?>"/></li>
-<li class="listbuttonitem"><input class="inputButton" type="submit" value="Connexion" name="login"/></li>
+<li><input id="loginpwd" class="inputText" type="password" value="" maxlength="<?php echo CUser::PASSWORDMAX; ?>" size="10" name="<?php echo CUser::PASSWORDTAG; ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?></li>
+<li class="listbuttonitem"><input class="inputButton" type="submit" value="Connexion" name="login"<?php echo $pHeader->GetCloseTag(),"\n"; ?></li>
 </ul>
 </fieldset>
 </form>

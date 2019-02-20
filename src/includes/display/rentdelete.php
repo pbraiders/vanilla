@@ -36,10 +36,13 @@
  *                  - $pDate (instance of CDate)
  *                  - $pContact ( instance of CContact)
  *                  - $sToken (string)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($sToken) || !isset($pContact) || !isset($pDate) || !isset($pRent) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($sToken) || !isset($pContact) || !isset($pDate) || !isset($pRent) || !isset($pHeader) )
     die('-1');
 
     // Build form title
@@ -52,19 +55,19 @@ if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <h1><?php echo $sFormTitle;?></h1>
 <form id="FORMCONFIRM" method="post" action="<?php echo PBR_URL;?>rentdelete.php">
 <fieldset class="fieldsetform">
 <legend class="legendmain">Confirmer la suppression</legend>
-<input type="hidden" name="<?php echo CPHPSession::TOKENTAG; ?>" value="<?php echo $sToken; ?>" />
-<input type="hidden" name="<?php echo CRent::IDENTIFIERTAG; ?>" value="<?php echo $pRent->GetIdentifier(); ?>" />
+<input type="hidden" name="<?php echo CPHPSession::TOKENTAG; ?>" value="<?php echo $sToken; ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
+<input type="hidden" name="<?php echo CRent::IDENTIFIERTAG; ?>" value="<?php echo $pRent->GetIdentifier(); ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
 <div id="MESSAGE">
 <p class="error">Cette r&eacute;servation va &ecirc;tre supprim&eacute;e.</p>
 </div>
 <ul>
-<li class="listbuttonitem"><input class="inputButton" type="submit" value="Supprimer" name="con"/>&nbsp;<input class="inputButton" type="submit" value="&nbsp;Annuler&nbsp;&nbsp;" name="can"/></li>
+<li class="listbuttonitem"><input class="inputButton" type="submit" value="Supprimer" name="con"<?php echo $pHeader->GetCloseTag(); ?>&nbsp;<input class="inputButton" type="submit" value="Annuler" name="can"<?php echo $pHeader->GetCloseTag(); ?></li>
 </ul>
 </fieldset>
 </form>

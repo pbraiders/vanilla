@@ -35,11 +35,14 @@
  *                  - $tRecordset (array)
  *                  - $pPaging (instance of CPaging)
  *                  - $iMessageCode (integer)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pPaging) || !is_array($tRecordset) || !is_integer($iMessageCode) )
+if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($pPaging) || !is_array($tRecordset) || !is_integer($iMessageCode) || !isset($pHeader) )
     die('-1');
 
 /**
@@ -112,17 +115,17 @@ function BuildLog( &$tRecord, $iPagingMax, $iIndex)
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagetop'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en bas de la page" name="pagetop" href="#pagebottom">&#8595;</a></li>
+<li><a title="Aller en bas de la page" href="#pagebottom">&#8595;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Retourner au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <li><a title="Configurer" href="<?php echo PBR_URL;?>parameters.php">Param&#232;tres</a></li>
 <li><a title="Gestion des utilisateurs" href="<?php echo PBR_URL;?>users.php">Utilisateurs</a></li>
 <li><a title="Voir les graphes" href="<?php echo PBR_URL;?>graphs.php">Graphes</a></li>
-<li><a title="Voir les logs" href="<?php echo PBR_URL;?>logs.php">Logs</a></li>
 </ul>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <?php BuildMessage($iMessageCode); ?>
 <h1>Logs</h1>
@@ -131,7 +134,7 @@ function BuildLog( &$tRecord, $iPagingMax, $iIndex)
 <fieldset class="fieldsetsub fieldsetform">
 <legend class="legendmain">Effacer tous les logs</legend>
 <ul>
-<li class="listbuttonitem"><input class="inputButton" type="submit" value="Supprimer" /></li>
+<li class="listbuttonitem"><input class="inputButton" type="submit" value="Supprimer"<?php echo $pHeader->GetCloseTag(),"\n"; ?></li>
 </ul>
 </fieldset>
 </form>
@@ -144,7 +147,7 @@ function BuildLog( &$tRecord, $iPagingMax, $iIndex)
     $sBuffer  = '<legend class="legendmain">Logs';
     if( $pPaging->GetMax()>1 )
     {
-        $sBuffer .= ' <em>(page '.$pPaging->GetCurrent().' sur '.$pPaging->GetMax().')</em>';
+        $sBuffer .= ' <em class=hide">(page '.$pPaging->GetCurrent().' sur '.$pPaging->GetMax().')</em>';
     }//if( $pPaging->GetMax()>1 )
     $sBuffer .= '</legend>';
     echo $sBuffer,"\n";
@@ -205,7 +208,8 @@ function BuildLog( &$tRecord, $iPagingMax, $iIndex)
 ?>
 </fieldset>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagebottom'),"\n"; ?>
 <ul class="navigation menu">
 <li><a title="Aller en haut de la page" href="#pagetop" name="pagebottom">&#8593;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
@@ -213,5 +217,4 @@ function BuildLog( &$tRecord, $iPagingMax, $iIndex)
 <li><a title="Configurer" href="<?php echo PBR_URL;?>parameters.php">Param&#232;tres</a></li>
 <li><a title="Gestion des utilisateurs" href="<?php echo PBR_URL;?>users.php">Utilisateurs</a></li>
 <li><a title="Voir les graphes" href="<?php echo PBR_URL;?>graphs.php">Graphes</a></li>
-<li><a title="Voir les logs" href="<?php echo PBR_URL;?>logs.php">Logs</a></li>
 </ul>

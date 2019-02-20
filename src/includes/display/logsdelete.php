@@ -33,29 +33,32 @@
  * description: Display the log delete page.
  *              The following object(s) should exist:
  *                  - $sToken (string)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-15 - improvement
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($sToken) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !isset($sToken) || !isset($pHeader) )
     die('-1');
 ?>
 <div id="PAGE">
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <h1>Supprimer les logs</h1>
 <form id="FORMCONFIRM" method="post" action="<?php echo PBR_URL;?>logsdelete.php">
 <fieldset class="fieldsetform">
 <legend class="legendmain">Confirmer la suppression</legend>
-<input type="hidden" name="<?php echo CPHPSession::TOKENTAG; ?>" value="<?php echo $sToken; ?>" />
+<input type="hidden" name="<?php echo CPHPSession::TOKENTAG; ?>" value="<?php echo $sToken; ?>"<?php echo $pHeader->GetCloseTag(),"\n"; ?>
 <div id="MESSAGE">
 <p class="error">Tous les logs vont &ecirc;tre supprim&eacute;s.</p>
 </div>
 <ul>
-<li class="listbuttonitem"><input class="inputButton" type="submit" value="Supprimer" name="con"/>&nbsp;<input class="inputButton" type="submit" value="&nbsp;Annuler&nbsp;&nbsp;" name="can"/></li>
+<li class="listbuttonitem"><input class="inputButton" type="submit" value="Supprimer" name="con"<?php echo $pHeader->GetCloseTag(),"\n"; ?>&nbsp;<input class="inputButton" type="submit" value="Annuler" name="can"<?php echo $pHeader->GetCloseTag(),"\n"; ?></li>
 </ul>
 </fieldset>
 </form>

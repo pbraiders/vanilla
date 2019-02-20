@@ -112,8 +112,8 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
 
     /** Set error level
      ******************/
- //   error_reporting(E_ALL ^ E_NOTICE);
-    error_reporting(E_ALL | E_STRICT);
+    error_reporting(E_ALL ^ E_NOTICE);
+//    error_reporting(E_ALL | E_STRICT);
 
     /** Error management
      *******************/

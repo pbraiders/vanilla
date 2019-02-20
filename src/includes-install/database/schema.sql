@@ -124,6 +124,7 @@ CREATE INDEX `fk_contact_user_update` ON `_PBR_DB_DBN_`.`contact` (`update_iduse
 
 CREATE INDEX `ix_contact_lastname` ON `_PBR_DB_DBN_`.`contact` (`lastname` ASC) ;
 
+CREATE INDEX `ix_contact_createdate` ON `_PBR_DB_DBN_`.`contact` (`create_date` ASC) ;
 
 -- -----------------------------------------------------
 -- Table `_PBR_DB_DBN_`.`reservation`
@@ -185,6 +186,6 @@ CREATE INDEX `ix_reservation_day` ON `_PBR_DB_DBN_`.`reservation` (`day` ASC) ;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 USE `_PBR_DB_DBN_`;
-INSERT INTO `config` (`name`, `value`, `role`) VALUES ('schema_version', '1.2.0-SD', 10);
+INSERT INTO `config` (`name`, `value`, `role`) VALUES ('schema_version', '1.2.0', 10);
 
 COMMIT;

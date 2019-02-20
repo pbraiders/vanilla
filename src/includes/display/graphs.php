@@ -36,10 +36,13 @@
  *                  - $pChoice (instance of COption)
  *                  - $pInterval (instance of COption)
  *                  - $sTitle (string)
+ *                  - $pHeader (instance of CHeader)
  * author: Olivier JULLIEN - 2010-06-15
- * W3C: This document was successfully checked as XHTML 1.0 Strict!
+ * update: Olivier JULLIEN - 2010-09-01 - HTML 4.01 Strict
+ * W3C: This document was successfully checked as XHTML 1.0 Strict
+ *      and HTML 4.01 Strict
  *************************************************************************/
-if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !is_array($tGraphs) || !isset($pChoice) || !isset($pInterval) || !isset($sTitle) )
+if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED') || !is_array($tGraphs) || !isset($pChoice) || !isset($pInterval) || !isset($sTitle) || !isset($pHeader) )
     die('-1');
 
     // Default image source
@@ -50,17 +53,17 @@ if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED
 <div id="HEADER">
 <p><em><small>Connect&#233; en tant que <?php echo CAuth::GetInstance()->GetUsername(1); ?></small></em></p>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagetop'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller aux r&#233;servations courantes" name="pagetop" href="#pagemiddle">&#8595;</a></li>
+<li><a title="Aller aux r&#233;servations courantes" href="#pagemiddle">&#8595;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Retourner au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <li><a title="Configurer" href="<?php echo PBR_URL;?>parameters.php">Param&#232;tres</a></li>
 <li><a title="Gestion des utilisateurs" href="<?php echo PBR_URL;?>users.php">Utilisateurs</a></li>
-<li><a title="Voir les graphes" href="<?php echo PBR_URL;?>graphs.php">Graphes</a></li>
 <li><a title="Voir les logs" href="<?php echo PBR_URL;?>logs.php">Logs</a></li>
 </ul>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
 <div id="CONTENT">
 <h1><?php echo htmlentities($sTitle,ENT_QUOTES,'UTF-8'); ?></h1>
 <form id="FORMSELECT" method="post" action="<?php echo PBR_URL;?>graphs.php">
@@ -86,33 +89,34 @@ if ( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_AUTH_LOADED
 ?>
 </select></li>
 <li class="label">Intervalle</li>
-<li><input id="interval" class="inputTextS" type="text" value="<?php if( $pInterval->GetValue()>0) echo $pInterval->GetValue(); ?>" maxlength="3" size="3" name="<?php echo $pInterval->GetName(); ?>"/></li>
-<li class="listbuttonitem"><input class="inputButton" type="submit" value="&nbsp;Afficher&nbsp;" /></li>
+<li><input id="interval" class="inputTextS" type="text" value="<?php if( $pInterval->GetValue()>0) echo $pInterval->GetValue(); ?>" maxlength="3" size="3" name="<?php echo $pInterval->GetName(); ?>"<?php echo $pHeader->GetCloseTag(); ?></li>
+<li class="listbuttonitem"><input class="inputButton" type="submit" value="Afficher"<?php echo $pHeader->GetCloseTag(); ?></li>
 </ul>
 </fieldset>
 </form>
 <?php
+    echo $pHeader->GetAnchor('pagemiddle'),"\n";
     /** image
      ********/
     if( !empty($sSource) )
     {
         $sSource = PBR_URL.'graphs/'.$sSource.'.php?'.$pInterval->GetName().'='.$pInterval->GetValue();
         echo '<div class="graph">',"\n";
-        echo '<img src="'.$sSource.'" alt="Aucune donn&#233;e &#224; afficher" />',"\n";
+        echo '<img src="'.$sSource.'" alt="Aucune donn&#233;e &#224; afficher"'.$pHeader->GetCloseTag(),"\n";
         echo '</div>',"\n";
     }
 ?>
 <form id="FORMDELETE" method="post" action="<?php echo $sSource; ?>">
-<ul class="listbuttons"><li><input class="inputButton" type="submit" value="&nbsp;Exporter&nbsp;" name="exp"/></li></ul>
+<ul class="listbuttons"><li><input class="inputButton" type="submit" value="Exporter" name="exp"<?php echo $pHeader->GetCloseTag(); ?></li></ul>
 </form>
 </div>
-<hr/>
+<?php echo $pHeader->GetHR(),"\n"; ?>
+<?php echo $pHeader->GetAnchor('pagebottom'),"\n"; ?>
 <ul class="navigation menu">
-<li><a title="Aller en haut de la page" href="#pagetop" name="pagebottom">&#8593;</a></li>
+<li><a title="Aller en haut de la page" href="#pagetop">&#8593;</a></li>
 <li><a title="Se d&#233;connecter" href="<?php echo PBR_URL;?>logout.php">D&#233;connexion</a></li>
 <li><a title="Retourner au calendrier" href="<?php echo PBR_URL;?>">Calendrier</a></li>
 <li><a title="Configurer" href="<?php echo PBR_URL;?>parameters.php">Param&#232;tres</a></li>
 <li><a title="Gestion des utilisateurs" href="<?php echo PBR_URL;?>users.php">Utilisateurs</a></li>
-<li><a title="Voir les graphes" href="<?php echo PBR_URL;?>graphs.php">Graphes</a></li>
 <li><a title="Voir les logs" href="<?php echo PBR_URL;?>logs.php">Logs</a></li>
 </ul>
