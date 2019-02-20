@@ -31,13 +31,15 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the select page.
- *         GET: act=select, rey=<year>, rem=<month>, red=<day>, pag=<page>
+ *         GET: rey=year, rem=month, red=day, ctl=<contact name>, pag=<page>
+ *              , opX=<option>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -48,128 +50,112 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sSearch='';
-    $sAction=NULL;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/inituser.php');
+    require(PBR_PATH.'/includes/init/authuser.php');
 
-    /** Include main object(s)
-     *************************/
+    /** Initialize
+     *************/
+    require(PBR_PATH.'/includes/class/coption.php');
     require(PBR_PATH.'/includes/class/cdate.php');
     require(PBR_PATH.'/includes/class/cpaging.php');
+    require(PBR_PATH.'/includes/class/ccontact.php');
+    $pOrder = new COption('1');
+    $pSort = new COption('2');
+    $pDate = new CDate();
+    $pPaging = new CPaging();
+    $pSearch = new CContact();
 
     /** Read input parameters
      ************************/
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act')
-    											&& filter_has_var(INPUT_GET, 'rey')
-                                         		&& filter_has_var(INPUT_GET, 'rem')
-                                         		&& filter_has_var(INPUT_GET, 'red') )
+
+    // Read date values
+    if( $pDate->ReadInput( INPUT_GET, TRUE )===FALSE )
     {
-        // Get action
-        $sAction = trim( filter_input(INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS) );
+        // mandatory parameters are not valid
+        unset( $pDate, $pSearch, $pPaging, $pOrder, $pSort );
+        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'date invalide', E_USER_WARNING, FALSE);
+        RedirectError( -2, __FILE__, __LINE__ );
+        exit;
+    }//Read date values
 
-      	// Get date
-       	CDate::GetInstance()->ReadInput(INPUT_GET);
-
-		// Get the page
-		CPaging::GetInstance()->ReadInput();
-
-        // Get search key
-        if( filter_has_var(INPUT_GET, 'ctl') )
-        {
-            $sSearch = rawurldecode( trim( filter_input(INPUT_GET,'ctl',FILTER_UNSAFE_RAW) ) );
-        }//if( filter_has_var(INPUT_GET, 'ctl') )
-
-        // Verify readed values
-        if( $sAction!='search' )
-	    {
-	        // Parameters are not valid
-	        CUser::GetInstance()->Invalidate();
-	    }//if( $sAction!='search' )
-    }//if( filter_has_var( ....
-
-    /** Build Page
-     *************/
-    if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
+    // Read contact lastname
+    if( filter_has_var(INPUT_GET, CContact::LASTNAMETAG) )
     {
+        $pSearch->ReadInputLastName(INPUT_GET);
+    }//Read contact lastname
 
-        /** Get contact count
-         ********************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/contactsgetcount.php');
-        $iReturn=ContactsGetCount( CUser::GetInstance()->GetUsername()
-                                  ,CUser::GetInstance()->GetSession()
-                                  ,GetIP().GetUserAgent()
-                                  ,$sSearch);
-        if( $iReturn>=0 )
-        {
-        	// Succeeded
-			CPaging::GetInstance()->Compute( (integer)PBR_PAGE_CONTACTS, (integer)$iReturn );
-        }
-        else
-        {
-            // Failed
-            RedirectError( $iReturn, __FILE__, __LINE__ );
-			exit;
-        }//if( $iReturn>0 )
+    // Read the page
+    $pPaging->ReadInput();
 
-        /** Get contact list
-         *******************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/contactsget.php');
-        $tRecordset=ContactsGet( CUser::GetInstance()->GetUsername()
-                                ,CUser::GetInstance()->GetSession()
-                                ,GetIP().GetUserAgent()
-                                ,$sSearch
-                                ,CPaging::GetInstance()->GetOffset()
-                                ,CPaging::GetInstance()->GetLimit());
-        if( is_array($tRecordset) )
-        {
+    /** Get data
+     ***********/
 
-            /** Build header
-             ***************/
-            require(PBR_PATH.'/includes/class/cheader.php');
-            $sBuffer='Contacts';
-            CHeader::GetInstance()->SetNoCache();
-            CHeader::GetInstance()->SetTitle($sBuffer);
-            CHeader::GetInstance()->SetDescription($sBuffer);
-            CHeader::GetInstance()->SetKeywords($sBuffer);
-            if( strlen($sSearch)>0 )
-            {
-                CHeader::GetInstance()->SetTitle($sSearch);
-                CHeader::GetInstance()->SetDescription($sSearch);
-                CHeader::GetInstance()->SetKeywords($sSearch);
-            }//if( strlen($sSearch)>0 )
+    // Get contact count
+    require(PBR_PATH.'/includes/db/function/contactsgetcount.php');
+    $iReturn = ContactsGetCount( CAuth::GetInstance()->GetUsername()
+                               , CAuth::GetInstance()->GetSession()
+                               , GetIP().GetUserAgent()
+                               , $pSearch );
 
-            /** Display
-             **********/
-            require(PBR_PATH.'/includes/display/displayheader.php');
-            require(PBR_PATH.'/includes/display/displayselect.php');
-            require(PBR_PATH.'/includes/display/displayfooter.php');
-
-            /** Clean
-             ********/
-            CHeader::DeleteInstance();
-
-        }
-        else
-        {
-            //Error
-            RedirectError( $tRecordset, __FILE__, __LINE__ );
-            exit;
-        }//if( is_array($tRecordset) )
-    }
-    else
+    // Error
+    if( ($iReturn===FALSE) || ($iReturn<0) )
     {
-		//Error
-		RedirectError( -2, __FILE__, __LINE__ );
-		exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() && ($sAction=='search') )
+        unset( $pPaging, $pSearch, $pDate, $pOrder, $pSort );
+        RedirectError( $iReturn, __FILE__, __LINE__ );
+        exit;
+    }//if( ($iReturn===FALSE) || ($iReturn<0) )
+
+    // Succeeded
+    $pPaging->Compute( PBR_PAGE_CONTACTS, $iReturn );
+
+    // Get contact list
+    require(PBR_PATH.'/includes/db/function/contactsget.php');
+    $tRecordset = ContactsGet( CAuth::GetInstance()->GetUsername()
+                             , CAuth::GetInstance()->GetSession()
+                             , GetIP().GetUserAgent()
+                             , $pSearch
+                             , $pPaging
+                             , $pOrder
+                             , $pSort );
+
+    if( !is_array($tRecordset) )
+    {
+        // Error
+        unset( $pPaging, $pSearch, $pDate, $pOrder, $pSort );
+        RedirectError( $tRecordset, __FILE__, __LINE__ );
+        exit;
+    }//if( !is_array($tRecordset) )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sBuffer = 'Contacts';
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sBuffer);
+    $pHeader->SetDescription($sBuffer);
+    $pHeader->SetKeywords($sBuffer);
+    if( strlen($pSearch->GetLastName())>0 )
+    {
+        $pHeader->SetTitle($pSearch->GetLastName());
+        $pHeader->SetDescription($pSearch->GetLastName());
+        $pHeader->SetKeywords($pSearch->GetLastName());
+    }//if( strlen($pSearch->GetLastName())>0 )
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/select.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset( $pPaging, $pSearch, $pDate, $pHeader, $pOrder, $pSort);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

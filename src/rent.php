@@ -31,13 +31,16 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the rent page.
- *         GET: act=show, rei=<rent identifier>
+ *         GET: rei=rent identifier
+ *        POST: del=delete case, rei=rent identifier
+ *              upd=update case, reX=rent data
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -48,143 +51,124 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
-    $iMessageCode=0;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/inituser.php');
+    require(PBR_PATH.'/includes/init/authuser.php');
 
-    /** Include main object(s)
-     *************************/
+    /** Initialize
+     *************/
     require(PBR_PATH.'/includes/class/ccontact.php');
     require(PBR_PATH.'/includes/class/cdate.php');
     require(PBR_PATH.'/includes/class/crent.php');
+    $pRent = new CRent();
+    $iMessageCode = 0;
 
     /** Read input parameters
      ************************/
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act')
-    											&& filter_has_var(INPUT_GET, 'rei') )
-    {
-        $sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        if( $sAction=='show' )
-        {
-            CRent::GetInstance()->ReadInput(INPUT_GET);
-        }//if( $sAction=='show' )
-    }//GET
-    if( CUser::GetInstance()->IsAuthenticated() && is_null($sAction)
-    											&& filter_has_var(INPUT_POST, 'act')
-    											&& filter_has_var(INPUT_POST, 'rei') )
-    {
-        $sAction = trim(filter_input( INPUT_POST, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        if( $sAction=='update' )
-        {
-            CRent::GetInstance()->ReadInput(INPUT_POST);
-        }//if( $sAction=='update' )
-    }//POST
-    // Parameters are not valid
-	if( (CRent::GetInstance()->GetIdentifier()<1) || (($sAction!='update') && ($sAction!='show')) )
-    {
-		CUser::GetInstance()->Invalidate();
-    }//if( $sAction!='show' || CRent::GetInstance()->GetIdentifier()<1 )
 
-    /** Build the page
-    ******************/
-    if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
+    // Delete
+    if( filter_has_var( INPUT_POST, 'del') )
     {
+        // Read rent identifier
+        $pRent->ReadInputIdentifier(INPUT_POST);
+        // Redirect
+        $sBuffer = CRent::IDENTIFIERTAG.'='.$pRent->GetIdentifier();
+        unset( $pRent );
+        include(PBR_PATH.'/includes/init/clean.php');
+        header('Location: '.PBR_URL.'rentdelete.php?'.$sBuffer);
+        exit;
+    }
+    // Update
+    elseif( filter_has_var( INPUT_POST, 'upd') )
+    {
+        // Read rent data
+        $pRent->ReadInput(INPUT_POST);
 
-        /** Delete
-        **********/
-        if( ($sAction=='update') && filter_has_var(INPUT_POST, 'del') )
+        // Update database
+        require(PBR_PATH.'/includes/db/function/rentupdate.php');
+        $iReturn = RentUpdate( CAuth::GetInstance()->GetUsername()
+                             , CAuth::GetInstance()->GetSession()
+                             , GetIP().GetUserAgent()
+                             , $pRent );
+
+        // Error
+        if( ($iReturn===FALSE) || ($iReturn<0) )
         {
-    		// Create session
-		    require(PBR_PATH.'/includes/class/csession.php');
-		    CSession::CreateSession();
-    		// Build token
-		    $sToken = md5(uniqid(rand(), TRUE));
-		    CSession::GetInstance()->SetToken($sToken);
-            // Send
-            $sBuffer=PBR_URL.'rentdelete.php?act=confirm&rei='.CRent::GetInstance()->GetIdentifier().'&tok='.$sToken;
-			include(PBR_PATH.'/includes/init/initclean.php');
-            header('Location: '.$sBuffer);
+            unset( $pRent );
+            RedirectError( $iReturn, __FILE__, __LINE__ );
             exit;
-        }//delete
+        }//if( ($iReturn===FALSE) || ($iReturn<0) )
 
-        /** Update
-        **********/
-        if( $sAction=='update' )
-        {
-            $sAction='show';
-            require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentupdate.php');
-            $iReturn=RentUpdate( CUser::GetInstance()->GetUsername()
-                               , CUser::GetInstance()->GetSession()
-                               , GetIP().GetUserAgent()
-                               , CRent::GetInstance());
-            if( $iReturn>0 )
-            {
-                $iMessageCode=2;
-            }
-            else
-            {
-            	// Failed
-            	RedirectError( $iReturn, __FILE__, __LINE__ );
-				exit;
-            }//if( $iReturn>0 )
-        }//if( $sAction=='update' )
+        // Succeeded
+        $iMessageCode = 2;
 
-        /** Show
-        ********/
-        if( $sAction=='show' )
-        {
-            require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentget.php');
-            $iReturn=RentGet( CUser::GetInstance()->GetUsername()
-                            , CUser::GetInstance()->GetSession()
-                            , GetIP().GetUserAgent()
-                            , CRent::GetInstance()
-                            , CDate::GetInstance()
-                            , CContact::GetInstance());
-            if( $iReturn<1 )
-            {
-            	// Failed
-            	RedirectError( $iReturn, __FILE__, __LINE__ );
-				exit;
-            }//if( $iReturn<1 )
-        }//if( $sAction=='show' )
-
-        /** Build header
-         ***************/
-        require(PBR_PATH.'/includes/class/cheader.php');
-        $sBuffer=CDate::GetInstance()->GetRequestDay().' ';
-        $sBuffer.=CDate::GetInstance()->GetMonthName(CDate::GetInstance()->GetRequestMonth()).' ';
-        $sBuffer.=CDate::GetInstance()->GetRequestYear().' - ';
-        $sBuffer.=CContact::GetInstance()->GetLastName().' '.CContact::GetInstance()->GetFirstName();
-        CHeader::GetInstance()->SetNoCache();
-        CHeader::GetInstance()->SetTitle($sBuffer);
-        CHeader::GetInstance()->SetDescription($sBuffer);
-        CHeader::GetInstance()->SetKeywords($sBuffer);
-
-        /** Display
-         **********/
-        require(PBR_PATH.'/includes/display/displayheader.php');
-        require(PBR_PATH.'/includes/display/displayrent.php');
-        require(PBR_PATH.'/includes/display/displayfooter.php');
-
-        /** Clean
-         ********/
-        CHeader::DeleteInstance();
+        // Clean the old data
+        $iReturn = $pRent->GetIdentifier();
+        $pRent->ResetMe();
+        $pRent->SetIdentifier($iReturn);
 
     }
     else
     {
-		//Error
-		RedirectError( -2, __FILE__, __LINE__ );
-		exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
+        // Read rent identifier
+        $pRent->ReadInputIdentifier(INPUT_GET);
+        // Read the message code
+        $iMessageCode = GetMessageCode();
+    }//Read action
+
+    /** Build the page
+    ******************/
+    $pDate = new CDate();
+    $pContact = new CContact();
+
+    // Get rent
+    require(PBR_PATH.'/includes/db/function/rentget.php');
+    $iReturn = RentGet( CAuth::GetInstance()->GetUsername()
+                      , CAuth::GetInstance()->GetSession()
+                      , GetIP().GetUserAgent()
+                      , $pRent
+                      , $pDate
+                      , $pContact );
+
+    // Error
+    if( ($iReturn===FALSE) || ($iReturn<=0) )
+    {
+        unset( $pRent, $pDate, $pContact );
+        if( $iReturn===0 )
+        {
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
+            $iReturn=-2;
+        }//if( $iReturn==0 )
+        RedirectError( $iReturn, __FILE__, __LINE__ );
+        exit;
+    }//if( ($iReturn===FALSE) || ($iReturn<=0) )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sBuffer = $pDate->GetRequestDay().' ';
+    $sBuffer .= $pDate->GetMonthName( $pDate->GetRequestMonth() ).' ';
+    $sBuffer .= $pDate->GetRequestYear().' - ';
+    $sBuffer .= $pContact->GetLastName().' '.$pContact->GetFirstName();
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sBuffer);
+    $pHeader->SetDescription($sBuffer);
+    $pHeader->SetKeywords($sBuffer);
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/rent.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset( $pRent, $pDate, $pContact, $pHeader );
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

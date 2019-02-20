@@ -31,18 +31,18 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the user page.
- *         GET: act=show
- *         GET: act=select, usi<user identifier>
- *        POST: act=new, usr=<username>, pwd=<password>
- *        POST: act=update, usi<user identifier>, pwd=<password>, pwdc=<password>, sta=<state>
+ *         GET: act=select, usi=<user identifier>
+ *        POST: act=new, usr=<username>, pwd=<password>, pwdc=<password>
+ *        POST: act=update, usi=<user identifier>, pwd=<password>, pwdc=<password>, sta=<state>
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-06-11 - add password check
  *                                      - fixed minor bug
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -53,208 +53,161 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
-    $iMessageCode=0;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/initadmin.php');
+    require(PBR_PATH.'/includes/init/authadmin.php');
 
-    /** Include main object(s)
-     *************************/
-    require(PBR_PATH.'/includes/class/cnewuser.php');
+    /** Initialize
+     *************/
+    require(PBR_PATH.'/includes/class/cuser.php');
+    $pUser = null;
+    $iMessageCode = 0;
 
     /** Read input parameters
      ************************/
-
-    // Get the message code
-    $iMessageCode=GetMessageCode();
-
-    // Case action = GET show|select
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act') )
+    require(PBR_PATH.'/includes/class/caction.php');
+    if( CAction::IsValid( INPUT_POST, 'new')===CAction::VALID )
     {
-        // Get the action
-        $sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-
-        // Get user identifier
-        if($sAction=='select')
-        {
-			CNewUser::GetInstance()->ReadInput(INPUT_GET);
-        }//if($sAction=='select')
-
-        // Verify action and data
-        if( (($sAction!='show') && ($sAction!='select'))
-         || (($sAction=='select')&&(CNewUser::GetInstance()->GetIdentifier()<1)) )
-        {
-            // Parameters are not valid
-            CUser::GetInstance()->Invalidate();
-        }//if...
-
-    }//GET show|select
-
-    // Case action = POST new|update
-    if( CUser::GetInstance()->IsAuthenticated() && is_null($sAction)
-                                                && filter_has_var(INPUT_POST, 'act') )
-    {
-        // Get the action
-        $sAction = trim(filter_input( INPUT_POST, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-
-        // Get user data
-        CNewUser::GetInstance()->ReadInput(INPUT_POST);
-
-        // Verify action and data
-        if( ($sAction!='new') && ($sAction!='update') )
-        {
-            // Parameters are not valid
-            CUser::GetInstance()->Invalidate();
-        }//if( ($sAction!='new') && ($sAction!='update') )
-    }//POST new|update
-
-    /** Build the page
-    ******************/
-    if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
-    {
-        /** Action=update
-         ****************/
-        if( $sAction=='update' )
-        {
-            if( CNewUser::GetInstance()->IsValidUpdate()==FALSE )
-            {
-                $iMessageCode=1;
-                $sAction='select';
-                CNewUser::GetInstance()->SetPassword(null);
-                CNewUser::GetInstance()->SetPasswordCheck(null);
-            }
-            else
-            {
-                require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/userupdate.php');
-                $iReturn = UserUpdate( CUser::GetInstance()->GetUsername()
-                                     , CUser::GetInstance()->GetSession()
-                                     , GetIP().GetUserAgent()
-                                     , CNewUser::GetInstance());
-                // Check error
-                if( $iReturn>=0 )
-                {
-                    $iMessageCode=2;
-                    $sAction='show';
-                    CNewUser::DeleteInstance();
-                }
-                else
-                {
-                    // Failed
-                    RedirectError( $iReturn, __FILE__, __LINE__ );
-                    exit;
-                }//if( $iReturn>=0 )
-			}//if( (CNewUser::GetInstance()->IsValidUpdate()==FALSE) )
-        }//if( $sAction=='update' )
-
-        /** Action=new
-         *************/
-        if( $sAction=='new' )
-        {
-            if( CNewUser::GetInstance()->IsValidNew()==FALSE )
-            {
-                $iMessageCode=1;
-                $sAction='show';
-                CNewUser::GetInstance()->SetPassword(null);
-                CNewUser::GetInstance()->SetPasswordCheck(null);
-            }
-            else
-            {
-                require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/useradd.php');
-                $iReturn = UserAdd( CUser::GetInstance()->GetUsername()
-                                  , CUser::GetInstance()->GetSession()
-                                  , GetIP().GetUserAgent()
-                                  , CNewUser::GetInstance());
-                // Check error
-                if( $iReturn>0 )
-                {
-                    $iMessageCode=2;
-                    $sAction='show';
-                    CNewUser::DeleteInstance();
-                }
-                elseif( $iReturn==-4 )
-                {
-                    $iMessageCode=3;
-                    $sAction='show';
-                    CNewUser::DeleteInstance();
-                }
-                else
-                {
-                    // Failed
-                    RedirectError( $iReturn, __FILE__, __LINE__ );
-                    exit;
-                }//if( $iReturn>0 )
-            }//if( CNewUser::GetInstance()->IsValidNew()==FALSE )
-        }//if( $sAction=='new' )
-
-        /** Action=select
-         ****************/
-        if( $sAction=='select' )
-        {
-        	$iReturn=-2;
-            if( CNewUser::GetInstance()->GetIdentifier()>0 )
-            {
-                require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/userget.php');
-                $iReturn = UserGet( CUser::GetInstance()->GetUsername()
-                                  , CUser::GetInstance()->GetSession()
-                                  , GetIP().GetUserAgent()
-                                  , CNewUser::GetInstance());
-			}//if( CNewUser::GetInstance()->GetIdentifier()>0 )
-
-            //Error
-            if( ($iReturn<1) || (CNewUser::GetInstance()->IsValidUpdate()==FALSE) )
-			{
-				// Failed
-				RedirectError( $iReturn, __FILE__, __LINE__ );
-				exit;
-			}//if( ($iReturn<1) || (CNewUser::GetInstance()->IsValidUpdate()==FALSE) )
-        }//if( $sAction=='select' )
-
-        /** Get the users
-         ****************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/usersget.php');
-        $tRecordset=UsersGet( CUser::GetInstance()->GetUsername()
-                             ,CUser::GetInstance()->GetSession()
-                             ,GetIP().GetUserAgent());
-        if( !is_array($tRecordset) )
-        {
-            //Error
-            RedirectError( $tRecordset, __FILE__, __LINE__ );
-            exit;
-        }//if( !is_array($tRecordset) )
-
-        /** Build header
+        /** Add new user
          ***************/
-        require(PBR_PATH.'/includes/class/cheader.php');
-        $sBuffer='Utilisateurs';
-        CHeader::GetInstance()->SetNoCache();
-        CHeader::GetInstance()->SetTitle($sBuffer);
-        CHeader::GetInstance()->SetDescription($sBuffer);
-        CHeader::GetInstance()->SetKeywords($sBuffer);
+        $pUser = new CUser();
+        $pUser->ReadInput(INPUT_POST);
+        if( $pUser->IsValidNew()===FALSE )
+        {
+            // Not valid for creation
+            $iMessageCode = 1;
+        }
+        else
+        {
+            require(PBR_PATH.'/includes/db/function/useradd.php');
+            $iReturn = UserAdd( CAuth::GetInstance()->GetUsername()
+                              , CAuth::GetInstance()->GetSession()
+                              , GetIP().GetUserAgent()
+                              , $pUser );
+            if( $iReturn>0 )
+            {
+                // Succeeded
+                $iMessageCode = 2;
+                unset($pUser);
+            }
+            elseif( $iReturn==-4 )
+            {
+                // Failed: duplicate user
+                $iMessageCode = 3;
+            }
+            else
+            {
+                // Failed
+                unset($pUser);
+                RedirectError( $iReturn, __FILE__, __LINE__ );
+                exit;
+            }//if( $iReturn>0 )
+        }//if( $pUser->IsValidNew()===FALSE )
+    }
+    elseif( CAction::IsValid( INPUT_POST, 'update')===CAction::VALID )
+    {
+        /** Update user
+         **************/
+        $pUser = new CUser();
+        $pUser->ReadInput(INPUT_POST);
+        if( $pUser->IsValidUpdate()===FALSE )
+        {
+            // Not valid for update
+            $iMessageCode = 1;
+        }
+        else
+        {
+            require(PBR_PATH.'/includes/db/function/userupdate.php');
+            $iReturn = UserUpdate( CAuth::GetInstance()->GetUsername()
+                                 , CAuth::GetInstance()->GetSession()
+                                 , GetIP().GetUserAgent()
+                                 , $pUser );
+            unset($pUser);
 
-        /** Display
-         **********/
-        require(PBR_PATH.'/includes/display/displayheader.php');
-        require(PBR_PATH.'/includes/display/displayusers.php');
-        require(PBR_PATH.'/includes/display/displayfooter.php');
+            // Failed
+            if( ($iReturn===FALSE) || ($iReturn<0) )
+            {
+                RedirectError( $iReturn, __FILE__, __LINE__ );
+                exit;
+            }// if( ($iReturn===FALSE) || ($iReturn<0) )
 
-        /** Clean
-         ********/
-        CHeader::DeleteInstance();
+            // Succeeded
+            $iMessageCode = 2;
 
+        }//if( $pUser->IsValidUpdate()===FALSE )
+    }
+    elseif( CAction::IsValid( INPUT_GET, 'select')===CAction::VALID )
+    {
+        // Read the user identifier
+        $pUser = new CUser();
+        $pUser->ReadInput(INPUT_GET);
     }
     else
     {
-        //Error
-        RedirectError( -2, __FILE__, __LINE__ );
+        // Read the message code
+        $iMessageCode = GetMessageCode();
+    }//if( CAction::IsValid(...
+
+    /** Get the user
+    ****************/
+    if( isset($pUser) && ($pUser->GetIdentifier()>0) )
+    {
+        require(PBR_PATH.'/includes/db/function/userget.php');
+        $iReturn = UserGet( CAuth::GetInstance()->GetUsername()
+                          , CAuth::GetInstance()->GetSession()
+                          , GetIP().GetUserAgent()
+                          , $pUser );
+        if( ($iReturn===FALSE) || ($iReturn<=0) )
+        {
+            // Failed
+            unset($pUser);
+            if( $iReturn===0 )
+            {
+                $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+                ErrorLog(CAuth::GetInstance()->GetUsername(),$sTitle,'identifiant inconnu',E_USER_ERROR,TRUE);
+                $iReturn=-2;
+            }//if( $iReturn==0 )
+			RedirectError( $iReturn, __FILE__, __LINE__ );
+			exit;
+        }//if( ($iReturn===FALSE) || ($iReturn<=0) )
+    }//if( isset($pUser) && ($pUser->GetIdentifier()>0) )
+
+    /** Get the users
+     ****************/
+    require(PBR_PATH.'/includes/db/function/usersget.php');
+    $tRecordset = UsersGet( CAuth::GetInstance()->GetUsername()
+                          , CAuth::GetInstance()->GetSession()
+                          , GetIP().GetUserAgent());
+    if( !is_array($tRecordset) )
+    {
+        // Failed
+        if( isset($pUser) ) unset($pUser);
+        RedirectError( $tRecordset, __FILE__, __LINE__ );
         exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+    }//if( !is_array($tRecordset) )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sBuffer = 'Utilisateurs';
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sBuffer);
+    $pHeader->SetDescription($sBuffer);
+    $pHeader->SetKeywords($sBuffer);
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/users.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset($pHeader,$pUser);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

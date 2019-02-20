@@ -32,10 +32,19 @@
  * file encoding: UTF-8
  * description: contain usefull functions
  * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - remove function: WriteTrace
- *                                        remove function: TraceWarning
- *                                        add new function: stripslashes_deep
- *                                        add new function: GetRegExPatternName
+ * update: Olivier JULLIEN - 2010-05-24 - remove WriteTrace()
+ *                                        remove TraceWarning()
+ * update: Olivier JULLIEN - 2010-06-11 - add stripslashes_deep()
+ *                                        add GetRegExPatternName()
+ * update: Olivier JULLIEN - 2010-06-15 - add GetRegExPatternSession()
+ *                                        add IsParameterStringNotEmpty()
+ *                                        update IsParameterScalarNotEmpty()
+ *                                        remove IsParameterScalar()
+ *                                        add GetRegExPatternDirectory()
+ *                                        add GetHttpAccept()
+ *                                        add GetTime()
+ *                                        add GetMemoryUsage()
+ *                                        add DisplayUsage()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -47,12 +56,14 @@ if( !defined('PBR_VERSION') )
   *            INTEGER|iLenght  - max length of the string
   * return: STRING - truncated string
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-06-15 - fixed minor bug
   */
 function TruncMe($sValue,$iSize)
 {
-    $sReturn=$sValue;
+    $sReturn='';
     if( is_scalar($sValue) && is_integer($iSize) )
     {
+        $sReturn=$sValue;
         if( mb_strlen($sValue,'UTF-8')>$iSize )
         {
             // Trunc
@@ -65,40 +76,31 @@ function TruncMe($sValue,$iSize)
                 $sReturn=mb_substr($sReturn,0,$iIndex,'UTF-8');
             }//if( $iIndex>0 )
             // Add ...
-            $sReturn.='...';
         }//if( strlen($sValue)>$iSize )
     }//if( is_scalar($sValue) && is_integer($iSize) )
     return $sReturn;
 }
 
 /**
-  * function: IsParameterScalar
-  * description: Tests if the parameter is scalar
-  *              (string, boolean, numeric and float)
-  * parameters: mixed|var - parameter to test
-  * return: BOOLEAN - TRUE or FALSE
-  * author: Olivier JULLIEN - 2010-02-04
-  */
-function IsParameterScalar($var)
-{
-    return is_scalar($var);
-}
-
-/**
-  * function: IsParameterScalarNotEmpty
+  * function: IsScalarNotEmpty
   * description: Tests if the parameter is scalar and not empty
   *              (string, boolean, numeric and float)
   * parameters: mixed|var - parameter to test
   * return: BOOLEAN - TRUE or FALSE
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-06-15 - improvement
   */
-function IsParameterScalarNotEmpty($var)
+function IsScalarNotEmpty($var)
 {
-    $bReturn=is_scalar($var);
-    if( $bReturn && is_string($var) && strlen(trim($var))<=0 )
+    $bReturn = is_scalar($var);
+    if( $bReturn && is_string($var) )
     {
-        $bReturn=FALSE;
-    }//if...
+        $var = trim($var);
+        if( strlen($var)<=0 )
+        {
+            $bReturn = FALSE;
+        }//if( strlen($var)<=0 )
+    }//if( $bReturn && is_string($var) )
     return $bReturn;
 }
 
@@ -111,13 +113,14 @@ function IsParameterScalarNotEmpty($var)
   *                               4 = sanitized
   * return: STRING - user agent in asked format
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-06-11 - test input parameter
   */
 function GetUserAgent( $iFormat=1 )
 {
     // Default
     $sReturn = 'none';
     // Format
-    if( isset($_SERVER['HTTP_USER_AGENT']) )
+    if( is_int($iFormat) && isset($_SERVER['HTTP_USER_AGENT']) )
     {
         // Get user agent
         $sReturn = $_SERVER['HTTP_USER_AGENT'];
@@ -135,7 +138,7 @@ function GetUserAgent( $iFormat=1 )
         default:
             break;
         }// switch( $iFormat )
-    }//if( isset($_SERVER['HTTP_USER_AGENT'] )
+    }//if( is_int($iFormat) && isset($_SERVER['HTTP_USER_AGENT']) )
     return $sReturn;
 }
 
@@ -146,18 +149,19 @@ function GetUserAgent( $iFormat=1 )
   *                               2 = sanitized
   * return: STRING - ip address in asked format
   * author: Olivier JULLIEN - 2010-02-04
+  * update: Olivier JULLIEN - 2010-06-11 - test input parameter
   */
 function GetIP($iFormat=1)
 {
     $sReturn='0.0.0.0';
-    if( isset($_SERVER['REMOTE_ADDR']) )
+    if( is_int($iFormat) && isset($_SERVER['REMOTE_ADDR']) )
     {
         $sReturn=$_SERVER['REMOTE_ADDR'];
         if( $iFormat==2 )
         {
             $sReturn=htmlspecialchars($sReturn);
         }//if( $iFormat==2 )
-    }//if( isset($_SERVER['REMOTE_ADDR']) )
+    }//if( is_int($iFormat) && isset($_SERVER['REMOTE_ADDR']) )
     return $sReturn;
 }
 
@@ -204,6 +208,136 @@ function stripslashes_deep($value)
 function GetRegExPatternName()
 {
     return '/^[^\s'.preg_quote('!"#$%&()*+,/:;<=>?[\]^`{|}~','/').']+$/';
+}
+
+/**
+  * function: GetRegExPatternSession
+  * description: Return regex filter for input session
+  * parameters: none
+  * return: STRING
+  * author: Olivier JULLIEN - 2010-06-15
+  */
+function GetRegExPatternSession()
+{
+    return '/^[[:alnum:]]+$/';
+}
+
+/**
+  * function: IsStringNotEmpty
+  * description: Tests if the parameter is a scalar and not empty. Return the trimmed string.
+  * parameters:  mixed|var     - parameter to test
+  *             STRING|sFilter - regex filter
+  * return: BOOLEAN - TRUE or FALSE
+  * author: Olivier JULLIEN - 2010-06-15
+  */
+function IsStringNotEmpty( &$var, $sFilter=null)
+{
+    $bReturn = FALSE;
+    if( is_scalar($var) )
+    {
+        $var = trim($var);
+        if( strlen($var)>0 )
+        {
+            if( !is_null($sFilter) )
+            {
+                if( (preg_match( $sFilter, $var)>0) )
+                {
+                    $bReturn=TRUE;
+                }//if( (preg_match( $sFilter, $var)>0) )
+            }
+            else
+            {
+                $bReturn=TRUE;
+            }//if( !is_null($sFilter) )
+        }//if( strlen($var)>0 )
+    }//if( is_scalar($var) )
+    return $bReturn;
+}
+
+/**
+  * function: GetRegExPatternDirectory
+  * description: Return regex filter for directory name
+  * parameters: none
+  * return: STRING
+  * author: Olivier JULLIEN - 2010-06-15
+  */
+function GetRegExPatternDirectory()
+{
+    return '/^[^\s'.preg_quote('!"#$%&()*+,:;<=>?[]^`{|}~','/').']+$/';
+}
+
+/**
+  * function: GetHttpAccept
+  * description: return the browser MIME types
+  * parameters: INTEGER|iFilter - 0 = normal
+  *                               1 = sanitized
+  * return: STRING - browser MIME types
+  * author: Olivier JULLIEN - 2010-06-15
+  */
+function GetHttpAccept( $iFilter=0 )
+{
+    // Default
+    $sReturn = 'none';
+    // Format
+    if( is_int($iFilter) && isset($_SERVER['HTTP_ACCEPT']) )
+    {
+        // Get value
+        $sReturn = $_SERVER['HTTP_ACCEPT'];
+        if( $iFilter===4 )
+        {
+            $sReturn = htmlspecialchars($sReturn);
+        }//if( $iFilter===4 )
+    }//if( is_int($iFilter) && isset($_SERVER['HTTP_ACCEPT']) )
+    return $sReturn;
+}
+
+/**
+  * function: GetTime
+  * description: return the current time in seconds and microseconds
+  * parameters: none
+  * return: FLOAT: time in second and microseconds
+  * author: Olivier JULLIEN - 2010-06-15
+  */
+function GetTime()
+{
+    list($tps_usec, $tps_sec) = explode(" ",microtime());
+    return (float)$tps_usec + (float)$tps_sec;
+}
+
+/**
+  * function: GetMemoryUsage()
+  * description: return the memory usage
+  * parameters: none
+  * return: STRING - memory usage
+  * author: Olivier JULLIEN - 2010-06-15
+  */
+function GetMemoryUsage()
+{
+    $iBytes = memory_get_usage();
+    $iMByte = round( ($iBytes/1024/1024), 2);
+    $sBuffer = $iMByte.' MByte(s)';
+    $sBuffer = $sBuffer.' - '.$iBytes.' Byte(s)';
+    return $sBuffer;
+}
+
+/**
+  * function: Display usage
+  * description: return the script execution time and the memory usage
+  * parameters: FLOAT:fBegin begining time ( GetTime() )
+  * return: STRING
+  * author: Olivier JULLIEN - 2010-06-15
+  */
+function DisplayUsage( $fBegin )
+{
+    $sReturn = 'Script';
+    if( isset($fBegin) && !empty($fBegin) )
+    {
+        $fEnd = GetTime();
+        $fDiff = $fEnd - $fBegin;
+        $sReturn .= ' duration: '.$fDiff.', ';
+    }
+    $sReturn .= 'memory usage: '.GetMemoryUsage();
+    return $sReturn;
 }
 
 ?>

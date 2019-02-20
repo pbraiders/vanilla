@@ -1,0 +1,1564 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Model Report - Table Details</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="coated.css">
+</head>
+  
+<body class="tbl_detail_page">
+
+
+  <a name="Schema_0">
+    <div class="schema_header">Schema pbrcampdb <div class="small_text">(1/1)</div></div>
+  </a>
+
+  <div class="table_body">
+    <div class="subitem_header">DDL script</div>
+    <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+      <tr>
+        <td class="ddl_field"><pre><span class="syntax_default"></span><span class="syntax_major_keyword">CREATE</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SCHEMA</span><span class="syntax_default"> </span><span class="syntax_major_keyword">IF</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">EXISTS</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DEFAULT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">CHARACTER</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SET</span><span class="syntax_default"> </span><span class="syntax_identifier">utf8</span><span class="syntax_default"> </span><span class="syntax_major_keyword">COLLATE</span><span class="syntax_default"> </span><span class="syntax_identifier">utf8_general_ci</span><span class="syntax_default"> </span></pre></td>
+      </tr>
+    </table>
+  </div>
+
+
+  <a name="Table_0">
+    <div class="table_header">Table config <div class="small_text">(1/6)</div></div>
+  </a>
+  <div class="table_body">
+	
+	<!-- Table properties -->
+	<div class="subitem_header">Table Properties</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+     <colgroup>
+        <col width="20%" />
+        <col width="*" />
+        <col width="20%" />
+        <col width="*" />
+     </colgroup>
+    <tr>
+      <td class="details-property-name">Average Row Length</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Use Check Sum</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Connection String</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Default Character Set</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Default Collation</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Delay Key Updates</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Minimal Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Maximum Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Union Tables</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Merge Method</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Pack Keys</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Has Password</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Data Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Index Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Engine</td>
+      <td class="details-property-value">InnoDB</td>
+      <td class="details-property-name">Row Format</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+  </table>
+
+
+	
+
+  <div class="subitem_header">Columns</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Key</td>
+      <td class="subitem_table_head">Column Name</td>
+      <td class="subitem_table_head">Datatype</td>
+      <td class="subitem_table_head">Not Null</td>
+      <td class="subitem_table_head">Default</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PK</td>
+      <td class="subitem_table_field">name</td>
+      <td class="subitem_table_field">VARCHAR(45)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">name of the option</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">value</td>
+      <td class="subitem_table_field">VARCHAR(255)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">value of the option</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">role</td>
+      <td class="subitem_table_field">TINYINT(1)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">10</td>
+      <td class="subitem_table_field">minimun credential to modify the value</td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Indices</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Index Name</td>
+      <td class="subitem_table_head">Columns</td>
+      <td class="subitem_table_head">Primary</td>
+      <td class="subitem_table_head">Unique</td>
+      <td class="subitem_table_head">Type</td>
+      <td class="subitem_table_head">Kind</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+  </table>
+
+
+
+
+  <div class="subitem_header">Table Comments</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_field">Contains configuration options</td>
+    </tr>
+  </table>
+
+
+  <div class="subitem_header">DDL script</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="ddl_field"><pre><span class="syntax_default"></span><span class="syntax_major_keyword">CREATE</span><span class="syntax_default">  </span><span class="syntax_major_keyword">TABLE</span><span class="syntax_default"> </span><span class="syntax_major_keyword">IF</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">EXISTS</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`config`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`name`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">45</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'name of the option'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`value`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">255</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'value of the option'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`role`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">TINYINT</span><span class="syntax_operator">(</span><span class="syntax_number">1</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DEFAULT</span><span class="syntax_default"> </span><span class="syntax_number">10</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'minimun credential to modify the value'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">PRIMARY</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`name`</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br /></span><span class="syntax_identifier">ENGINE</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_identifier">InnoDB</span><span class="syntax_default"><br /></span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'Contains configuration options'</span></pre></td>
+    </tr>
+  </table>
+
+  </div>
+
+  <a name="Table_1">
+    <div class="table_header">Table user <div class="small_text">(2/6)</div></div>
+  </a>
+  <div class="table_body">
+	
+	<!-- Table properties -->
+	<div class="subitem_header">Table Properties</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+     <colgroup>
+        <col width="20%" />
+        <col width="*" />
+        <col width="20%" />
+        <col width="*" />
+     </colgroup>
+    <tr>
+      <td class="details-property-name">Average Row Length</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Use Check Sum</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Connection String</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Default Character Set</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Default Collation</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Delay Key Updates</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Minimal Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Maximum Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Union Tables</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Merge Method</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Pack Keys</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Has Password</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Data Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Index Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Engine</td>
+      <td class="details-property-value">InnoDB</td>
+      <td class="details-property-name">Row Format</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+  </table>
+
+
+	
+
+  <div class="subitem_header">Columns</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Key</td>
+      <td class="subitem_table_head">Column Name</td>
+      <td class="subitem_table_head">Datatype</td>
+      <td class="subitem_table_head">Not Null</td>
+      <td class="subitem_table_head">Default</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PK</td>
+      <td class="subitem_table_field">iduser</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">unique internal identifier</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">login</td>
+      <td class="subitem_table_field">VARCHAR(45)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">user name</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">password</td>
+      <td class="subitem_table_field">VARCHAR(40)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">encrypted user password</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">registered</td>
+      <td class="subitem_table_field">DATETIME</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">date of registration. In server timezone.</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">role</td>
+      <td class="subitem_table_field">TINYINT(1)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">0</td>
+      <td class="subitem_table_field">0=user, 10=administrator</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">last_visit</td>
+      <td class="subitem_table_field">DATETIME</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">date of the last visit. In server time zone.</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">state</td>
+      <td class="subitem_table_field">TINYINT(1)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">1</td>
+      <td class="subitem_table_field">0:deleted, 1:activated</td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Indices</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Index Name</td>
+      <td class="subitem_table_head">Columns</td>
+      <td class="subitem_table_head">Primary</td>
+      <td class="subitem_table_head">Unique</td>
+      <td class="subitem_table_head">Type</td>
+      <td class="subitem_table_head">Kind</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">ui_user_name</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">UNIQUE</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">ix_user_name</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">INDEX</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Relationships</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_head">Relationship Name</td>
+      <td class="subitem_table_head">Relationship Type</td>
+      <td class="subitem_table_head">Parent Table</td>
+      <td class="subitem_table_head">Child Table</td>
+      <td class="subitem_table_head">Card.</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_contact_user_create</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">user</td>
+      <td class="subitem_table_field">contact</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_contact_user_update</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">user</td>
+      <td class="subitem_table_field">contact</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_user_create</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">user</td>
+      <td class="subitem_table_field">reservation</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_user_update</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">user</td>
+      <td class="subitem_table_field">reservation</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+  </table>
+
+
+
+  <div class="subitem_header">Table Comments</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_field">Contains users</td>
+    </tr>
+  </table>
+
+
+  <div class="subitem_header">DDL script</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="ddl_field"><pre><span class="syntax_default"></span><span class="syntax_major_keyword">CREATE</span><span class="syntax_default">  </span><span class="syntax_major_keyword">TABLE</span><span class="syntax_default"> </span><span class="syntax_major_keyword">IF</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">EXISTS</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`user`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_identifier">AUTO_INCREMENT</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'unique internal identifier'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`login`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">45</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'user name'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`password`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">40</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">CHARACTER</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SET</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'utf8'</span><span class="syntax_default"> </span><span class="syntax_major_keyword">COLLATE</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'utf8_bin'</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'encrypted user password'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`registered`</span><span class="syntax_default"> </span><span class="syntax_identifier">DATETIME</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'date of registration. In server timezone.'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`role`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">TINYINT</span><span class="syntax_operator">(</span><span class="syntax_number">1</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DEFAULT</span><span class="syntax_default"> </span><span class="syntax_number">0</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'0=user, 10=administrator'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`last_visit`</span><span class="syntax_default"> </span><span class="syntax_identifier">DATETIME</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'date of the last visit. In server time zone.'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`state`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">TINYINT</span><span class="syntax_operator">(</span><span class="syntax_number">1</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DEFAULT</span><span class="syntax_default"> </span><span class="syntax_number">1</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'0:deleted, 1:activated'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">PRIMARY</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`iduser`</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">UNIQUE</span><span class="syntax_default"> </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`ui_user_name`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`login`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`ix_user_name`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`login`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br /></span><span class="syntax_identifier">ENGINE</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_identifier">InnoDB</span><span class="syntax_default"><br /></span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'Contains users'</span></pre></td>
+    </tr>
+  </table>
+
+  </div>
+
+  <a name="Table_2">
+    <div class="table_header">Table log <div class="small_text">(3/6)</div></div>
+  </a>
+  <div class="table_body">
+	
+	<!-- Table properties -->
+	<div class="subitem_header">Table Properties</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+     <colgroup>
+        <col width="20%" />
+        <col width="*" />
+        <col width="20%" />
+        <col width="*" />
+     </colgroup>
+    <tr>
+      <td class="details-property-name">Average Row Length</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Use Check Sum</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Connection String</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Default Character Set</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Default Collation</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Delay Key Updates</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Minimal Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Maximum Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Union Tables</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Merge Method</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Pack Keys</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Has Password</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Data Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Index Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Engine</td>
+      <td class="details-property-value">InnoDB</td>
+      <td class="details-property-name">Row Format</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+  </table>
+
+
+	
+
+  <div class="subitem_header">Columns</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Key</td>
+      <td class="subitem_table_head">Column Name</td>
+      <td class="subitem_table_head">Datatype</td>
+      <td class="subitem_table_head">Not Null</td>
+      <td class="subitem_table_head">Default</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PK</td>
+      <td class="subitem_table_field">idlog</td>
+      <td class="subitem_table_field">BIGINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">unique internal identifier</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">logged</td>
+      <td class="subitem_table_field">DATETIME</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">date when the error is raised</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">username</td>
+      <td class="subitem_table_field">VARCHAR(45)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">user name</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">type</td>
+      <td class="subitem_table_field">VARCHAR(15)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">log type (warn, error,...)</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">title</td>
+      <td class="subitem_table_field">TEXT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">title</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">description</td>
+      <td class="subitem_table_field">TEXT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">description</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">mysqluser</td>
+      <td class="subitem_table_field">VARCHAR(255)</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">mysql user authentication</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">mysqlcurrentuser</td>
+      <td class="subitem_table_field">VARCHAR(255)</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">mysql current user authentication</td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Indices</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Index Name</td>
+      <td class="subitem_table_head">Columns</td>
+      <td class="subitem_table_head">Primary</td>
+      <td class="subitem_table_head">Unique</td>
+      <td class="subitem_table_head">Type</td>
+      <td class="subitem_table_head">Kind</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">in_log_date</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">INDEX</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+  </table>
+
+
+
+
+  <div class="subitem_header">Table Comments</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_field">Errors and logs</td>
+    </tr>
+  </table>
+
+
+  <div class="subitem_header">DDL script</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="ddl_field"><pre><span class="syntax_default"></span><span class="syntax_major_keyword">CREATE</span><span class="syntax_default">  </span><span class="syntax_major_keyword">TABLE</span><span class="syntax_default"> </span><span class="syntax_major_keyword">IF</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">EXISTS</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`log`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`idlog`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">BIGINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_identifier">AUTO_INCREMENT</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'unique internal identifier'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`logged`</span><span class="syntax_default"> </span><span class="syntax_identifier">DATETIME</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'date when the error is raised'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`username`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">45</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'user name'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`type`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">15</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'log type (warn, error,...)'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`title`</span><span class="syntax_default"> </span><span class="syntax_identifier">TEXT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'title'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`description`</span><span class="syntax_default"> </span><span class="syntax_identifier">TEXT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'description'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`mysqluser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">255</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'mysql user authentication'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`mysqlcurrentuser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">255</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'mysql current user authentication'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">PRIMARY</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`idlog`</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`in_log_date`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`logged`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br /></span><span class="syntax_identifier">ENGINE</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_identifier">InnoDB</span><span class="syntax_default"><br /></span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'Errors and logs'</span></pre></td>
+    </tr>
+  </table>
+
+  </div>
+
+  <a name="Table_3">
+    <div class="table_header">Table session <div class="small_text">(4/6)</div></div>
+  </a>
+  <div class="table_body">
+	
+	<!-- Table properties -->
+	<div class="subitem_header">Table Properties</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+     <colgroup>
+        <col width="20%" />
+        <col width="*" />
+        <col width="20%" />
+        <col width="*" />
+     </colgroup>
+    <tr>
+      <td class="details-property-name">Average Row Length</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Use Check Sum</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Connection String</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Default Character Set</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Default Collation</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Delay Key Updates</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Minimal Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Maximum Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Union Tables</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Merge Method</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Pack Keys</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Has Password</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Data Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Index Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Engine</td>
+      <td class="details-property-value">InnoDB</td>
+      <td class="details-property-name">Row Format</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+  </table>
+
+
+	
+
+  <div class="subitem_header">Columns</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Key</td>
+      <td class="subitem_table_head">Column Name</td>
+      <td class="subitem_table_head">Datatype</td>
+      <td class="subitem_table_head">Not Null</td>
+      <td class="subitem_table_head">Default</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PK</td>
+      <td class="subitem_table_field">login</td>
+      <td class="subitem_table_field">VARCHAR(45)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">user identifier</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">session</td>
+      <td class="subitem_table_field">VARCHAR(200)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">session identifier</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">inet</td>
+      <td class="subitem_table_field">INT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">CRC32 checksum of the concatenation of IP and USER_AGENT</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">create_date</td>
+      <td class="subitem_table_field">INT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">Date of creation</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">expire_date</td>
+      <td class="subitem_table_field">INT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">Date of expiration</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">logoff</td>
+      <td class="subitem_table_field">TINYINT(1)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">0</td>
+      <td class="subitem_table_field">1: should be deleted. Updated when user ask for deconnection</td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Indices</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Index Name</td>
+      <td class="subitem_table_head">Columns</td>
+      <td class="subitem_table_head">Primary</td>
+      <td class="subitem_table_head">Unique</td>
+      <td class="subitem_table_head">Type</td>
+      <td class="subitem_table_head">Kind</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">ix_session_session</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">INDEX</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+  </table>
+
+
+
+
+  <div class="subitem_header">Table Comments</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_field">Session Table - store sessions in mysql so it matters not what server rpc request goes too</td>
+    </tr>
+  </table>
+
+
+  <div class="subitem_header">DDL script</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="ddl_field"><pre><span class="syntax_default"></span><span class="syntax_major_keyword">CREATE</span><span class="syntax_default">  </span><span class="syntax_major_keyword">TABLE</span><span class="syntax_default"> </span><span class="syntax_major_keyword">IF</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">EXISTS</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`session`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`login`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">45</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'user identifier'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`session`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">200</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'session identifier'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`inet`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">INT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'CRC32 checksum of the concatenation of IP and USER_AGENT'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`create_date`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">INT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'Date of creation'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`expire_date`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">INT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'Date of expiration'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`logoff`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">TINYINT</span><span class="syntax_operator">(</span><span class="syntax_number">1</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DEFAULT</span><span class="syntax_default"> </span><span class="syntax_number">0</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'1: should be deleted. Updated when user ask for deconnection'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">PRIMARY</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`login`</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`ix_session_session`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`session`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br /></span><span class="syntax_identifier">ENGINE</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_identifier">InnoDB</span><span class="syntax_default"><br /></span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'Session Table - store sessions in mysql so it matters not what server rpc request goes too'</span></pre></td>
+    </tr>
+  </table>
+
+  </div>
+
+  <a name="Table_4">
+    <div class="table_header">Table contact <div class="small_text">(5/6)</div></div>
+  </a>
+  <div class="table_body">
+	
+	<!-- Table properties -->
+	<div class="subitem_header">Table Properties</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+     <colgroup>
+        <col width="20%" />
+        <col width="*" />
+        <col width="20%" />
+        <col width="*" />
+     </colgroup>
+    <tr>
+      <td class="details-property-name">Average Row Length</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Use Check Sum</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Connection String</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Default Character Set</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Default Collation</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Delay Key Updates</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Minimal Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Maximum Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Union Tables</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Merge Method</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Pack Keys</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Has Password</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Data Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Index Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Engine</td>
+      <td class="details-property-value">InnoDB</td>
+      <td class="details-property-name">Row Format</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+  </table>
+
+
+	
+
+  <div class="subitem_header">Columns</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Key</td>
+      <td class="subitem_table_head">Column Name</td>
+      <td class="subitem_table_head">Datatype</td>
+      <td class="subitem_table_head">Not Null</td>
+      <td class="subitem_table_head">Default</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PK</td>
+      <td class="subitem_table_field">idcontact</td>
+      <td class="subitem_table_field">MEDIUMINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">unique internal identifier</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">lastname</td>
+      <td class="subitem_table_field">VARCHAR(40)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">contact name</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">firstname</td>
+      <td class="subitem_table_field">VARCHAR(40)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">contact first name</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">tel</td>
+      <td class="subitem_table_field">VARCHAR(40)</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">tel numbers</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">email</td>
+      <td class="subitem_table_field">VARCHAR(255)</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">emails</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">address</td>
+      <td class="subitem_table_field">VARCHAR(255)</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">address</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">address_more</td>
+      <td class="subitem_table_field">VARCHAR(255)</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">address more</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">city</td>
+      <td class="subitem_table_field">VARCHAR(255)</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">city</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">zip</td>
+      <td class="subitem_table_field">VARCHAR(8)</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">zip</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">comment</td>
+      <td class="subitem_table_field">TEXT</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">create_date</td>
+      <td class="subitem_table_field">DATETIME</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">creation date in server time zone</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">create_iduser</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">user who created the contact</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">update_date</td>
+      <td class="subitem_table_field">DATETIME</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">last update date in server time zone</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">update_iduser</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">user who updated the contact</td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Indices</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Index Name</td>
+      <td class="subitem_table_head">Columns</td>
+      <td class="subitem_table_head">Primary</td>
+      <td class="subitem_table_head">Unique</td>
+      <td class="subitem_table_head">Type</td>
+      <td class="subitem_table_head">Kind</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_contact_user_create</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">FOREIGN</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_contact_user_update</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">FOREIGN</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">ix_contact_lastname</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">INDEX</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Relationships</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_head">Relationship Name</td>
+      <td class="subitem_table_head">Relationship Type</td>
+      <td class="subitem_table_head">Parent Table</td>
+      <td class="subitem_table_head">Child Table</td>
+      <td class="subitem_table_head">Card.</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_contact_user_create</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">user</td>
+      <td class="subitem_table_field">contact</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_contact_user_update</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">user</td>
+      <td class="subitem_table_field">contact</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_contact</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">contact</td>
+      <td class="subitem_table_field">reservation</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+  </table>
+
+
+
+  <div class="subitem_header">Table Comments</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_field">Contains the contacts</td>
+    </tr>
+  </table>
+
+
+  <div class="subitem_header">DDL script</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="ddl_field"><pre><span class="syntax_default"></span><span class="syntax_major_keyword">CREATE</span><span class="syntax_default">  </span><span class="syntax_major_keyword">TABLE</span><span class="syntax_default"> </span><span class="syntax_major_keyword">IF</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">EXISTS</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`contact`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`idcontact`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">MEDIUMINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_identifier">AUTO_INCREMENT</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'unique internal identifier'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`lastname`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">40</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'contact name'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`firstname`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">40</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'contact first name'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`tel`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">40</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'tel numbers'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`email`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">255</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'emails'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`address`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">255</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'address'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`address_more`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">255</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'address more'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`city`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">255</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'city'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`zip`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">VARCHAR</span><span class="syntax_operator">(</span><span class="syntax_number">8</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'zip'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`comment`</span><span class="syntax_default"> </span><span class="syntax_identifier">TEXT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'comment'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`create_date`</span><span class="syntax_default"> </span><span class="syntax_identifier">DATETIME</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'creation date in server time zone'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`create_iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'user who created the contact'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`update_date`</span><span class="syntax_default"> </span><span class="syntax_identifier">DATETIME</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'last update date in server time zone'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`update_iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'user who updated the contact'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">PRIMARY</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`idcontact`</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_contact_user_create`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`create_iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_contact_user_update`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`update_iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`ix_contact_lastname`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`lastname`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">CONSTRAINT</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_contact_user_create`</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">FOREIGN</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`create_iduser`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">REFERENCES</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`user`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`iduser`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DELETE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UPDATE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">CONSTRAINT</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_contact_user_update`</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">FOREIGN</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`update_iduser`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">REFERENCES</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`user`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`iduser`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DELETE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UPDATE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_operator">)</span><span class="syntax_default"><br /></span><span class="syntax_identifier">ENGINE</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_identifier">InnoDB</span><span class="syntax_default"><br /></span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'Contains the contacts'</span></pre></td>
+    </tr>
+  </table>
+
+  </div>
+
+  <a name="Table_5">
+    <div class="table_header">Table reservation <div class="small_text">(6/6)</div></div>
+  </a>
+  <div class="table_body">
+	
+	<!-- Table properties -->
+	<div class="subitem_header">Table Properties</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+     <colgroup>
+        <col width="20%" />
+        <col width="*" />
+        <col width="20%" />
+        <col width="*" />
+     </colgroup>
+    <tr>
+      <td class="details-property-name">Average Row Length</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Use Check Sum</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Connection String</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Default Character Set</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Default Collation</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Delay Key Updates</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Minimal Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Maximum Row Count</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Union Tables</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Merge Method</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Pack Keys</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Has Password</td>
+      <td class="details-property-value">no</td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Data Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+      <td class="details-property-name">Index Directory</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+    <tr>
+      <td class="details-property-name">Engine</td>
+      <td class="details-property-value">InnoDB</td>
+      <td class="details-property-name">Row Format</td>
+      <td class="details-property-value"><span class="report_na_entry">n/a</span></td>
+    </tr>
+  </table>
+
+
+	
+
+  <div class="subitem_header">Columns</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Key</td>
+      <td class="subitem_table_head">Column Name</td>
+      <td class="subitem_table_head">Datatype</td>
+      <td class="subitem_table_head">Not Null</td>
+      <td class="subitem_table_head">Default</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PK</td>
+      <td class="subitem_table_field">idreservation</td>
+      <td class="subitem_table_field">MEDIUMINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">unique internal identifier</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">idcontact</td>
+      <td class="subitem_table_field">MEDIUMINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">contact identifier</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">year</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">reservation date year</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">month</td>
+      <td class="subitem_table_field">TINYINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">reservation date month</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">day</td>
+      <td class="subitem_table_field">TINYINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">reservation date day</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">rent_real</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">0</td>
+      <td class="subitem_table_field">real rent count</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">rent_planned</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">0</td>
+      <td class="subitem_table_field">planned rent count</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">rent_canceled</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">0</td>
+      <td class="subitem_table_field">canceled rent count</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">rent_max</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">max rent allowed</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">age</td>
+      <td class="subitem_table_field">TINYINT</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">1:16-25, 2:26-35, 3:35 and more.</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">arrhe</td>
+      <td class="subitem_table_field">TINYINT</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">1:cash, 2:check, 3:credit card</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">comment</td>
+      <td class="subitem_table_field">TEXT</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">create_date</td>
+      <td class="subitem_table_field">DATETIME</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">creation date in server time zone</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">create_iduser</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">user who created the reservation</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">update_date</td>
+      <td class="subitem_table_field">DATETIME</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">last update date in server time zone</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">update_iduser</td>
+      <td class="subitem_table_field">SMALLINT</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field">user who updated the reservation</td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Indices</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="0" width="100%">
+    <tr>
+      <td class="subitem_table_head">Index Name</td>
+      <td class="subitem_table_head">Columns</td>
+      <td class="subitem_table_head">Primary</td>
+      <td class="subitem_table_head">Unique</td>
+      <td class="subitem_table_head">Type</td>
+      <td class="subitem_table_head">Kind</td>
+      <td class="subitem_table_head">Comment</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">Yes</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">PRIMARY</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_contact</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">FOREIGN</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_user_create</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">FOREIGN</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_user_update</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">FOREIGN</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">ix_reservation_year</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">INDEX</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">ix_reservation_month</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">INDEX</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">ix_reservation_day</td>
+      <td class="subitem_table_field"><table border="0" cellpadding="2" cellspacing="0" width="100%">
+
+        </table></td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">No</td>
+      <td class="subitem_table_field">INDEX</td>
+      <td class="subitem_table_field"></td>
+      <td class="subitem_table_field"></td>
+    </tr>
+
+  </table>
+
+
+  <div class="subitem_header">Relationships</div>
+  
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_head">Relationship Name</td>
+      <td class="subitem_table_head">Relationship Type</td>
+      <td class="subitem_table_head">Parent Table</td>
+      <td class="subitem_table_head">Child Table</td>
+      <td class="subitem_table_head">Card.</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_contact</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">contact</td>
+      <td class="subitem_table_field">reservation</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_user_create</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">user</td>
+      <td class="subitem_table_field">reservation</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+    <tr>
+      <td class="subitem_table_field">fk_reservation_user_update</td>
+      <td class="subitem_table_field">Non-Identifying</td>
+      <td class="subitem_table_field">user</td>
+      <td class="subitem_table_field">reservation</td>
+      <td class="subitem_table_field">1:n</td>
+    </tr>
+
+  </table>
+
+
+
+  <div class="subitem_header">Table Comments</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="subitem_table_field">Contains the reservations</td>
+    </tr>
+  </table>
+
+
+  <div class="subitem_header">DDL script</div>
+  <table class="subitems_table" border="0" cellpadding="2" cellspacing="" width="100%">
+    <tr>
+      <td class="ddl_field"><pre><span class="syntax_default"></span><span class="syntax_major_keyword">CREATE</span><span class="syntax_default">  </span><span class="syntax_major_keyword">TABLE</span><span class="syntax_default"> </span><span class="syntax_major_keyword">IF</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">EXISTS</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`reservation`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`idreservation`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">MEDIUMINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_identifier">AUTO_INCREMENT</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'unique internal identifier'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`idcontact`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">MEDIUMINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'contact identifier'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`year`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'reservation date year'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`month`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">TINYINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'reservation date month'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`day`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">TINYINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'reservation date day'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`rent_real`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DEFAULT</span><span class="syntax_default"> </span><span class="syntax_number">0</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'real rent count'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`rent_planned`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DEFAULT</span><span class="syntax_default"> </span><span class="syntax_number">0</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'planned rent count'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`rent_canceled`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DEFAULT</span><span class="syntax_default"> </span><span class="syntax_number">0</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'canceled rent count'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`rent_max`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'max rent allowed'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`age`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">TINYINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'1:16-25, 2:26-35, 3:35 and more.'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`arrhe`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">TINYINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'1:cash, 2:check, 3:credit card'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`comment`</span><span class="syntax_default"> </span><span class="syntax_identifier">TEXT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'comment'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`create_date`</span><span class="syntax_default"> </span><span class="syntax_identifier">DATETIME</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'creation date in server time zone'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`create_iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NOT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'user who created the reservation'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`update_date`</span><span class="syntax_default"> </span><span class="syntax_identifier">DATETIME</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'last update date in server time zone'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_quoted_identifier">`update_iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">SMALLINT</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UNSIGNED</span><span class="syntax_default"> </span><span class="syntax_major_keyword">NULL</span><span class="syntax_default"> </span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'user who updated the reservation'</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">PRIMARY</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`idreservation`</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_reservation_contact`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`idcontact`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_reservation_user_create`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`create_iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_reservation_user_update`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`update_iduser`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`ix_reservation_year`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`year`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`ix_reservation_month`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`month`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">INDEX</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`ix_reservation_day`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`day`</span><span class="syntax_default"> </span><span class="syntax_major_keyword">ASC</span><span class="syntax_operator">)</span><span class="syntax_default"> </span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">CONSTRAINT</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_reservation_contact`</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">FOREIGN</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`idcontact`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">REFERENCES</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`contact`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`idcontact`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DELETE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UPDATE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">CONSTRAINT</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_reservation_user_create`</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">FOREIGN</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`create_iduser`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">REFERENCES</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`user`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`iduser`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DELETE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UPDATE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_operator">,</span><span class="syntax_default"><br />  </span><span class="syntax_major_keyword">CONSTRAINT</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`fk_reservation_user_update`</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">FOREIGN</span><span class="syntax_default"> </span><span class="syntax_major_keyword">KEY</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`update_iduser`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">REFERENCES</span><span class="syntax_default"> </span><span class="syntax_quoted_identifier">`pbrcampdb`</span><span class="syntax_operator">.</span><span class="syntax_quoted_identifier">`user`</span><span class="syntax_default"> </span><span class="syntax_operator">(</span><span class="syntax_quoted_identifier">`iduser`</span><span class="syntax_default"> </span><span class="syntax_operator">)</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">DELETE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_default"><br />    </span><span class="syntax_major_keyword">ON</span><span class="syntax_default"> </span><span class="syntax_major_keyword">UPDATE</span><span class="syntax_default"> </span><span class="syntax_identifier">NO</span><span class="syntax_default"> </span><span class="syntax_identifier">ACTION</span><span class="syntax_operator">)</span><span class="syntax_default"><br /></span><span class="syntax_identifier">ENGINE</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_identifier">InnoDB</span><span class="syntax_default"><br /></span><span class="syntax_procedure_keyword">COMMENT</span><span class="syntax_default"> </span><span class="syntax_operator">=</span><span class="syntax_default"> </span><span class="syntax_single_quoted_string">'Contains the reservations'</span></pre></td>
+    </tr>
+  </table>
+
+  </div>
+
+
+
+</body>
+</html>

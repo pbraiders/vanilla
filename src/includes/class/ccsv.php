@@ -31,53 +31,105 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: describe an csv file
- * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
+ * author: Olivier JULLIEN - 2010-06-15
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_EXPORT_DIR') )
+if( !defined('PBR_VERSION') )
     die('-1');
 
-class CCSV
+define('PBR_EXPORT_DIR','export');
+
+final class CCSV extends CDirectoryFileManagement
 {
 
-    /** Private attributs
+    /** Contants
+     ***********/
+    const EXPORTFILELIFETIME=60;
+    const EXPORTFILEPREFIX='csv';
+
+    /** Protected methods
      ********************/
 
-    // Singleton
-    private static $m_pInstance = NULL;
+    /**
+     * function: DirectoryManagement
+     * description: create directory if not exists. Delete old file
+     * parameter: STRING|$sFolder - directory path and name.
+     * return: BOOLEAN - TRUE or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    protected function DirectoryManagement($sFolder)
+    {
+        // Create folder
+        $bReturn = $this->DirectoryCreate($sFolder);
 
-    // file name and path
-    private $m_sExportFile=FALSE;
+        // Delele old files
+        if( $bReturn )
+        {
+            $sFolder = trim($sFolder).'/{'.CCSV::EXPORTFILEPREFIX.'*}';
+            $pFiles = glob( $sFolder, GLOB_BRACE );
+            if( $pFiles!==FALSE )
+            {
+                $iTime = time() - CCSV::EXPORTFILELIFETIME;
+                foreach( $pFiles as $sFile )
+                {
+                    if( (filemtime($sFile)<=$iTime) || (filectime($sFile)<=$iTime) )
+                    {
+                        unlink($sFile);
+                    }//if( (filemtime($sFile)<=$iTime) || (filectime($sFile)<=$iTime) )
+                }//foreach( $pFiles as $sFile )
+            }//if( $pFiles!==FALSE )
+        }//if( $bReturn )
 
-    // file ressource
-    private $m_pExportFile=FALSE;
+        return $bReturn;
+    }
 
-    /** Private methods
-     ******************/
+    /**
+     * function: FileManagement
+     * description: create and open new one.
+     * parameter: STRING|$sFolder - directory path and name.
+     *            STRING|$sFile   - not used.
+     * return: BOOLEAN - TRUE or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    protected function FileManagement( $sFolder, $sFile)
+    {
+        // Initialize
+        $bReturn = FALSE;
+        // Test parameter
+        if( IsStringNotEmpty( $sFolder, GetRegExPatternDirectory() )===TRUE )
+        {
+            // Build name
+            $this->m_sFile = tempnam( $sFolder, CCSV::EXPORTFILEPREFIX);
+            if( $this->m_sFile!=FALSE )
+            {
+                $this->m_pFile = fopen( $this->m_sFile, 'wb');
+            }//if( $this->m_sFile!=FALSE )
+            $bReturn = $this->IsOpen();
+        }//if( IsStringNotEmpty( $sFolder, GetRegExPatternDirectory() )===TRUE )
+        return $bReturn;
+    }
+
+    /** Public methods
+     *****************/
 
     /**
      * function: __construct
      * description: constructor
      * parameter: none
      * return: none
-     * author: Olivier JULLIEN - 2010-02-04
+     * author: Olivier JULLIEN - 2010-06-15
      */
-    private function __construct(){}
-
-    /** Public methods
-     *****************/
+    public function __construct(){}
 
     /**
      * function: __destruct
-     * description: destructor
+     * description: destructor - close the file
      * parameter: none
      * return: none
-     * author: Olivier JULLIEN - 2010-02-04
+     * author: Olivier JULLIEN - 2010-06-15
      */
     public function __destruct()
     {
         $this->Close();
-        $this->Delete();
     }
 
    /**
@@ -85,148 +137,79 @@ class CCSV
      * description: cloning is forbidden
      * parameter: none
      * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
+     * author: Olivier JULLIEN - 2010-06-15
      */
     public function __clone() {}
 
    /**
-     * function: GetInstance
-     * description: create or return the current instance
-     * parameter: none
-     * return: this
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function GetInstance()
-    {
-        if( is_null(self::$m_pInstance) )
-        {
-            self::$m_pInstance = new CCSV();
-        }
-        return self::$m_pInstance;
-    }
-
-   /**
-     * function: DeleteInstance
-     * description: delete the current instance
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function DeleteInstance()
-    {
-        if( !is_null(self::$m_pInstance) )
-        {
-            $tmp=self::$m_pInstance;
-            self::$m_pInstance=NULL;
-            unset($tmp);
-        }
-    }
-
-   /**
-     * function: Open
-     * description: create and open the file
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function Open()
-    {
-        $sPath=PBR_PATH.'/'.PBR_EXPORT_DIR;
-        $this->m_sExportFile=tempnam($sPath,'csv');
-        if( $this->m_sExportFile!=FALSE )
-        {
-            $this->m_pExportFile=fopen($this->m_sExportFile,'wb');
-        }//if( $this->m_sExportFile!=FALSE )
-    }
-
-   /**
-     * function: IsOpen
-     * description: test if the file is open
-     * parameter: none
-     * return: BOOLEAN - TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function IsOpen()
-    {
-        $bReturn=TRUE;
-        if( $this->m_pExportFile===FALSE )
-        {
-            $bReturn=FALSE;
-        }//if( $this->m_pExportFile===FALSE )
-        return $bReturn;
-    }
-
-   /**
-     * function: Close
-     * description: Close the file
-     * parameter: none
-     * return: BOOLEAN - TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function Close()
-    {
-        $bReturn=TRUE;
-        if( $this->IsOpen()===TRUE )
-        {
-            $bReturn=fclose($this->m_pExportFile);
-            $this->m_pExportFile=FALSE;
-        }//if( $this->IsOpen()===TRUE )
-        return $bReturn;
-    }
-
-   /**
-     * function: Delete
+     * function: DeleteFile
      * description: Delete the file
      * parameter: none
      * return: BOOLEAN - TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-02-04
+     * author: Olivier JULLIEN - 2010-06-15
      */
-    public function Delete()
+    public function DeleteFile()
     {
         $bReturn=TRUE;
-        if( $this->m_sExportFile!==FALSE )
+        if( $this->m_sFile!==FALSE )
         {
-            $bReturn=unlink($this->m_sExportFile);
+            $bReturn=unlink($this->m_sFile);
         }//if( $this->IsOpen()===TRUE )
         return $bReturn;
     }
 
     /**
      * function: Write
-     * description: Write into the file
-     * parameter: ARRAY|tRows - line to add
+     * description: Write an array into the file
+     * parameter: ARRAY|tRows - lines to add
      * return: BOOLEAN - TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-02-04
+     * author: Olivier JULLIEN - 2010-06-15
      */
     public function Write( &$tRows )
     {
-        $bReturn=FALSE;
+        $bReturn = FALSE;
         if( (is_array($tRows)===TRUE) && ($this->IsOpen()===TRUE) )
         {
-            $bReturn=TRUE;
+            $bReturn = TRUE;
             foreach( $tRows as $tRow )
             {
-                if( fputcsv($this->m_pExportFile, $tRow, ',', '"') === FALSE )
+                if( fputcsv( $this->m_pFile, $tRow, ',', '"') === FALSE )
                 {
-                    $bReturn=FALSE;
+                    $bReturn = FALSE;
                     break;
                 }//if( fputcsv(...
             }//foreach( $tRows as $tRow )
+            if( $bReturn === TRUE )
+            {
+                fflush($this->m_pFile);
+            }//if( $bReturn===TRUE )
         }//if( is_array($tRows) && $this->IsOpen() )
         return $bReturn;
     }
 
     /**
-     * function: GetFilename
-     * description: return the file name
-     * parameter: none
-     * return: STRING -
-     * author: Olivier JULLIEN - 2010-02-04
+     * function: WriteLine
+     * description: Write a line into the file
+     * parameter: ARRAY|tRow - line to add
+     * return: BOOLEAN - TRUE or FALSE
+     * author: Olivier JULLIEN - 2010-06-15
      */
-    public function GetFilename()
+    public function WriteLine( &$tRow )
     {
-        return $this->m_sExportFile;
+        $bReturn = FALSE;
+        if( (is_array($tRow)===TRUE) && ($this->IsOpen()===TRUE) )
+        {
+            $bReturn = TRUE;
+            if( fputcsv( $this->m_pFile, $tRow, ',', '"') === FALSE )
+            {
+                $bReturn = FALSE;
+            }//if( fputcsv(...
+            if( $bReturn === TRUE )
+            {
+                fflush($this->m_pFile);
+            }//if( $bReturn===TRUE )
+        }//if( is_array($tRows) && $this->IsOpen() )
+        return $bReturn;
     }
 
 }

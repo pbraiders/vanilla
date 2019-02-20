@@ -31,135 +31,105 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the logs delete page.
- *         GET: act=confirm|delete, tok=<token>, cancel=<cancel case>
+ *        POST: can=cancel case
+ *              con=confirm case, tok=<token>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
      *****************/
     require(PBR_PATH.'/config.php');
 
-    /** Create session
-     *****************/
-    require(PBR_PATH.'/includes/class/csession.php');
-    CSession::CreateSession();
-
     /** Include functions
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
-    $sToken=NULL;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/initadmin.php');
+    require(PBR_PATH.'/includes/init/authadmin.php');
 
-    /** Read input parameters
-     ************************/
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act')
-                                                && filter_has_var(INPUT_GET, 'tok') )
+    /** Cancel
+     *********/
+    if( filter_has_var( INPUT_POST, 'can') )
     {
-        // Get action
-        $sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        // Get token
-        $sToken = trim(filter_input( INPUT_GET, 'tok', FILTER_SANITIZE_SPECIAL_CHARS));
-        // Verify readed values
-        if( $sToken!=CSession::GetToken() || (($sAction!='delete') && ($sAction!='confirm')) )
-        {
- 			// Parameters are not valid
-			CUser::GetInstance()->Invalidate();
-        }// if(....
-    }//if( filter_has_var(...
+        include(PBR_PATH.'/includes/init/clean.php');
+        header('Location: '.PBR_URL.'logs.php');
+        exit;
+    }//Cancel
 
-    // Unset token
-    CSession::CleanToken();
+    /** Create session
+     *****************/
+    require(PBR_PATH.'/includes/class/cphpsession.php');
+    CPHPSession::CreateSession();
 
-    /** Build the page
-    ******************/
-    if( (CUser::GetInstance()->IsAuthenticated()===TRUE) && !is_null($sAction) )
+    /** Delete
+     *********/
+    if( filter_has_var( INPUT_POST, 'con') && (CPHPSession::GetInstance()->ValidInput(INPUT_POST)===TRUE) )
     {
-        /** Cancel
-         *********/
-        if( $sAction=='delete' && filter_has_var(INPUT_GET, 'cancel') )
+        // Clean SESSION
+        CPHPSession::CleanToken();
+        CPHPSession::Clean();
+        // Delete
+        require(PBR_PATH.'/includes/db/function/logsdel.php');
+        $iReturn = LogsDel( CAuth::GetInstance()->GetUsername()
+                          , CAuth::GetInstance()->GetSession()
+                          , GetIP().GetUserAgent() );
+        // Failed
+        if( ($iReturn===FALSE) || ($iReturn<0) )
         {
-            $sBuffer=PBR_URL.'logs.php?act=show';
-            include(PBR_PATH.'/includes/init/initclean.php');
-            header('Location: '.$sBuffer);
+            RedirectError( $iReturn, __FILE__, __LINE__ );
             exit;
-        }//if( $sAction='delete' && filter_has_var(INPUT_GET, 'cancel') )
+        }//if( $iReturn<1 )
+        // Succeeded
+        include(PBR_PATH.'/includes/init/clean.php');
+        header('Location: '.PBR_URL.'logs.php?error=3');
+        exit;
+    }//Delete
 
-        /** Delete
-         *********/
-        if( $sAction=='delete' )
-        {
-            require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/logsdel.php');
-            $iReturn=LogsDel( CUser::GetInstance()->GetUsername()
-                            , CUser::GetInstance()->GetSession()
-                            , GetIP().GetUserAgent());
-            // Error
-            if( $iReturn<0 )
-            {
-				// Failed
-            	RedirectError( $iReturn, __FILE__, __LINE__ );
-				exit;
-            }//if( $iReturn<1 )
+    // Clean SESSION token
+    CPHPSession::CleanToken();
 
-            // No error
-            $sBuffer='?act=show&error=3';
-            include(PBR_PATH.'/includes/init/initclean.php');
-            header('Location: '.PBR_URL.'logs.php'.$sBuffer);
-            exit;
-        }//if( $sAction='confirm' && filter_has_var(INPUT_GET, 'cancel') )
-
-        /** Confirm
-         **********/
-        if( $sAction=='confirm' )
-        {
-
-            /** Build token
-             **************/
-            $sToken = md5(uniqid(rand(), TRUE));
-            CSession::GetInstance()->SetToken($sToken);
-
-            /** Build header
-             ***************/
-            require(PBR_PATH.'/includes/class/cheader.php');
-            $sBuffer='Supprimer les logs';
-            CHeader::GetInstance()->SetNoCache();
-            CHeader::GetInstance()->SetTitle($sBuffer);
-            CHeader::GetInstance()->SetDescription($sBuffer);
-            CHeader::GetInstance()->SetKeywords('delete,supprimer,suppression,log');
-
-            /** Display
-             **********/
-            require(PBR_PATH.'/includes/display/displayheader.php');
-            require(PBR_PATH.'/includes/display/displaylogsdelete.php');
-            require(PBR_PATH.'/includes/display/displayfooter.php');
-
-            /** Clean
-             ********/
-            CHeader::DeleteInstance();
-
-        }//if( $sAction='confirm' )
-
-    }
-    else
+    /** Generate and write SESSION token
+     ***********************************/
+    $sToken = CPHPSession::GetInstance()->WriteToken();
+    if( $sToken===FALSE )
     {
-		//Error
-		RedirectError( -2, __FILE__, __LINE__ );
-		exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+        $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de fixer le jeton de la session', E_USER_ERROR, TRUE);
+        CPHPSession::CleanToken();
+        CPHPSession::Clean();
+        RedirectError( 1, __FILE__, __LINE__ );
+        exit;
+    }//if( $sToken===FALSE )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sBuffer = 'Supprimer les logs';
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sBuffer);
+    $pHeader->SetDescription($sBuffer);
+    $pHeader->SetKeywords('delete,supprimer,suppression,log');
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/logsdelete.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset($pHeader);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

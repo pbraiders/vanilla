@@ -30,85 +30,152 @@
  *************************************************************************/
 /*************************************************************************
  * file encoding: UTF-8
- * description: describes an user
+ * description: describes a new user
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-05-24 - update __clone()
- * update: Olivier JULLIEN - 2010-06-11 - update SetUsername()
+ * update: Olivier JULLIEN - 2010-06-11 - add password check field
+ *                                        add SetPasswordCheck()
+ *                                        update IsValidNew()
+ *                                        update IsValidUpdate()
+ *                                        update ReadInput()
+ *                                        update SetUsername()
+ * update: Olivier JULLIEN - 2010-06-15 - is not a singleton anymore
+ *                                        delete GetInstance()
+ *                                        delete DeleteInstance()
+ *                                        delete __clone()
+ *                                        add constants
+ *                                        update GetUsername()
+ *                                        update Sanitize()
+ *                                        update SanitizeInt()
+ *                                        update ReadInput()
+ *                                        update SetUsername()
+ *                                        update SetPassword()
+ *                                        update SetUsernameCheck()
+ *                                        add ResetMe()
+ *                                        add IsValidLogin()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
 
-class CUser
+final class CUser
 {
 
-    /** Constant
+    /** Contants
      ***********/
-    const DEFAULT_USER='visitor';
-    const DEFAULT_SESSION='1';
+    const IDENTIFIERTAG = 'usi';
+    const IDENTIFIERMIN = 0;
+    const IDENTIFIERMAX = 65535;
+
+    const USERNAMETAG = 'usr';
+    const USERNAMEMIN = 1;
+    const USERNAMEMAX = 45;
+
+    const PASSWORDTAG      = 'pwd';
+    const PASSWORDCHECKTAG = 'pwdc';
+    const PASSWORDMIN      = 1;
+    const PASSWORDMAX      = 40;
+
+    const STATETAG = 'sta';
+    const STATEMIN = 0;
+    const STATEMAX = 1;
 
     /** Private attributs
      ********************/
 
-    // Singleton
-    private static $m_pInstance = NULL;
+    // User identifier
+    private $m_iIdentifier = CUser::IDENTIFIERMIN;
 
     // Username
-    private $m_sUsername = NULL;
+    private $m_sUsername = '';
 
-    // Session id
-    private $m_sSession = NULL;
+    // Password
+    private $m_sPassword = '';
 
-    // User db identifier (used only in "no stored procedure" mode)
-    private $m_iIdentifier = 0;
+    // Password check
+    private $m_sPasswordCheck = '';
 
-    // Authentified
-    private $m_bAuth=FALSE;
+    // State
+    private $m_iState = CUser::STATEMIN;
 
     /** Private methods
      ******************/
 
     /**
-     * function: __construct
-     * description: constructor, initializes private attributs
-     * parameter: none
-     * return: none
+     * function: SanitizeInt
+     * description: return sanitized integer value
+     * parameter: INTEGER|iValue - value to sanitize
+     * return: INTEGER
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - fixed minor bug
+     *                                        add min, max and default values
      */
-    private function __construct()
+    private function SanitizeInt( $iValue, $iMin, $iMax, $iDefault)
     {
-        $this->Invalidate();
+        $iReturn = $iDefault;
+        if( is_scalar($iValue) && is_integer($iMin) && is_integer($iMax) )
+        {
+            if( is_string($iValue) )
+            {
+                $iValue = trim($iValue);
+            }//if( is_string($iValue) )
+            if( is_numeric($iValue) )
+            {
+                $iValue = $iValue + 0;
+            }//if( is_numeric($iValue) )
+            if( is_integer($iValue) && ($iValue>=$iMin) && ($iValue<=$iMax) )
+            {
+                $iReturn = $iValue;
+            }//if( is_integer($iValue) && ($iValue>=$iMin) && ($iValue<=$iMax) )
+        }//if( is_scalar($iValue) && is_integer($iMin) && is_integer($iMax) )
+        return $iReturn;
     }
 
     /**
      * function: Sanitize
-     * description: return true if the data are valid
-     * parameter: STRING|sValue - value to test
-     *            STRING|sFilter - regular expression
-     * return: BOOLEAN| true or false
+     * description: return sanitized value
+     * parameter: STRING|sValue  - value to sanitize
+     *            STRING|sFilter - regex filter
+     * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - fixed minor bug
+     *                                        add min and max length
      */
-    private function Sanitize($sValue, $sFilter='')
+    private function Sanitize( $sValue, $iMin, $iMax, $sFilter='' )
     {
-        $bReturn=FALSE;
-        if( is_scalar($sValue) && is_scalar($sFilter) )
+        $sReturn = '';
+        if( is_scalar($sValue) && is_scalar($sFilter) && is_integer($iMin) && is_integer($iMax) )
         {
-            if( !empty($sFilter) )
+			// Trim
+			$sValue = trim($sValue);
+            // Size
+            $iSize = mb_strlen( $sValue, 'UTF-8');
+            if( ($iSize>=$iMin) && ($iSize<=$iMax) )
             {
-                if( preg_match($sFilter,$sValue)>0 )
+                $sReturn = $sValue;
+                // Authorized caracteres
+                if( !empty($sFilter) )
                 {
-                    $bReturn=TRUE;
-                }//if( preg_match($sFilter,$sValue) )
-            }
-            else
-            {
-                $bReturn=TRUE;
-            }//if( !empty($sFilter) )
-        }//if( is_scalar($sValue) )
-        return $bReturn;
+                    if( 0==preg_match( $sFilter, $sReturn) )
+                    {
+                        $sReturn = '';
+                    }//if( 0==preg_match( $sFilter, $sReturn) )
+                }//if( !empty($sFilter) )
+            }//if( ($iSize>=$iMin) && ($iSize<=$iMax) )
+        }//if(...
+        return $sReturn;
     }
 
     /** Public methods
      *****************/
+
+    /**
+     * function: __construct
+     * description: constructor
+     * parameter: none
+     * return: none
+     * author: Olivier JULLIEN - 2010-02-04
+     */
+    public function __construct(){}
 
     /**
      * function: __destruct
@@ -117,64 +184,19 @@ class CUser
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function __destruct()
-    {
-        $this->Invalidate();
-    }
-
-   /**
-     * function: __clone
-     * description: cloning is forbidden
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
-     */
-    public function __clone(){}
-
-   /**
-     * function: GetInstance
-     * description: create or return the current instance
-     * parameter: none
-     * return: this
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function GetInstance()
-    {
-        if( is_null(self::$m_pInstance) )
-        {
-            self::$m_pInstance = new CUser();
-        }
-        return self::$m_pInstance;
-    }
-
-   /**
-     * function: DeleteInstance
-     * description: delete the current instance
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function DeleteInstance()
-    {
-        if( !is_null(self::$m_pInstance) )
-        {
-            $tmp=self::$m_pInstance;
-            self::$m_pInstance=NULL;
-            unset($tmp);
-        }
-    }
+    public function __destruct(){}
 
     /**
      * function: GetUsername
      * description: return the Username
-     * parameter: none
-     * return: STRING or FALSE
+     * parameter: INTEGER|iFilter - 1 if characters should be converted into html entities
+     * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use ENT_QUOTES instead of ENT_COMPAT
      */
-    public function GetUsername()
+    public function GetUsername($iFilter=0)
     {
-        return (!is_null($this->m_sUsername)?$this->m_sUsername:FALSE);
+        return ((1==$iFilter)?htmlentities($this->m_sUsername,ENT_QUOTES,'UTF-8'):$this->m_sUsername);
     }
 
    /**
@@ -183,129 +205,249 @@ class CUser
      * parameter: STRING|sValue - username
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - add min and max check
      */
     public function SetUsername( $sValue )
     {
-        $this->UnsetAuthentication();
-        $this->m_sUsername=NULL;
-        if( $this->Sanitize($sValue,GetRegExPatternName())===TRUE )
-        {
-            $this->m_sUsername = $sValue;
-        }//if( $this->Sanitize($sValue)===TRUE )
+    	$this->m_sUsername = $this->Sanitize( $sValue, CUser::USERNAMEMIN, CUser::USERNAMEMAX,GetRegExPatternName() );
     }
 
     /**
-     * function: GetSession
-     * description: return the session value
+     * function: GetPassword
+     * description: return the password value
      * parameter: none
-     * return: STRING or FALSE
+     * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function GetSession()
+    public function GetPassword()
     {
-        return (!is_null($this->m_sSession)?$this->m_sSession:FALSE);
+        return $this->m_sPassword;
     }
 
    /**
-     * function: SetSession
-     * description: set session value
-     * parameter: STRING|sValue - session
+     * function: SetPassword
+     * description: set password value
+     * parameter: STRING|sValue - password
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - add min and max check
      */
-    public function SetSession( $sValue )
+    public function SetPassword($sValue)
     {
-        $this->UnsetAuthentication();
-        $this->m_sSession=NULL;
-        if( $this->Sanitize($sValue,'/^[[:alnum:]_]+$/')===TRUE )
-        {
-            $this->m_sSession = $sValue;
-        }//if( $this->Sanitize($sValue)===TRUE )
+        $this->m_sPassword = $this->Sanitize($sValue, CUser::PASSWORDMIN, CUser::PASSWORDMAX);
     }
 
     /**
-     * function: GetUserBDIdentifier
-     * description: return user db identifier
-     *              (used in the "no stored procedure" mode
+     * function: GetPasswordCheck
+     * description: return the password check value
+     * parameter: none
+     * return: STRING
+     * author: Olivier JULLIEN - 2010-02-04
+     */
+    public function GetPasswordCheck()
+    {
+        return $this->m_sPasswordCheck;
+    }
+
+   /**
+     * function: SetPasswordCheck
+     * description: set password check value
+     * parameter: STRING|sValue - password
+     * return: none
+     * author: Olivier JULLIEN - 2010-06-11
+     * update: Olivier JULLIEN - 2010-06-15 - add min and max check
+     */
+    public function SetPasswordCheck($sValue)
+    {
+        $this->m_sPasswordCheck = $this->Sanitize($sValue, CUser::PASSWORDMIN, CUser::PASSWORDMAX);
+    }
+
+    /**
+     * function: GetIdentifier
+     * description: return user identifier
      * parameter: none
      * return: INTEGER
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function GetUserBDIdentifier()
+    public function GetIdentifier()
     {
         return (integer)$this->m_iIdentifier;
     }
 
     /**
-     * function: IsAuthenticated
-     * description: return true if the user is authenticated and valid
-     * parameter: none
-     * return: BOOLEAN - TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function IsAuthenticated()
-    {
-        return $this->IsValid() && $this->m_bAuth;
-    }
-
-   /**
-     * function: SetAuthentication
-     * description: set authentiiation to true
-     * parameter: INTEGER|iUserId - user db identifier
+     * function: SetIdentifier
+     * description: Set user identifier
+     * parameter: INTEGER|iValue - identifier
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function SetAuthentication($iUserId)
+    public function SetIdentifier($iValue)
     {
-    	if( is_integer($iUserId) && ($iUserId>0) )
-        {
-        	$this->m_bAuth = TRUE;
-        	$this->m_iIdentifier=$iUserId;
-        }
-        else
-        {
-        	$this->m_bAuth = FALSE;
-            $this->m_iIdentifier=0;
-        }//if( is_integer($iUserId) && ($iUserId>0) )
+        $this->m_iIdentifier = $this->SanitizeInt( $iValue, CUser::IDENTIFIERMIN, CUser::IDENTIFIERMAX, 0);
     }
 
    /**
-     * function: UnsetAuthentication
-     * description: set authentiiation to false
+     * function: GetState
+     * description: return user state
      * parameter: none
-     * return: none
+     * return: INTEGER
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function UnsetAuthentication()
+    public function GetState()
     {
-    	$this->m_iIdentifier=0;
-        $this->m_bAuth = FALSE;
-    }
-
-   /**
-     * function: IsValid
-     * description: return true if username and session are set
-     * parameter:
-     * return: TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function IsValid()
-    {
-        return (!is_null($this->m_sSession) && !is_null($this->m_sUsername) );
+        return (integer)$this->m_iState;
     }
 
     /**
-     * function: Invalidate
-     * description: unset variables
-     * parameter: none
+     * function: SetState
+     * description: Set user state
+     * parameter: INTEGER|iValue - state
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function Invalidate()
+    public function SetState($iValue)
     {
-        $this->UnsetAuthentication();
-        $this->m_sUsername=NULL;
-        $this->m_sSession=NULL;
+    	$this->m_iState = $this->SanitizeInt( $iValue, CUser::STATEMIN, CUser::STATEMAX, CUser::STATEMIN);
     }
+
+   /**
+     * function: IsValidLoguin
+     * description: return true if username and passwords are set
+     * parameter: none
+     * return: BOOLEAN - TRUE or FALSE
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    public function IsValidLogin()
+    {
+        return ( (strlen($this->m_sUsername)>0)
+              && (strlen($this->m_sPassword)>0) );
+    }
+
+   /**
+     * function: IsValidNew
+     * description: return true if username and passwords are set and valid for a creation
+     * parameter: none
+     * return: BOOLEAN - TRUE or FALSE
+     * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-11 - add password check
+     */
+    public function IsValidNew()
+    {
+        return ( (strlen($this->m_sUsername)>0)
+              && (strlen($this->m_sPassword)>0)
+              && (strlen($this->m_sPasswordCheck)>0)
+              && ($this->m_sPassword===$this->m_sPasswordCheck) );
+    }
+
+   /**
+     * function: IsValidUpdate
+     * description: return true if username, identifier and passwords are set and valid for an update
+     * parameter:
+     * return: TRUE or FALSE
+     * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-11 - add password check
+     */
+    public function IsValidUpdate()
+    {
+        // Check name and identifier
+        $bReturn = ( (strlen($this->m_sUsername)>0) && ($this->m_iIdentifier>0) );
+        // Check password
+        if( strlen($this->m_sPassword)>0 )
+        {
+            $bReturn = $bReturn && ($this->m_sPassword===$this->m_sPasswordCheck);
+        }
+        elseif( strlen($this->m_sPasswordCheck)>0 )
+        {
+            $bReturn = FALSE;
+        }//if( strlen($this->m_sPassword)>0 )
+        return $bReturn;
+    }
+
+   /**
+     * function: ReadInput
+     * description: Read GET or POST input new user values
+     * parameters: INTEGER|$iFilter - Filter to apply
+     * return: BOOLEAN - TRUE or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - add constants
+     */
+    public function ReadInput($iFilter)
+    {
+        $bReturn = FALSE;
+        if( ($iFilter===INPUT_POST) || ($iFilter===INPUT_GET) )
+        {
+            // Get identifier
+            if( filter_has_var( $iFilter, CUser::IDENTIFIERTAG) )
+            {
+                $tFilter = array('options' => array('min_range'=>CUser::IDENTIFIERMIN,
+                                                    'max_range'=>CUser::IDENTIFIERMAX) );
+                $this->SetIdentifier(filter_input($iFilter,CUser::IDENTIFIERTAG,FILTER_VALIDATE_INT,$tFilter));
+            }//if( filter_has_var( $iFilter, CUser::IDENTIFIERTAG) )
+
+            // Get user name, passwords and state (POST only)
+            if( $iFilter===INPUT_POST )
+            {
+	            if( filter_has_var( INPUT_POST, CUser::USERNAMETAG) )
+                    $this->SetUsername( filter_input( INPUT_POST, CUser::USERNAMETAG, FILTER_UNSAFE_RAW) );
+
+    	        if( filter_has_var( INPUT_POST, CUser::PASSWORDTAG) )
+	            {
+                    $sBuffer = trim( filter_input( INPUT_POST, CUser::PASSWORDTAG, FILTER_UNSAFE_RAW) );
+                    if( strlen($sBuffer)>0 )
+                    {
+        	            $this->SetPassword( sha1($sBuffer) );
+                    }
+                    else
+                    {
+                        $this->m_sPassword = '';
+                    }//if( strlen($sBuffer)>0 )
+                }//if( filter_has_var( INPUT_POST, CUser::PASSWORDTAG) )
+
+                if( filter_has_var( INPUT_POST, CUser::PASSWORDCHECKTAG) )
+                {
+                    $sBuffer = trim( filter_input( INPUT_POST, CUser::PASSWORDCHECKTAG, FILTER_UNSAFE_RAW) );
+                    if( strlen($sBuffer)>0 )
+                    {
+                        $this->SetPasswordCheck( sha1($sBuffer) );
+                    }
+                    else
+                    {
+                        $this->m_sPasswordCheck = '';
+                    }//if( strlen($sBuffer)>0 )
+                }//if( filter_has_var( INPUT_POST, CUser::PASSWORDCHECKTAG) )
+
+                if( filter_has_var( INPUT_POST, CUser::STATETAG) )
+	            {
+                    $tFilter = array('options' => array('min_range' => CUser::STATEMIN,
+                                                        'max_range' => CUser::STATEMAX) );
+	                $this->SetState( filter_input( INPUT_POST, CUser::STATETAG, FILTER_VALIDATE_INT, $tFilter) );
+                }//if( filter_has_var( INPUT_POST, CUser::STATETAG) )
+
+            }//if( $iFilter===INPUT_POST )
+
+            $bReturn = TRUE;
+
+        }//if( ($iFilter===INPUT_POST) || ($iFilter===INPUT_GET) )
+
+        return $bReturn;
+    }
+
+   /**
+     * function: ResetMe
+     * description: Set the default values.
+     * parameters: none
+     * return: none
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    public function ResetMe()
+    {
+        $this->m_iIdentifier = CUser::IDENTIFIERMIN;
+        $this->m_sUsername = '';
+        $this->m_sPassword = '';
+        $this->m_sPasswordCheck = '';
+        $this->m_iState = CUser::STATEMIN;
+    }
+
 }
+
 ?>

@@ -30,15 +30,15 @@
  *************************************************************************/
 /*************************************************************************
  * file encoding: UTF-8
- * description: build and display the reservation list for a day.
- *         GET: act=print, rey=<year>, rem=<month>, red=<day>
+ * description: build and display the day print page.
+ *         GET: rey=year, rem=month, red=day
  * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -49,111 +49,92 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
-    $iPagingLimit=0;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/inituser.php');
+    require(PBR_PATH.'/includes/init/authuser.php');
 
-    /** Include main object(s)
-     *************************/
+    /** Initialize
+     *************/
     require(PBR_PATH.'/includes/class/cdate.php');
+    require(PBR_PATH.'/includes/class/cpaging.php');
+    $pDate = new CDate();
+    $pPaging = new CPaging();
 
     /** Read input parameters
      ************************/
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act') )
+
+    // Read date values
+    if( $pDate->ReadInput( INPUT_GET, TRUE )===FALSE )
     {
-        // Get action
-        $sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        // Verify action and parameters
-        if( $sAction=='print' && filter_has_var(INPUT_GET, 'red')
-                              && filter_has_var(INPUT_GET, 'rem')
-                              && filter_has_var(INPUT_GET, 'rey') )
-        {
-            // Get the date
-            CDate::GetInstance()->ReadInput(INPUT_GET);
-        }
-        else
-        {
-            // Parameters are not valid
-            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-	        ErrorLog( CUser::GetInstance()->GetUsername(), $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
-            CUser::GetInstance()->Invalidate();
-        }// if( ($sAction=='update') || ($sAction=='show') )
-    }//action = show
+        // mandatory parameters are not valid
+        unset( $pDate, $pPaging);
+        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'date invalide', E_USER_WARNING, FALSE);
+        RedirectError( -2, __FILE__, __LINE__ );
+        exit;
+    }//if( $pDate->ReadInput(...
 
     /** Build the page
-    ******************/
-    if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
+     *****************/
+
+    // Get the reservations count
+    require(PBR_PATH.'/includes/db/function/rentsgetcount.php');
+    $iReturn = RentsGetCount( CAuth::GetInstance()->GetUsername()
+                            , CAuth::GetInstance()->GetSession()
+                            , GetIP().GetUserAgent()
+                            , $pDate );
+
+    // Error
+    if( ($iReturn===FALSE) || ($iReturn<0) )
     {
-
-        /** Get the current reservations count
-         *************************************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentsgetcount.php');
-        $iPagingLimit=RentsGetCount( CUser::GetInstance()->GetUsername()
-                                    ,CUser::GetInstance()->GetSession()
-                                    ,GetIP().GetUserAgent()
-                                    ,CDate::GetInstance());
-        if( $iPagingLimit<0 )
-        {
-            // Failed
-            RedirectError( $iReturn, __FILE__, __LINE__ );
-			exit;
-        }//if( $iReturn>0 )
-
-        /** Get the current reservations
-         *******************************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentsget.php');
-        $tRecordset=RentsGet( CUser::GetInstance()->GetUsername()
-                             ,CUser::GetInstance()->GetSession()
-                             ,GetIP().GetUserAgent()
-                             ,CDate::GetInstance()
-                             ,0
-                             ,$iPagingLimit);
-        if( !is_array($tRecordset) )
-        {
-            // Failed
-        	include(PBR_PATH.'/includes/init/initclean.php');
-			exit;
-        }//if( !is_array($tRecordset) )
-
-        /** Build header
-         ***************/
-        require(PBR_PATH.'/includes/class/cheader.php');
-        $sFormTitle=CDate::GetInstance()->GetRequestDay().' ';
-        $sFormTitle.=CDate::GetInstance()->GetMonthName(CDate::GetInstance()->GetRequestMonth()).' ';
-        $sFormTitle.=CDate::GetInstance()->GetRequestYear();
-        CHeader::GetInstance()->SetNoCache();
-        CHeader::GetInstance()->ToPrint();
-        CHeader::GetInstance()->SetTitle($sFormTitle);
-        CHeader::GetInstance()->SetDescription($sFormTitle);
-        CHeader::GetInstance()->SetKeywords($sFormTitle);
-        CHeader::GetInstance()->SetTitle('Imprimer');
-        CHeader::GetInstance()->SetDescription('Imprimer');
-        CHeader::GetInstance()->SetKeywords('imprimer,print');
-
-        /** Display
-         **********/
-        require(PBR_PATH.'/includes/display/displayheader.php');
-        require(PBR_PATH.'/includes/display/displaydayprint.php');
-
-        /** Clean
-         ********/
-        CHeader::DeleteInstance();
-
-    }
-    else
-    {
-        //Error
-        include(PBR_PATH.'/includes/init/initclean.php');
+        unset( $pDate, $pPaging);
+        RedirectError( $iReturn, __FILE__, __LINE__ );
         exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
+    }//if( ($iReturn===FALSE) || ($iReturn<0) )
+
+    // Get rents
+    require(PBR_PATH.'/includes/db/function/rentsget.php');
+    $tRecordset = RentsGet( CAuth::GetInstance()->GetUsername()
+                          , CAuth::GetInstance()->GetSession()
+                          , GetIP().GetUserAgent()
+                          , $pDate
+                          , $pPaging );
+
+    // Error
+    if( !is_array($tRecordset) )
+    {
+        unset( $pDate, $pPaging);
+        RedirectError( $tRecordset, __FILE__, __LINE__ );
+        exit;
+    }//if( !is_array($tRecordset) )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sFormTitle  = $pDate->GetRequestDay().' ';
+    $sFormTitle .= $pDate->GetMonthName( $pDate->GetRequestMonth() ).' ';
+    $sFormTitle .= $pDate->GetRequestYear();
+    $pHeader->SetNoCache();
+    $pHeader->ToPrint();
+    $pHeader->SetTitle($sFormTitle);
+    $pHeader->SetDescription($sFormTitle);
+    $pHeader->SetKeywords($sFormTitle);
+    $pHeader->SetTitle('Imprimer');
+    $pHeader->SetDescription('Imprimer');
+    $pHeader->SetKeywords('imprimer,print');
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/dayprint.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset( $pDate, $pPaging);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

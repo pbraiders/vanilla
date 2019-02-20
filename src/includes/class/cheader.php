@@ -32,7 +32,15 @@
  * file encoding: UTF-8
  * description: describe header properties
  * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
+ * update: Olivier JULLIEN - 2010-05-24 - update __clone()
+ * update: Olivier JULLIEN - 2010-06-15 - is not a singleton anymore
+ *                                        delete GetInstance()
+ *                                        delete DeleteInstance()
+ *                                        update GetTitle()
+ *                                        update GetDescription()
+ *                                        update GetKeyword()
+ *                                        add AcceptXML()
+ *                                        add AnalyseMIMEType()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -47,61 +55,50 @@ define('PBR_META_DESC','système de gestion de réservations.');
 define('PBR_META_KWRD','paintball,management,rent,gestion,location');
 define('PBR_META_RBOT','NOINDEX,NOFOLLOW');
 
-class CHeader
+final class CHeader
 {
 
     /** Private attributs
      ********************/
 
-    // Singleton
-    private static $m_pInstance = NULL;
-
     // Title
-    private $m_sTitle=PBR_META_TITLE;
+    private $m_sTitle = PBR_META_TITLE;
 
     // Description
-    private $m_sDescription=PBR_META_DESC;
+    private $m_sDescription = PBR_META_DESC;
 
     // Keywords
-    private $m_sKeywords=PBR_META_KWRD;
+    private $m_sKeywords = PBR_META_KWRD;
 
     // Robot
-    private $m_sRobot=PBR_META_RBOT;
+    private $m_sRobot = PBR_META_RBOT;
 
     // Mobile
-    private $m_bMobile=FALSE;
+    private $m_bMobile = FALSE;
 
     // No Cache
-    private $m_bNoCache=FALSE;
+    private $m_bNoCache = FALSE;
 
     // For print
-    private $m_bPrint=FALSE;
+    private $m_bPrint = FALSE;
+
+    // For MIME type
+    private $m_bAcceptXML = FALSE;
 
     /** Private methods
      ******************/
 
-    /**
-     * function: __construct
-     * description: constructor
-     * parameter: none
+   /**
+     * function: SetMobile
+     * description: Analyse user agent
+     * parameter: STRING|sUserAgent - user agent
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
-     */
-    private function __construct()
-    {
-        $this->SetMobile(GetUserAgent(4));
-    }
-
-   /**
-     * function: IsMobile
-     * description: return true if mobile device detected
-     * parameter: STRING|sUserAgent - user agent
-     * return: BOOLEAN
-     * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - improvement
      */
     private function SetMobile($sUserAgent)
     {
-        if( isset($sUserAgent) && is_string($sUserAgent) && strlen($sUserAgent)>0 )
+        if( IsStringNotEmpty($sUserAgent)===TRUE )
         {
             $iResult=preg_match(PBR_MOBILE_USUAL,$sUserAgent);
             if( ($iResult===FALSE) || ($iResult==0) )
@@ -115,8 +112,40 @@ class CHeader
         }//if(...
     }
 
+   /**
+     * function: AnalyseMIMEType
+     * description: Analyse browser allowed MIME type
+     * parameter: STRING|sHttpAccept - mime type list
+     * return: none
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    private function AnalyseMIMEType($sHttpAccept)
+    {
+        $this->m_bAcceptXML = FALSE;
+        if( IsStringNotEmpty($sHttpAccept)===TRUE )
+        {
+            if( stristr( $sHttpAccept, "application/xhtml+xml" )!==FALSE )
+            {
+                $this->m_bAcceptXML = TRUE;
+            }//if( stristr( $sHttpAccept, "application/xhtml+xml" )!==FALSE )
+        }//if( IsStringNotEmpty($sHttpAccept)===TRUE )
+    }
+
     /** Public methods
      *****************/
+
+    /**
+     * function: __construct
+     * description: constructor
+     * parameter: none
+     * return: none
+     * author: Olivier JULLIEN - 2010-02-04
+     */
+    public function __construct()
+    {
+        $this->SetMobile(GetUserAgent(4));
+        $this->AnalyseMIMEType(GetHttpAccept());
+    }
 
     /**
      * function: __destruct
@@ -137,47 +166,15 @@ class CHeader
      */
     public function __clone() {}
 
-   /**
-     * function: GetInstance
-     * description: create or return the current instance
-     * parameter: none
-     * return: this
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function GetInstance()
-    {
-        if( is_null(self::$m_pInstance) )
-        {
-            self::$m_pInstance = new CHeader();
-        }
-        return self::$m_pInstance;
-    }
-
-   /**
-     * function: DeleteInstance
-     * description: delete the current instance
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function DeleteInstance()
-    {
-        if( !is_null(self::$m_pInstance) )
-        {
-            $tmp=self::$m_pInstance;
-            self::$m_pInstance=NULL;
-            unset($tmp);
-        }
-    }
-
     /**
      * function: GetTitle
      * description: return the title
      * parameter: none
      * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use ENT_QUOTES instead of ENT_COMPAT
      */
-    public function GetTitle() { return htmlentities($this->m_sTitle,ENT_COMPAT,'UTF-8'); }
+    public function GetTitle() { return htmlentities($this->m_sTitle,ENT_QUOTES,'UTF-8'); }
 
     /**
      * function: GetDescription
@@ -185,8 +182,9 @@ class CHeader
      * parameter: none
      * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use ENT_QUOTES instead of ENT_COMPAT
      */
-    public function GetDescription() { return htmlentities($this->m_sDescription,ENT_COMPAT,'UTF-8'); }
+    public function GetDescription() { return htmlentities($this->m_sDescription,ENT_QUOTES,'UTF-8'); }
 
     /**
      * function: GetKeywords
@@ -194,8 +192,9 @@ class CHeader
      * parameter: none
      * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use ENT_QUOTES instead of ENT_COMPAT
      */
-    public function GetKeywords() { return htmlentities($this->m_sKeywords,ENT_COMPAT,'UTF-8'); }
+    public function GetKeywords() { return htmlentities($this->m_sKeywords,ENT_QUOTES,'UTF-8'); }
 
     /**
      * function: GetRobot
@@ -213,13 +212,14 @@ class CHeader
      * parameter: STRING|sValue - title to add
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - improvement
      */
     public function SetTitle( $sValue )
     {
-        if( is_scalar($sValue) && (strlen(trim($sValue))>0) )
+        if( IsStringNotEmpty($sValue)===TRUE )
         {
             $this->m_sTitle = $this->m_sTitle.' - '.$sValue;
-        }// if...
+        }//if( IsStringNotEmpty($sValue)===TRUE )
     }
 
    /**
@@ -228,13 +228,14 @@ class CHeader
      * parameter: STRING|sValue - description to add
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - improvement
      */
     public function SetDescription( $sValue )
     {
-        if( is_scalar($sValue) && (strlen(trim($sValue))>0) )
+        if( IsStringNotEmpty($sValue)===TRUE )
         {
             $this->m_sDescription = $this->m_sDescription.' '.$sValue;
-        }// if...
+        }//if( IsStringNotEmpty($sValue)===TRUE )
     }
 
    /**
@@ -243,13 +244,14 @@ class CHeader
      * parameter: STRING|sValue - keywords to add
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - improvement
      */
     public function SetKeywords( $sValue )
     {
-        if( is_scalar($sValue) && (strlen(trim($sValue))>0) )
+        if( IsStringNotEmpty($sValue)===TRUE )
         {
             $this->m_sKeywords = $this->m_sKeywords.','.$sValue;
-        }// if...
+        }//if( IsStringNotEmpty($sValue)===TRUE )
     }
 
    /**
@@ -260,6 +262,15 @@ class CHeader
      * author: Olivier JULLIEN - 2010-02-04
      */
     public function IsMobile() {return $this->m_bMobile;}
+
+   /**
+     * function: AcceptXML
+     * description: return true if the browser accept XML application
+     * parameter: none
+     * return: BOOLEAN
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    public function AcceptXML() {return $this->m_bAcceptXML;}
 
    /**
      * function: IsNoCache
@@ -306,12 +317,14 @@ class CHeader
      */
     public function SetToDefault()
     {
-        $this->m_sTitle=PBR_META_TITLE;
-        $this->m_sDescription=PBR_META_DESC;
-        $this->m_sKeywords=PBR_META_KWRD;
-        $this->m_sRobot=PBR_META_RBOT;
-        $this->m_bNoCache=FALSE;
-        $this->m_bPrint=FALSE;
+        $this->m_sTitle       = PBR_META_TITLE;
+        $this->m_sDescription = PBR_META_DESC;
+        $this->m_sKeywords    = PBR_META_KWRD;
+        $this->m_sRobot       = PBR_META_RBOT;
+        $this->m_bNoCache     = FALSE;
+        $this->m_bPrint       = FALSE;
+        $this->m_bAcceptXML   = FALSE;
     }
 }
+
 ?>

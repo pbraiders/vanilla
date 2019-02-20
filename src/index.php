@@ -31,15 +31,16 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the main page.
- *          POST: act=calendar, cuy=<current year>, cum=<current month>, rem=<requested month>
- *                rey=<requested year>, go=<goto date> ou pre=<previous month> ou nex=<next month>
+ *          POST: act=calendar, cuy=<current year>, cum=<current month>, rem=<requested month>,
+ *                rey=<requested year>, go:goto date or pre:previous month or nex:next month
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -50,151 +51,84 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/inituser.php');
+    require(PBR_PATH.'/includes/init/authuser.php');
 
-    /** Include main object(s)
-     *************************/
+    /** Initialize
+     *************/
     require(PBR_PATH.'/includes/class/cdate.php');
+    $pDate = new CDate();
+    $bAdmin = FALSE;
+    $bReturn = TRUE;
 
     /** Read input parameters
      ************************/
-
-    // Case: POST
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_POST, 'act')
-    											&& filter_has_var(INPUT_POST, 'cuy')
-										  		&& filter_has_var(INPUT_POST, 'cum')
-                                          		&& filter_has_var(INPUT_POST, 'rem')
-                                          		&& filter_has_var(INPUT_POST, 'rey')
-                                          		&& ( filter_has_var(INPUT_POST,'go')
-                                          		||   filter_has_var(INPUT_POST,'pre')
-										  		||   filter_has_var(INPUT_POST, 'nex') ) )
+    if( filter_has_var(INPUT_POST, CDate::YEARTAG) )
     {
-        // Get action
-        $sAction = trim(filter_input( INPUT_POST, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        // Verify action and parameters
-        if( $sAction=='calendar' )
-        {
-            if( filter_has_var(INPUT_POST, 'go') )
-            {
-                // Goto date
-                CDate::GetInstance()->ReadInput(INPUT_POST);
-            }
-            else
-            {
-                // Calendar navigation
-                // Get month
-                $tFilter = array('options' => array('min_range' => 1, 'max_range' => 12));
-                CDate::GetInstance()->SetRequestMonth( filter_input( INPUT_POST, 'cum', FILTER_VALIDATE_INT,$tFilter) );
-                // Get year
-                $tFilter = array('options' => array('min_range' => CDate::MINYEAR, 'max_range' => CDate::MAXYEAR));
-                CDate::GetInstance()->SetRequestYear( filter_input( INPUT_POST, 'cuy', FILTER_VALIDATE_INT, $tFilter) );
-                // Move
-                if( filter_has_var(INPUT_POST, 'pre') )
-                {
-                    // Previous
-                    CDate::GetInstance()->PreviousRequestMonth();
-                }
-                elseif(  filter_has_var(INPUT_POST, 'nex') )
-                {
-                    // Next
-                    CDate::GetInstance()->NextRequestMonth();
-                }//if( filter_has_var(INPUT_POST, 'pre') )
-            }//if( filter_has_var(INPUT_POST, 'go') )
-        }
-        else
-        {
-            // Parameters are not valid
-            CUser::GetInstance()->Invalidate();
-        }//if( $sAction=='calendar' )
-    }//filter_has_var( POST ....
-
-    // Case: GET
-    if( CUser::GetInstance()->IsAuthenticated() && is_null($sAction)
-                                                && filter_has_var(INPUT_GET, 'act')
-                                                && filter_has_var(INPUT_GET, 'rem')
-                                                && filter_has_var(INPUT_GET, 'rey'))
-    {
-        // Get action
-        $sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        // Get date
-        CDate::GetInstance()->ReadInput(INPUT_GET);
-        // Verify action
-        if( $sAction!='calendar' )
-        {
-            // Parameters are not valid
-            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-	        ErrorLog( CUser::GetInstance()->GetUsername(), $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
-            CUser::GetInstance()->Invalidate();
-        }//if( $sAction!='calendar' )
-    }//filter_has_var( GET
-
-    /** Build Calendar
-     *****************/
-    if( CUser::GetInstance()->IsAuthenticated() )
-    {
-        /** Get the rent day infos
-         *************************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentsmonthget.php');
-        $tRecordset=RentsMonthGet( CUser::GetInstance()->GetUsername()
-                             ,CUser::GetInstance()->GetSession()
-                             ,GetIP().GetUserAgent()
-                             ,CDate::GetInstance());
-        if( !is_array($tRecordset) )
-        {
-            //Error
-            RedirectError( $tRecordset, __FILE__, __LINE__ );
-            exit;
-        }//if( !is_array($tRecordset) )
-
-        /** Build header
-         ***************/
-        require(PBR_PATH.'/includes/class/cheader.php');
-        $sBuffer=CDate::GetInstance()->GetMonthName( CDate::GetInstance()->GetRequestMonth() );
-        $sBuffer.=' '.CDate::GetInstance()->GetRequestYear();
-        CHeader::GetInstance()->SetNoCache();
-        CHeader::GetInstance()->SetTitle($sBuffer);
-        CHeader::GetInstance()->SetDescription($sBuffer);
-        CHeader::GetInstance()->SetKeywords($sBuffer);
-
-		/** Admin case
-	     *************/
-		if( SessionValid( CUser::GetInstance()->GetUsername()
-        				, CUser::GetInstance()->GetSession()
-                        , 10
-                        , GetIP().GetUserAgent()) >0 )
-	    {
-	    	$bAdmin=TRUE;
-	    }
-	    else
-	    {
-	    	$bAdmin=FALSE;
-	    }//admin case
-
-        /** Display
-         **********/
-        require(PBR_PATH.'/includes/display/displayheader.php');
-        require(PBR_PATH.'/includes/display/displaycalendar.php');
-        require(PBR_PATH.'/includes/display/displayfooter.php');
-
-        /** Clean
-         ********/
-        CHeader::DeleteInstance();
+        // Read POST parameters
+        $bReturn = $pDate->ReadInput(INPUT_POST);
     }
-    else
+    elseif( filter_has_var(INPUT_GET, CDate::YEARTAG) )
     {
-        include(PBR_PATH.'/includes/init/initclean.php');
-        header('Location: '.PBR_URL.'login.php');
-		exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+        // Read GET parameters
+        $bReturn = $pDate->ReadInput(INPUT_GET);
+    }//if( filter_has_var(
+    if( !$bReturn )
+    {
+        // mandatory parameters are not valid
+        unset($pDate);
+        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'action interdite', E_USER_WARNING, FALSE);
+        RedirectError( -2, __FILE__, __LINE__ );
+        exit;
+    }//if( !$bReturn )
+
+    /** Get the rent day infos
+     *************************/
+    require(PBR_PATH.'/includes/db/function/rentsmonthget.php');
+    $tRecordset = RentsMonthGet( CAuth::GetInstance()->GetUsername()
+                               , CAuth::GetInstance()->GetSession()
+                               , GetIP().GetUserAgent()
+                               , $pDate);
+
+    if( !is_array($tRecordset) )
+    {
+        // Error
+        RedirectError( $tRecordset, __FILE__, __LINE__ );
+        exit;
+    }//if( !is_array($tRecordset) )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sBuffer = $pDate->GetMonthName( $pDate->GetRequestMonth() ).' '.$pDate->GetRequestYear();
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sBuffer);
+    $pHeader->SetDescription($sBuffer);
+    $pHeader->SetKeywords($sBuffer);
+
+    /** Admin case
+	 *************/
+    if( SessionValid( CAuth::GetInstance()->GetUsername(), CAuth::GetInstance()->GetSession(), 10, GetIP().GetUserAgent())>0 )
+	{
+	    $bAdmin = TRUE;
+	}//admin case
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/calendar.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset($pDate);
+    unset($pHeader);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

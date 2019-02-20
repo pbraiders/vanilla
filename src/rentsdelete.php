@@ -31,145 +31,132 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the rents delete page.
- *         GET: act=confirm|delete, tok=<token>, rey<year>
- *              cancel=<cancel case>
+ *        POST: rey=year
+ *              can=cancel case
+ *              con=confirm case, tok=<token>, rey=year
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
      *****************/
     require(PBR_PATH.'/config.php');
 
-    /** Create session
-     *****************/
-    require(PBR_PATH.'/includes/class/csession.php');
-    CSession::CreateSession();
-
     /** Include functions
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
-    $sToken=NULL;
-    $iYear=0;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/initadmin.php');
+    require(PBR_PATH.'/includes/init/authadmin.php');
 
-    /** Read input parameters
-     ************************/
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act')
-                                                && filter_has_var(INPUT_GET, 'tok')
-    											&& filter_has_var(INPUT_GET, 'rey') )
+    /** Cancel
+     *********/
+    if( filter_has_var( INPUT_POST, 'can') )
     {
-        // Get action
-        $sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
+        include(PBR_PATH.'/includes/init/clean.php');
+        header('Location: '.PBR_URL.'parameters.php');
+        exit;
+    }//Cancel
 
-        // Get token
-        $sToken = trim(filter_input( INPUT_GET, 'tok', FILTER_SANITIZE_SPECIAL_CHARS));
+    /** Read input date
+     ******************/
+    require(PBR_PATH.'/includes/class/cdate.php');
+    $pDate = new CDate();
+    $iYear = 0;
 
-        // Get year
-        $iYear=(integer)filter_input(INPUT_GET,'rey',FILTER_VALIDATE_INT);
-
-        // Verify readed values
-        if( $sToken!=CSession::GetToken() || (($sAction!='delete') && ($sAction!='confirm'))
-										  || ($iYear<1) )
-        {
-			// Parameters are not valid
-			CUser::GetInstance()->Invalidate();
-        }//if( ...
+    if( filter_has_var( INPUT_POST, CDate::YEARTAG)===TRUE )
+    {
+        $iYear = filter_input( INPUT_POST, CDate::YEARTAG, FILTER_VALIDATE_INT);
     }//if( filter_has_var(...
 
-    // Unset token
-    CSession::CleanToken();
-
-    /** Build the page
-    ******************/
-    if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
+    if( is_null($iYear) || ($iYear===FALSE) || ($iYear>$pDate->GetCurrentYear()) || ($iYear<CDate::MINYEAR) )
     {
-        /** Cancel
-         *********/
-        if( $sAction=='delete' && filter_has_var(INPUT_GET, 'cancel') )
-        {
-            $sBuffer=PBR_URL.'parameters.php?act=show';
-            include(PBR_PATH.'/includes/init/initclean.php');
-            header('Location: '.$sBuffer);
-            exit;
-        }//if( $sAction='delete' && filter_has_var(INPUT_GET, 'cancel') )
+        // Date is not valid
+        unset($pDate);
+        include(PBR_PATH.'/includes/init/clean.php');
+        header('Location: '.PBR_URL.'parameters.php?error=3');
+        exit;
+    }//if( $pDate->GetRequestYear()>=$pDate->GetCurrentYear() )
 
-        /** Delete
-         *********/
-        if( $sAction=='delete' )
-        {
-            require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentsdel.php');
-            $iReturn = RentsDel( CUser::GetInstance()->GetUsername()
-                               , CUser::GetInstance()->GetSession()
-                               , GetIP().GetUserAgent()
-                               , $iYear);
-            // Check error
-            if( $iReturn<0 )
-            {
-            	// Failed
-            	RedirectError( $iReturn, __FILE__, __LINE__ );
-				exit;
-            }//if( $iReturn<1 )
+    /** Create session
+     *****************/
+    require(PBR_PATH.'/includes/class/cphpsession.php');
+    CPHPSession::CreateSession();
 
-            // No error
-            $sBuffer='?act=show&error=2';
-            include(PBR_PATH.'/includes/init/initclean.php');
-            header('Location: '.PBR_URL.'parameters.php'.$sBuffer);
-            exit;
-        }//if( $sAction=='delete' )
-
-        /** Confirm
-         **********/
-        if( $sAction=='confirm' )
-        {
-
-            /** Build token
-             **************/
-            $sToken = md5(uniqid(rand(), TRUE));
-            CSession::GetInstance()->SetToken($sToken);
-
-            /** Build header
-             ***************/
-            require(PBR_PATH.'/includes/class/cheader.php');
-            $sBuffer='Supprimer les anciennes réservations';
-            CHeader::GetInstance()->SetNoCache();
-            CHeader::GetInstance()->SetTitle($sBuffer);
-            CHeader::GetInstance()->SetDescription($sBuffer);
-            CHeader::GetInstance()->SetKeywords('delete,supprimer,suppression,rent');
-
-            /** Display
-             **********/
-            require(PBR_PATH.'/includes/display/displayheader.php');
-            require(PBR_PATH.'/includes/display/displayrentsdelete.php');
-            require(PBR_PATH.'/includes/display/displayfooter.php');
-
-            /** Clean
-             ********/
-            CHeader::DeleteInstance();
-
-        }//if( $sAction='confirm' )
-
-    }
-    else
+    /** Delete
+     *********/
+    if( filter_has_var( INPUT_POST, 'con') && (CPHPSession::GetInstance()->ValidInput(INPUT_POST)===TRUE) )
     {
-		//Error
-		RedirectError( -2, __FILE__, __LINE__ );
-		exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+        // Clean SESSION
+        CPHPSession::CleanToken();
+        CPHPSession::Clean();
+        // Delete
+        require(PBR_PATH.'/includes/db/function/rentsdel.php');
+        $iReturn = RentsDel( CAuth::GetInstance()->GetUsername()
+                           , CAuth::GetInstance()->GetSession()
+                           , GetIP().GetUserAgent()
+                           , $iYear );
+
+        unset($pDate);
+
+        // Failed
+        if( ($iReturn===FALSE) || ($iReturn<0) )
+        {
+            RedirectError( $iReturn, __FILE__, __LINE__ );
+            exit;
+        }//if( ($iReturn===FALSE) || ($iReturn<0) )
+        // Succeeded
+        include(PBR_PATH.'/includes/init/clean.php');
+        header('Location: '.PBR_URL.'parameters.php?error=2');
+        exit;
+    }//Delete
+
+    // Clean SESSION token
+    CPHPSession::CleanToken();
+
+    /** Generate and write SESSION token
+     ***********************************/
+    $sToken = CPHPSession::GetInstance()->WriteToken();
+    if( $sToken===FALSE )
+    {
+        $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de fixer le jeton de la session', E_USER_ERROR, TRUE);
+        CPHPSession::CleanToken();
+        CPHPSession::Clean();
+        unset($pDate);
+        RedirectError( 1, __FILE__, __LINE__ );
+        exit;
+    }//if( $sToken===FALSE )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sBuffer = 'Supprimer les anciennes réservations';
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sBuffer);
+    $pHeader->SetDescription($sBuffer);
+    $pHeader->SetKeywords('delete,erase,effacer,supprimer,suppression,rent');
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/rentsdelete.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset($pHeader);
+    unset($pDate);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

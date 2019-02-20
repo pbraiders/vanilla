@@ -31,15 +31,15 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the day page.
- *         GET: act=show, rey=<year>, rem=<month>, red=<day>, pag=<page>
- *         GET: act=select, rey=<year>, rem=<month>, red=<day>, cti=<contact identifier>, pag=<page>
- *        POST: act=new, rey=<year>, rem=<month>, red=<day>, ctX=<contact info>
+ *         GET: rey=year, rem=month, red=day, cti=<contact identifier>, pag=<page>
+ *        POST: new=new case, rey=year, rem=month, red=day, ctX=contact info
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -50,241 +50,205 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
-    $iMessageCode=0;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/inituser.php');
+    require(PBR_PATH.'/includes/init/authuser.php');
 
-    /** Include main object(s)
-     *************************/
-    require(PBR_PATH.'/includes/class/cdate.php');
+    /** Initialize
+     *************/
     require(PBR_PATH.'/includes/class/ccontact.php');
+    require(PBR_PATH.'/includes/class/cdate.php');
     require(PBR_PATH.'/includes/class/crent.php');
     require(PBR_PATH.'/includes/class/cpaging.php');
+    require(PBR_PATH.'/includes/class/caction.php');
+    $pDate = new CDate();
+    $pContact = new CContact();
+    $pRent = new CRent();
+    $pPaging = new CPaging();
+    $iMessageCode = 0;
 
     /** Read input parameters
      ************************/
 
-    /// Case action = show|select
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act')
-                                         		&& filter_has_var(INPUT_GET, 'red')
-                                         		&& filter_has_var(INPUT_GET, 'rem')
-                                         		&& filter_has_var(INPUT_GET, 'rey') )
+    // Read date values
+    if( $pDate->ReadInput( INPUT_POST, TRUE )===FALSE )
     {
-        // Get the action
-        $sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-
-        // Get the Date
-        CDate::GetInstance()->ReadInput(INPUT_GET);
-
-        // Get the message code
-		$iMessageCode=GetMessageCode();
-
-        // Get the page
-		CPaging::GetInstance()->ReadInput();
-
-        // Get the contact identifier
-        if( $sAction=='select' )
+        if( $pDate->ReadInput( INPUT_GET, TRUE )===FALSE )
         {
-           CContact::GetInstance()->SetIdentifier( filter_input(INPUT_GET,'cti',FILTER_VALIDATE_INT) );
-        }//if( $sAction=='select' )
-
-        // Verify action and data
-        if( (($sAction!='show') && ($sAction!='select'))
-         || (($sAction=='select') && CContact::GetInstance()->GetIdentifier()<1) )
-        {
-        	// Parameters are not valid
-            CUser::GetInstance()->Invalidate();
-        }//if...
-
-    }//action = show|select
-
-    // Case action = new|newselected
-    if( CUser::GetInstance()->IsAuthenticated() && is_null($sAction)
-                                          		&& filter_has_var(INPUT_POST, 'act')
-                                          		&& filter_has_var(INPUT_POST, 'red')
-                                          		&& filter_has_var(INPUT_POST, 'rem')
-                                          		&& filter_has_var(INPUT_POST, 'rey'))
-    {
-
-        // Get the action
-        $sAction = trim(filter_input( INPUT_POST, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-
-        // Get the date
-        CDate::GetInstance()->ReadInput(INPUT_POST);
-
-        // Get the contact
-        CContact::GetInstance()->ReadInput();
-
-        // Get contact identifier
-        if( filter_has_var(INPUT_POST, 'cti') )
-        {
-            CContact::GetInstance()->SetIdentifier( filter_input( INPUT_POST,'cti',FILTER_VALIDATE_INT));
-        }//if( filter_has_var(INPUT_POST, 'cti') )
-
-        // Get the rent
-        CRent::GetInstance()->ReadInput(INPUT_POST);
-
-        // Verify action and data
-        if( $sAction=='new' )
-        {
-            if( !CContact::GetInstance()->MandatoriesAreFilled() )
-            {
-                // Missing values
-                $iMessageCode=1;
-                $sAction='show';
-            }//if( !CContact::GetInstance()->MandatoriesAreFilled() )
-        }
-        elseif( ($sAction=='newselected') && (CContact::GetInstance()->GetIdentifier()>0) )
-        {
-            // OK
-        }
-        else
-        {
-        	// Parameters are not valid
-            CUser::GetInstance()->Invalidate();
-        }//if...
-
-    }//action = new|newselected
-
-    /** Build the page
-    ******************/
-    if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
-    {
-
-        /** Action=select, display contact info
-         **************************************/
-        if( $sAction=='select' )
-        {
-            require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/contactget.php');
-            $iReturn=ContactGet( CUser::GetInstance()->GetUsername()
-                               , CUser::GetInstance()->GetSession()
-                               , GetIP().GetUserAgent()
-                               , CContact::GetInstance()->GetIdentifier()
-                               , CContact::GetInstance());
-            if( $iReturn<1 )
-            {
-            	//Error
-            	RedirectError( $iReturn, __FILE__, __LINE__ );
-            	exit;
-            }//if( $iReturn<1 )
-        }//if( $sAction=='select' )
-
-        /** Action=new (add new contact and rent)
-         ** or
-         ** Action=new selected (add new rent to a contact )
-         ***************************************************/
-        if( ($sAction=='new') || ($sAction=='newselected') )
-        {
-            if( $sAction=='new' )
-            {
-                require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentcontactadd.php');
-                $iReturn = RentContactAdd( CUser::GetInstance()->GetUsername()
-                                         , CUser::GetInstance()->GetSession()
-                                         , GetIP().GetUserAgent()
-                                         , CContact::GetInstance()
-                                         , CDate::GetInstance()
-                                         , CRent::GetInstance());
-            }//if( $sAction=='new' )
-
-            if( $sAction=='newselected' )
-            {
-                require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentadd.php');
-                $iReturn = RentAdd( CUser::GetInstance()->GetUsername()
-                                  , CUser::GetInstance()->GetSession()
-                                  , GetIP().GetUserAgent()
-                                  , CContact::GetInstance()->GetIdentifier()
-                                  , CDate::GetInstance()
-                                  , CRent::GetInstance());
-            }//if( $sAction=='newselected' )
-
-            // Check error
-            if( $iReturn>0 )
-            {
-                // erase info
-                CContact::DeleteInstance();
-                CRent::DeleteInstance();
-                $iMessageCode=2;
-                $sAction='show';
-            }
-            else
-            {
-            	// Failed
-            	RedirectError( $iReturn, __FILE__, __LINE__ );
-				exit;
-            }//if( $iReturn>0 )
-        }// if( ($sAction=='new') || ($sAction=='newselected') )
-
-        /** Get the current reservations count
-         *************************************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentsgetcount.php');
-        $iReturn=RentsGetCount( CUser::GetInstance()->GetUsername()
-                               ,CUser::GetInstance()->GetSession()
-                               ,GetIP().GetUserAgent()
-                               ,CDate::GetInstance());
-        if( $iReturn>=0 )
-        {
-        	// Succeeded
-			CPaging::GetInstance()->Compute( (integer)PBR_PAGE_RENTS, (integer)$iReturn );
-        }
-        else
-        {
-            // Failed
-            RedirectError( $iReturn, __FILE__, __LINE__ );
-			exit;
-        }//if( $iReturn>0 )
-
-        /** Get the current reservations
-         *******************************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/rentsget.php');
-        $tRecordset=RentsGet( CUser::GetInstance()->GetUsername()
-                             ,CUser::GetInstance()->GetSession()
-                             ,GetIP().GetUserAgent()
-                             ,CDate::GetInstance()
-                             ,CPaging::GetInstance()->GetOffset()
-                             ,CPaging::GetInstance()->GetLimit());
-        if( !is_array($tRecordset) )
-        {
-            //Error
-            RedirectError( $tRecordset, __FILE__, __LINE__ );
+            // mandatory parameters are not valid
+            unset( $pDate, $pContact, $pRent, $pPaging);
+            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'date invalide', E_USER_WARNING, FALSE);
+            RedirectError( -2, __FILE__, __LINE__ );
             exit;
-        }//if( !is_array($tRecordset) )
+        }//if( $pDate->ReadInput(...
+    }//Read date values
 
-        /** Build header
-         ***************/
-        require(PBR_PATH.'/includes/class/cheader.php');
-        $sFormTitle=CDate::GetInstance()->GetRequestDay().' ';
-        $sFormTitle.=CDate::GetInstance()->GetMonthName(CDate::GetInstance()->GetRequestMonth()).' ';
-        $sFormTitle.=CDate::GetInstance()->GetRequestYear();
-        CHeader::GetInstance()->SetNoCache();
-        CHeader::GetInstance()->SetTitle($sFormTitle);
-        CHeader::GetInstance()->SetDescription($sFormTitle);
-        CHeader::GetInstance()->SetKeywords($sFormTitle);
+    // New rent (and contact) or normal case
+    if( filter_has_var(INPUT_POST, 'new') )
+    {
+        // Read rent values
+        $pRent->ReadInput(INPUT_POST);
 
-        /** Display
-         **********/
-        require(PBR_PATH.'/includes/display/displayheader.php');
-        require(PBR_PATH.'/includes/display/displayday.php');
-        require(PBR_PATH.'/includes/display/displayfooter.php');
+        // Read contact values
+        $pContact->ReadInput(INPUT_POST);
 
-        /** Clean
-         ********/
-        CHeader::DeleteInstance();
+        // Save datas
+        if( $pContact->GetIdentifier()>0 )
+        {
+            // Add rent to identified contact
+            require(PBR_PATH.'/includes/db/function/rentadd.php');
+            $iReturn = RentAdd( CAuth::GetInstance()->GetUsername()
+                              , CAuth::GetInstance()->GetSession()
+                              , GetIP().GetUserAgent()
+                              , $pContact
+                              , $pDate
+                              , $pRent );
+
+            // Error
+            if( ($iReturn===FALSE) || ($iReturn<=0) )
+            {
+                unset( $pDate, $pContact, $pRent, $pPaging);
+                RedirectError( $iReturn, __FILE__, __LINE__ );
+                exit;
+            }//if( ($iReturn===FALSE) || ($iReturn<=0) )
+
+            // Succeeded
+            $pContact->ResetMe();
+            $pRent->ResetMe();
+            $iMessageCode = 2;
+
+        }
+        elseif( $pContact->MandatoriesAreFilled()===TRUE )
+        {
+            // Add new contact and new rent
+            require(PBR_PATH.'/includes/db/function/rentcontactadd.php');
+            $iReturn = RentContactAdd( CAuth::GetInstance()->GetUsername()
+                                     , CAuth::GetInstance()->GetSession()
+                                     , GetIP().GetUserAgent()
+                                     , $pContact
+                                     , $pDate
+                                     , $pRent );
+
+            // Error
+            if( ($iReturn===FALSE) || ($iReturn<=0) )
+            {
+                unset( $pDate, $pContact, $pRent, $pPaging);
+                RedirectError( $iReturn, __FILE__, __LINE__ );
+                exit;
+            }//if( ($iReturn===FALSE) || ($iReturn<=0) )
+
+            // Succeeded
+            $pContact->ResetMe();
+            $pRent->ResetMe();
+            $iMessageCode = 2;
+
+        }
+        else
+        {
+            // Error
+            $iMessageCode = 1;
+        }//Save datas
 
     }
     else
     {
-		//Error
-		RedirectError( -2, __FILE__, __LINE__ );
-		exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+        // Read contact identifier
+        $pContact->ReadInputIdentifier(INPUT_GET);
+
+        // Read the message code
+        $iMessageCode = GetMessageCode();
+
+        // Read the page
+        $pPaging->ReadInput();
+
+    }//New rent (and contact) or normal case
+
+    /** Build the page
+     *****************/
+
+    // Get contact
+    if( $pContact->GetIdentifier()>0 )
+    {
+        require(PBR_PATH.'/includes/db/function/contactget.php');
+        $iReturn = ContactGet( CAuth::GetInstance()->GetUsername()
+                             , CAuth::GetInstance()->GetSession()
+                             , GetIP().GetUserAgent()
+                             , $pContact );
+
+        // Error
+        if( ($iReturn===FALSE) || ($iReturn<=0) )
+        {
+            unset( $pDate, $pContact, $pRent, $pPaging);
+            if( $iReturn===0 )
+            {
+                $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+                ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
+                $iReturn=-2;
+            }//if( $iReturn==0 )
+            RedirectError( $iReturn, __FILE__, __LINE__ );
+            exit;
+        }//if( ($iReturn===FALSE) || ($iReturn<=0) )
+    }//Get contact
+
+    // Get the reservations count
+    require(PBR_PATH.'/includes/db/function/rentsgetcount.php');
+    $iReturn = RentsGetCount( CAuth::GetInstance()->GetUsername()
+                            , CAuth::GetInstance()->GetSession()
+                            , GetIP().GetUserAgent()
+                            , $pDate );
+
+    // Error
+    if( ($iReturn===FALSE) || ($iReturn<0) )
+    {
+        unset( $pDate, $pContact, $pRent, $pPaging);
+        RedirectError( $iReturn, __FILE__, __LINE__ );
+        exit;
+    }//if( ($iReturn===FALSE) || ($iReturn<0) )
+
+    // Succeeded
+    $pPaging->Compute( PBR_PAGE_RENTS, $iReturn );
+
+    // Get rents
+    require(PBR_PATH.'/includes/db/function/rentsget.php');
+    $tRecordset = RentsGet( CAuth::GetInstance()->GetUsername()
+                          , CAuth::GetInstance()->GetSession()
+                          , GetIP().GetUserAgent()
+                          , $pDate
+                          , $pPaging );
+
+    // Error
+    if( !is_array($tRecordset) )
+    {
+        unset( $pDate, $pContact, $pRent, $pPaging);
+        RedirectError( $tRecordset, __FILE__, __LINE__ );
+        exit;
+    }//if( !is_array($tRecordset) )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sFormTitle  = $pDate->GetRequestDay().' ';
+    $sFormTitle .= $pDate->GetMonthName( $pDate->GetRequestMonth() ).' ';
+    $sFormTitle .= $pDate->GetRequestYear();
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sFormTitle);
+    $pHeader->SetDescription($sFormTitle);
+    $pHeader->SetKeywords($sFormTitle);
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/day.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset( $pDate, $pContact, $pRent, $pPaging);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

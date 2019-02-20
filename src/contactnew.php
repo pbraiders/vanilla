@@ -31,13 +31,14 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the new contact page.
- *        POST: act=new, ctX=<contact info>
+ *        POST: act=<new>, ctX=<contact info>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -48,111 +49,77 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
-    $iMessageCode=0;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/inituser.php');
+    require(PBR_PATH.'/includes/init/authuser.php');
 
-    /** Include main object(s)
-     *************************/
+    /** Initialize
+     *************/
     require(PBR_PATH.'/includes/class/ccontact.php');
-    require(PBR_PATH.'/includes/class/cdate.php');
+    $pContact = new CContact();
+    $iMessageCode = 0;
 
     /** Read input parameters
      ************************/
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_POST, 'act')
-        										&& filter_has_var(INPUT_POST, 'ctl')
-        										&& filter_has_var(INPUT_POST, 'ctf')
-        										&& filter_has_var(INPUT_POST, 'ctp') )
+    require(PBR_PATH.'/includes/class/caction.php');
+    if( filter_has_var( INPUT_POST, 'new' ) )
     {
-        // Get action
-        $sAction = trim(filter_input( INPUT_POST, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        // Verify action
-        if( $sAction=='new' )
+        // Read data
+        $pContact->ReadInput(INPUT_POST);
+        if( $pContact->MandatoriesAreFilled()===TRUE )
         {
-            // Get the value
-            CContact::GetInstance()->ReadInput();
+            require(PBR_PATH.'/includes/db/function/contactadd.php');
+            $iReturn = ContactAdd( CAuth::GetInstance()->GetUsername()
+                                 , CAuth::GetInstance()->GetSession()
+                                 , GetIP().GetUserAgent()
+                                 , $pContact );
+
+            // Error
+            if( ($iReturn===FALSE) || ($iReturn<=0) )
+            {
+                unset($pContact);
+                RedirectError( $iReturn, __FILE__, __LINE__ );
+                exit;
+            }//if( ($iReturn===FALSE) || ($iReturn<=0) )
+
+            // Succeed
+            $sBuffer  = PBR_URL.'contacts.php?'.CAction::ACTIONTAG.'=search';
+            $sBuffer .= '&'.CContact::LASTNAMETAG.'='.$pContact->GetLastName(2);
+            $sBuffer .= '&error=1';
+            unset($pContact);
+            include(PBR_PATH.'/includes/init/clean.php');
+            header('Location: '.$sBuffer);
+            exit;
         }
         else
         {
-            // Parameters are not valid
-            CUser::GetInstance()->Invalidate();
-        }// if( $sToken==CSession::GetToken() && ($sAction=='new') )
-    }//if( filter_has_var(...
+            // Missing values
+            $iMessageCode = 1;
+        }//if( $pContact->MandatoriesAreFilled()===TRUE )
+    }//if( CAction::IsValid(...
 
-    /** Build Page
-     *************/
-    if( CUser::GetInstance()->IsAuthenticated() )
-    {
-        /** Add a new contact
-         ********************/
-        if( $sAction=='new' )
-        {
-            if( CContact::GetInstance()->MandatoriesAreFilled()===TRUE )
-            {
-                require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/contactadd.php');
-                $iReturn = ContactAdd( CUser::GetInstance()->GetUsername()
-                                     , CUser::GetInstance()->GetSession()
-                                     , GetIP().GetUserAgent()
-                                     , CContact::GetInstance());
-                if( $iReturn>0 )
-                {
-                    // Succeed
-                    $sBuffer='?act=search';
-                    $sBuffer.='&ctl='.rawurlencode(CContact::GetInstance()->GetLastName());
-                    $sBuffer.='&error=1';
-                    include(PBR_PATH.'/includes/init/initclean.php');
-                    header('Location: '.PBR_URL.'contacts.php'.$sBuffer);
-                    exit;
-                }
-                else
-                {
-                    // Failed
-            		RedirectError( $iReturn, __FILE__, __LINE__ );
-					exit;
-                }//if( $iReturn>0 )
-            }
-            else
-            {
-                // Missing values
-                $iMessageCode=1;
-            }//if{ CContact::GetInstance()->MandatoriesAreFilled()===TRUE )
-        }// if( $sAction=='new' )
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new CHeader();
+    $sBuffer = 'Nouveau contact';
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sBuffer);
+    $pHeader->SetDescription($sBuffer);
+    $pHeader->SetKeywords($sBuffer);
 
-        /** Build header
-         ***************/
-        require(PBR_PATH.'/includes/class/cheader.php');
-        $sBuffer='Nouveau contact';
-        CHeader::GetInstance()->SetNoCache();
-        CHeader::GetInstance()->SetTitle($sBuffer);
-        CHeader::GetInstance()->SetDescription($sBuffer);
-        CHeader::GetInstance()->SetKeywords($sBuffer);
-
-        /** Display
-         **********/
-        $sAction='new';
-        require(PBR_PATH.'/includes/display/displayheader.php');
-        require(PBR_PATH.'/includes/display/displaycontact.php');
-        require(PBR_PATH.'/includes/display/displayfooter.php');
-
-        /** Clean
-         ********/
-        CHeader::DeleteInstance();
-
-    }
-    else
-    {
-		//Error
-		RedirectError( -2, __FILE__, __LINE__ );
-		exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/contactnew.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset( $pContact, $pHeader );
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

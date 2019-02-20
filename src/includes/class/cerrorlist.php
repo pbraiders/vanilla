@@ -32,15 +32,17 @@
  * file encoding: UTF-8
  * description: describes error list object
  * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - update function: Add
- *                                        remove function: AddDB
+ * update: Olivier JULLIEN - 2010-05-24 - update Add
+ *                                        remove AddDB
  *                                        update __clone()
+ * update: Olivier JULLIEN - 2010-06-15 - update Add
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
 
-class CErrorList implements Iterator
+final class CErrorList implements Iterator
 {
+
     /** Private attributs
      ********************/
 
@@ -202,13 +204,18 @@ class CErrorList implements Iterator
      * parameter: STRING|sMessage - message
      * return: none
      * author: Olivier JULLIEN - 2010-05-24
+     * update: Olivier JULLIEN - 2010-06-15 - fixed minor bug
      */
-    public function Add( $sMessage)
+    public function Add($sMessage)
     {
-        if( is_scalar($sMessage) && (strlen($sMessage)>0) )
+        if( is_scalar($sMessage) )
         {
-            $this->m_ErrorList[] = $sMessage;
-        }//if( is_scalar($sMessage) && (strlen($sMessage)>0) )
+            $sMessage = trim($sMessage);
+            if( strlen($sMessage)>0 )
+            {
+                $this->m_ErrorList[] = $sMessage;
+            }//if( strlen($sMessage)>0 )
+        }//if( is_scalar($sMessage) )
     }
 
    /**
@@ -224,4 +231,7 @@ class CErrorList implements Iterator
         $this->m_iIndex = 0;
     }
 }
+
+define('PBR_ERROR_LOADED',1);
+
 ?>

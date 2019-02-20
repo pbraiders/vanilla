@@ -33,10 +33,7 @@ USE `_PBR_DB_DBN_`;
 -- -----------------------------------------------------
 SET AUTOCOMMIT=0;
 INSERT INTO `config` (`name`,`value`,`role`) VALUES
-('data_version','1.0 - 2010-02-04',10),
-('cookie_time_expire','36000',10),
-('session_time_expire','36000',10),
-('timezone','+1:00',10),
+('data_version','1.2.0-SD',10),
 ('max_rent_1','300',10),
 ('max_rent_2','300',10),
 ('max_rent_3','300',10),

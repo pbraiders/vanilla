@@ -64,6 +64,10 @@ define('PBR_DB_DSN','mysql:host='.PBR_DB_HOST.';dbname=');
  * Réglages application
 ***************************/
 
+// LIFETIME
+define('PBR_LIFETIME_COOKIE',36000);
+define('PBR_LIFETIME_SESSION',36000);
+
 // PAGING - Number of contacts and rents to display per page.
 define('PBR_PAGE_CONTACTS',50);
 define('PBR_PAGE_RENTS',50);

@@ -32,21 +32,30 @@
  * file encoding: UTF-8
  * description: describe a cookie
  * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
+ * update: Olivier JULLIEN - 2010-05-24 - update __clone()
  * update: Olivier JULLIEN - 2010-06-11 - update Sanitize()
+ * update: Olivier JULLIEN - 2010-06-15 - add PBR_LIFETIME_COOKIE constant
+ *                                        add FORCEDESKTOP and LANGUAGE contants
+ *                                        update __construct)
+ *                                        update Sanitize()
+ *                                        add SanitizeInt()
+ *                                        update Read()
+ *                                        update Write()
  *************************************************************************/
-if( !defined('PBR_VERSION') )
+if( !defined('PBR_VERSION') || !defined('PBR_LIFETIME_COOKIE') )
     die('-1');
 
 /** Class
  ********/
-class CCookie
+final class CCookie
 {
 
     /** Contants
      ***********/
     const USER='user';
     const SESSION='session';
+    const LANGUAGE='language';
+    const FORCEDESKTOP='forcedesktop';
 
     /** Private attributs
      ********************/
@@ -55,10 +64,10 @@ class CCookie
     private static $m_pInstance = NULL;
 
     // Name
-    private $m_sName='pbraiders';
+    private $m_sName='pbraiders120';
 
     // Expire
-    private $m_iExpire=36000;
+    private $m_iExpire=0;
 
     // Path
     private $m_sPath='/';
@@ -78,26 +87,67 @@ class CCookie
      * parameter: none
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use of PBR_LIFETIME_COOKIE constant to initialize m_iExpire
      */
-    private function __construct(){}
+    private function __construct()
+    {
+        $this->m_iExpire = $this->SanitizeInt(PBR_LIFETIME_COOKIE);
+    }
+
+    /**
+     * function: SanitizeInt
+     * description: return sanitized integer value
+     * parameter: INTEGER|iValue - value to sanitize
+     * return: INTEGER
+     * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - fixed minor bug
+    /**
+     * function: SanitizeInt
+     * description: return sanitized integer value
+     * parameter: INTEGER|iValue - value to sanitize
+     * return: INTEGER
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    private function SanitizeInt($iValue)
+    {
+        $iReturn = 0;
+        if( is_string($iValue) )
+        {
+            $iValue = trim($iValue);
+        }//if( is_string($iValue) )
+        if( is_numeric($iValue) )
+        {
+            $iValue = $iValue + 0;
+        }//if( is_numeric($iValue) )
+        if( is_integer($iValue) )
+        {
+            $iReturn = $iValue;
+        }//if( is_integer($iValue) )
+        return $iReturn;
+    }
 
     /**
      * function: Sanitize
      * description: return true if the data are valid
      * parameter: STRING|sValue - value to test
+     * parameter: STRING|sFilter - regular expression
      * return: BOOLEAN| true or false
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - add regular expression parameter
      */
-    private function Sanitize($sValue)
+    private function Sanitize( $sValue, $sFilter)
     {
-        $bReturn=FALSE;
-        if( is_scalar($sValue) )
+        $bReturn = FALSE;
+        if( is_scalar($sValue) && is_scalar($sFilter) )
         {
-            if( preg_match(GetRegExPatternName(),$sValue) )
+            // Trim
+            $sValue = trim($sValue);
+            // Authorized caracteres
+            if( preg_match($sFilter,$sValue) )
             {
-                $bReturn=TRUE;
-            }//if( preg_match('/^[[:alnum:]@\.\-_]+$/',$sValue) )
-        }//if( is_scalar($sValue) )
+                $bReturn = TRUE;
+            }//if( preg_match($sFilter,$sValue) )
+        }//if( is_scalar($sValue) && is_scalar($sFilter) )
         return $bReturn;
     }
 
@@ -162,6 +212,7 @@ class CCookie
      * parameter: none
      * return: FALSE or array('username','sessionid')
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - add LANGUAGE and FORCEDESKTOP constant
      */
     public function Read()
     {
@@ -169,13 +220,26 @@ class CCookie
         if( filter_has_var(INPUT_COOKIE,$this->m_sName) )
         {
             $tabReturn = array();
-            list($tabReturn[CCookie::USER],$tabReturn[CCookie::SESSION]) = @unserialize( $_COOKIE[$this->m_sName] );
-            if( ($this->Sanitize($tabReturn[CCookie::USER])===FALSE) ||
-                ($this->Sanitize($tabReturn[CCookie::SESSION])===FALSE) )
+            list($tabReturn[CCookie::USER],$tabReturn[CCookie::SESSION],$tabReturn[CCookie::LANGUAGE],$tabReturn[CCookie::FORCEDESKTOP]) = @unserialize( $_COOKIE[$this->m_sName] );
+            if( ($this->Sanitize($tabReturn[CCookie::USER],GetRegExPatternName())===FALSE)
+             || ($this->Sanitize($tabReturn[CCookie::SESSION],GetRegExPatternSession())===FALSE)
+             || ($this->Sanitize($tabReturn[CCookie::LANGUAGE],GetRegExPatternSession())===FALSE) )
             {
                 $tabReturn = FALSE;
             }
-        }// if...
+            else
+            {
+                // Format force desktop value
+                if( isset($tabReturn[CCookie::FORCEDESKTOP]) && ($tabReturn[CCookie::FORCEDESKTOP]==1) )
+                {
+                    $tabReturn[CCookie::FORCEDESKTOP]=TRUE;
+                }
+                else
+                {
+                    $tabReturn[CCookie::FORCEDESKTOP]=FALSE;
+                }//Format force desktio value
+            }//if( ($this->Sanitize(///
+        }//if( filter_has_var(///
         return $tabReturn;
     }
 
@@ -184,26 +248,41 @@ class CCookie
      * description: Write a cookie.
      * parameter: STRING|sUsername  - user name
      *            STRING|sSessionId - session id
-     *           INTEGER|iExpire    - expire time in seconds (optionnal)
+     *            STRING|sLanguage  - language
+     *           BOOLEAN|bForceDesk - force desktop
+     *           INTEGER|iExpire    - life time in seconds (optionnal)
      *            see Sanitize function for allowed charateres
      * return: FALSE or TRUE
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - redefine Expire time parameter
+     *                                        add language and force reload parameters
      */
-    public function Write($sUsername, $sSessionId, $iExpire=NULL)
+    public function Write($sUsername, $sSessionId, $sLanguage, $bForceDesk, $iExpire=NULL)
     {
         $bReturn = FALSE;
 
-        if( ($this->Sanitize($sUsername)===TRUE) &&
-            ($this->Sanitize($sSessionId)===TRUE) )
+        if( ($this->Sanitize($sUsername,GetRegExPatternName())===TRUE)
+         && ($this->Sanitize($sSessionId,GetRegExPatternSession())===TRUE)
+         && ($this->Sanitize($sLanguage,GetRegExPatternSession())===TRUE)
+         && is_bool($bForceDesk) )
         {
             // Default expiration time
             if( !is_int($iExpire) )
 			{
 	            $iExpire = time() + $this->m_iExpire;
+            }
+            else
+            {
+                $iExpire = time() + $iExpire;
             }//if( !is_int($iExpire) )
+            // Force desktop
+            if( $bForceDesk==TRUE )
+                $iForceDesk=1;
+            else
+                $iForceDesk=0;
             // Send cookie
             $bReturn = setcookie($this->m_sName
-                                ,@serialize( array($sUsername,$sSessionId) )
+                                ,@serialize( array( $sUsername, $sSessionId, $sLanguage, $iForceDesk) )
                                 ,$iExpire
                                 ,$this->m_sPath.'; HttpOnly'
                                 ,$this->m_sDomain
@@ -226,4 +305,7 @@ class CCookie
     }
 
 }
+
+define ('PBR_COOKIE_LOADED',1);
+
 ?>

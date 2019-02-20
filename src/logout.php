@@ -33,6 +33,7 @@
  * description: logout a connected user.
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-05-24 - use ErrorLog instead of TraceWarning
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
@@ -48,69 +49,54 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/inituser.php');
+    require(PBR_PATH.'/includes/init/authuser.php');
+
+    /** Initialize
+     *************/
+    $iMessageCode = GetMessageCode();
 
     /** Logout
      *********/
-    if( CUser::GetInstance()->IsAuthenticated() )
-    {
-        // Logout
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/sessionlogoff.php');
-        $iReturn = SessionLogOff( CUser::GetInstance()->GetUsername()
-                                , CUser::GetInstance()->GetSession()
-                                , GetIP().GetUserAgent());
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+    require(PBR_PATH.'/includes/db/function/sessionlogoff.php');
+    SessionLogOff( CAuth::GetInstance()->GetUsername()
+                 , CAuth::GetInstance()->GetSession()
+                 , GetIP().GetUserAgent() );
 
     /** Erase cookie
      ***************/
-    if( CUser::GetInstance()->IsValid() )
+    if( CCookie::GetInstance()->Write( CAuth::GetInstance()->GetUsername(), CAuth::DEFAULT_SESSION,CAuth::DEFAULT_LANGUAGE,FALSE)===FALSE )
     {
-        $sUsername=CUser::GetInstance()->GetUsername();
-    }
-    else
-    {
-        $sUsername=CUser::DEFAULT_USER;
-    }//if( CUser::GetInstance()->IsValid() )
-    if( CCookie::GetInstance()->Write( $sUsername, CUser::DEFAULT_SESSION) ===FALSE )
-    {
-        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-        ErrorLog( $sUsername, $sTitle, 'impossible d\'écrire le cookie', E_USER_NOTICE, FALSE);
+        $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible d\'écrire le cookie', E_USER_NOTICE, FALSE);
     }// if( CCookie::GetInstance()->Write(...
 
-    /** Invalidate user
-     ******************/
-    CUser::GetInstance()->Invalidate();
-
-    /** Build Message
-     ****************/
-    $iMessageCode=0;
-    if( filter_has_var(INPUT_GET, 'error') )
-    {
-        $tFilter = array('options' => array('min_range' => 1, 'max_range' => 2));
-        $iMessageCode=(integer)filter_input( INPUT_GET, 'error', FILTER_VALIDATE_INT, $tFilter);
-    }//if( filter_has_var(INPUT_GET, 'error') )
+    /** Invalidate authentication
+     ****************************/
+    CAuth::GetInstance()->Invalidate();
 
     /** Build header
      ***************/
     require(PBR_PATH.'/includes/class/cheader.php');
-    CHeader::GetInstance()->SetNoCache();
-    CHeader::GetInstance()->SetTitle('Déconnexion');
-    CHeader::GetInstance()->SetDescription('Déconnexion');
-    CHeader::GetInstance()->SetKeywords('deconnection,deconnexion,logout');
+    $pHeader = new CHeader();
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle('Déconnexion');
+    $pHeader->SetDescription('Déconnexion');
+    $pHeader->SetKeywords('deconnection,deconnexion,logout');
 
     /** Display
      **********/
-    require(PBR_PATH.'/includes/display/displayheader.php');
-    require(PBR_PATH.'/includes/display/displaylogout.php');
-    require(PBR_PATH.'/includes/display/displayfooter.php');
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/logout.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset($pHeader);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>

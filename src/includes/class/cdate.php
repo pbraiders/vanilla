@@ -32,23 +32,44 @@
  * file encoding: UTF-8
  * description: describes date for calendar
  * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
+ * update: Olivier JULLIEN - 2010-05-24 - update __clone()
+ * update: Olivier JULLIEN - 2010-06-15 - is not a singleton anymore
+ *                                        delete GetInstance()
+ *                                        delete DeleteInstance()
+ *                                        update GetMonthName()
+ *                                        update SetRequestYear()
+ *                                        update SetRequestMonth()
+ *                                        update SetRequestDay()
+ *                                        update GetDayName()
+ *                                        update IsSame()
+ *                                        add SanitizeInt()
+ *                                        add TAG constants
+ *                                        update ReadInput()
+ *                                        add ReadInputDay()
+ *                                        add ReadInputMonth()
+ *                                        add ReadInputYear()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
 
-class CDate
+final class CDate
 {
     /** Constants
      ***********/
-    const MINYEAR=2000;
-    const MAXYEAR=2043;
+    const MINYEAR         = 2000;
+    const MAXYEAR         = 2043;
+    const MONTHTAG        = 'rem';
+    const YEARTAG         = 'rey';
+    const DAYTAG          = 'red';
+    const CURRENTMONTHTAG = 'cum';
+    const CURRENTYEARTAG  = 'cuy';
+    const CURRENTDAYTAG   = 'cud';
+    const NAVGOTOTAG      = 'go';
+    const NAXNEXTTAG      = 'nex';
+    const NAXPREVTAG      = 'pre';
 
     /** Private attributs
      ********************/
-
-    // Singleton
-    private static $m_pInstance = NULL;
 
     // Current date
     private $m_iCurrentMonth;
@@ -64,18 +85,130 @@ class CDate
      ******************/
 
     /**
+     * function: SanitizeInt
+     * description: return sanitized integer value.
+     * parameter: INTEGER|iValue - value to sanitize
+     *            INTEGER|iMin   - value min value
+     *            INTEGER|iMax   - value max value
+     * return: BOOLEAN - TRUE or FALSE if the value is not valid
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    private function SanitizeInt( &$iValue, $iMin, $iMax)
+    {
+        $bReturn = FALSE;
+        if( is_integer($iMin) && is_integer($iMax) )
+        {
+            if( is_string($iValue) )
+            {
+                $iValue = trim($iValue);
+            }//if( is_string($iValue) )
+            if( is_numeric($iValue) )
+            {
+                $iValue = $iValue + 0;
+            }//if( is_numeric($iValue) )
+            if( is_integer($iValue) && ($iValue>=$iMin) && ($iValue<=$iMax) )
+            {
+                $bReturn = TRUE;
+            }//if( is_integer($iValue) && ($iValue>=$iMin) && ($iValue<=$iMax) )
+        }//if( is_integer($iMin) && is_integer($iMax) )
+        return $bReturn;
+    }
+
+   /**
+     * function: ReadInputMonth
+     * description: Read GET or POST input month value
+     * parameters: INTEGER|$iFilter - Filter to apply
+     *              STRING|sTAG     - month tag
+     * return: BOOLEAN| TRUE or FALSE if no input value
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    private function ReadInputMonth( $iFilter, $sTag)
+    {
+        $bReturn = FALSE;
+        if( (($iFilter===INPUT_POST) || ($iFilter===INPUT_GET)) && filter_has_var( $iFilter, $sTag) )
+        {
+            $tFilter = array('options' => array('min_range' => 1, 'max_range' => 12));
+            $this->SetRequestMonth( filter_input( $iFilter, $sTag, FILTER_VALIDATE_INT, $tFilter));
+            $bReturn = TRUE;
+        }//if(...
+        return $bReturn;
+    }
+
+   /**
+     * function: ReadInputYear
+     * description: Read GET or POST input year value
+     * parameters: INTEGER|$iFilter - Filter to apply
+     *              STRING|sTAG     - year tag
+     * return: BOOLEAN| TRUE or FALSE if no input value
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    private function ReadInputYear( $iFilter, $sTag)
+    {
+        $bReturn = FALSE;
+        if( (($iFilter===INPUT_POST) || ($iFilter===INPUT_GET)) && filter_has_var( $iFilter, $sTag) )
+        {
+            $tFilter = array('options' => array('min_range' => CDate::MINYEAR, 'max_range' => CDate::MAXYEAR));
+            $this->SetRequestYear( filter_input( $iFilter, $sTag, FILTER_VALIDATE_INT, $tFilter));
+            $bReturn = TRUE;
+        }//if(...
+        return $bReturn;
+    }
+
+   /**
+     * function: ReadInputDay
+     * description: Read GET or POST input day value
+     * parameters: INTEGER|$iFilter - Filter to apply
+     *              STRING|sTAG     - day tag
+     * return: BOOLEAN| TRUE or FALSE if no input value
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    private function ReadInputDay( $iFilter, $sTag)
+    {
+        $bReturn = FALSE;
+        if( (($iFilter===INPUT_POST) || ($iFilter===INPUT_GET)) && filter_has_var( $iFilter, $sTag) )
+        {
+            $tFilter = array('options' => array('min_range' => 1, 'max_range' => 31));
+            $this->SetRequestDay( filter_input( $iFilter, $sTag, FILTER_VALIDATE_INT, $tFilter));
+            $bReturn = TRUE;
+        }//if( (($iFilter===INPUT_POST) || ($iFilter===INPUT_GET)) && filter_has_var( $iFilter, $sTag) )
+        return $bReturn;
+    }
+
+    /** Public methods
+     *****************/
+
+    /**
      * function: __construct
      * description: constructor
      * parameter: none
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
-    private function __construct()
+    public function __construct()
     {
         $this->m_iCurrentMonth=$this->m_iRequestMonth=date('n');
         $this->m_iCurrentYear=$this->m_iRequestYear=date('Y');
         $this->m_iCurrentDay=$this->m_iRequestDay=date('j');
     }
+
+    /**
+     * function: __destruct
+     * description: destructor
+     * parameter: none
+     * return: none
+     * author: Olivier JULLIEN - 2010-02-04
+     */
+    public function __destruct(){}
+
+   /**
+     * function: __clone
+     * description: cloning is forbidden
+     * parameter: none
+     * return: none
+     * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
+     */
+    public function __clone() {}
 
    /**
      * function: PreviousRequestYear
@@ -111,61 +244,6 @@ class CDate
             $bReturn = TRUE;
         }//if( $this->m_iRequestYear<CDate::MAXYEAR )
         return $bReturn;
-    }
-
-    /** Public methods
-     *****************/
-
-    /**
-     * function: __destruct
-     * description: destructor
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public function __destruct(){}
-
-   /**
-     * function: __clone
-     * description: cloning is forbidden
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
-     */
-    public function __clone() {}
-
-   /**
-     * function: GetInstance
-     * description: create or return the current instance
-     * parameter: none
-     * return: this
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function GetInstance()
-    {
-        if( is_null(self::$m_pInstance) )
-        {
-            self::$m_pInstance = new CDate();
-        }
-        return self::$m_pInstance;
-    }
-
-   /**
-     * function: DeleteInstance
-     * description: delete the current instance
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function DeleteInstance()
-    {
-        if( !is_null(self::$m_pInstance) )
-        {
-            $tmp=self::$m_pInstance;
-            self::$m_pInstance=NULL;
-            unset($tmp);
-        }
     }
 
     /**
@@ -228,16 +306,14 @@ class CDate
      * parameter: INTEGER|$iValues - year
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - Sanitize
      */
     public function SetRequestYear( $iValue )
     {
-        if( is_scalar($iValue) )
+        if( $this->SanitizeInt( $iValue, CDate::MINYEAR, CDate::MAXYEAR)===TRUE )
         {
-            if( is_integer($iValue) && ($iValue>=CDate::MINYEAR) && ($iValue<=CDate::MAXYEAR) )
-            {
-                $this->m_iRequestYear = $iValue;
-            }//if( is_integer($sValue) && ($iValue>=CDate::MINYEAR) && ($iValue<=CDate::MAXYEAR) )
-        }//if( is_scalar($iValue) )
+            $this->m_iRequestYear = $iValue;
+        }//if( $this->SanitizeInt( $iValue, CDate::MINYEAR, CDate::MAXYEAR)===TRUE )
     }
 
    /**
@@ -246,16 +322,14 @@ class CDate
      * parameter: INTEGER|$iValues - month
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - Sanitize
      */
     public function SetRequestMonth( $iValue )
     {
-        if( is_scalar($iValue) )
+        if( $this->SanitizeInt( $iValue, 1, 12)===TRUE  )
         {
-            if( is_integer($iValue) && ($iValue>0) && ($iValue<13) )
-            {
-                $this->m_iRequestMonth = $iValue;
-            }//if( is_integer($sValue) && ($iValue>0) && ($iValue<13) )
-        }//if( is_scalar($iValue) )
+            $this->m_iRequestMonth = $iValue;
+        }//if( $this->SanitizeInt( $iValue, 1, 12)===TRUE  )/
     }
 
    /**
@@ -267,13 +341,10 @@ class CDate
      */
     public function SetRequestDay( $iValue )
     {
-        if( is_scalar($iValue) )
+        if( $this->SanitizeInt( $iValue, 1, 31)===TRUE )
         {
-            if( is_integer($iValue) && ($iValue>0) && ($iValue<32) )
-            {
-                $this->m_iRequestDay = $iValue;
-            }//if( is_integer($iValue) && ($iValue>0) && ($iValue<32) )
-        }//if( is_scalar($iValue) )
+            $this->m_iRequestDay = $iValue;
+        }//if( $this->SanitizeInt( $iValue, 1, 31)===TRUE )
     }
 
    /**
@@ -348,15 +419,15 @@ class CDate
     public function IsSame( $iDay )
     {
         $bReturn=FALSE;
-        if( is_integer($iDay) && ($iDay>0) && ($iDay<32) )
+        if( $this->SanitizeInt( $iDay, 1, 31)===TRUE )
         {
             if( ($this->m_iCurrentMonth==$this->m_iRequestMonth) &&
                 ($this->m_iCurrentYear==$this->m_iRequestYear) &&
                 ($this->m_iCurrentDay==$iDay) )
             {
                 $bReturn=TRUE;
-            }
-        }
+            }//if
+        }//if( $this->SanitizeInt( $iDay, 1, 31)===TRUE )
         return $bReturn;
     }
 
@@ -366,18 +437,19 @@ class CDate
      * parameter: INTEGER|$iValue - day
      * return: STRING or ARRAY
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - sanitize
      */
     public function GetDayName($iValue=7)
     {
         $tDayName = array('Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche');
-        if( is_integer($iValue) && ($iValue>=0) && ($iValue<7) )
+        if( $this->SanitizeInt( $iValue, 0, 6)===TRUE )
         {
             $tReturn = $tDayName[$iValue];
         }
         else
         {
             $tReturn = 'UNKNOWN';
-        }
+        }//if( $this->SanitizeInt( $iValue, 0, 6)===TRUE )
         return $tReturn;
     }
 
@@ -388,23 +460,25 @@ class CDate
      *            INTEGER|iFilter - 1 if characters should be converted into html entities
      * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use ENT_QUOTES instead of ENT_COMPAT
+     *                                        sanitize
      */
     public function GetMonthName( $iValue, $iFilter=0 )
     {
         $tMonthName = array('Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre');
         //Build
-        if( is_integer($iValue) && ($iValue>0) && ($iValue<13) )
+        if( $this->SanitizeInt( $iValue, 1, 12)===TRUE )
         {
             $sReturn = $tMonthName[$iValue-1];
         }
         else
         {
             $sReturn = 'UNKNOWN';
-        }//if( is_integer($iValue) && ($iValue>0) && ($iValue<13) )
+        }//if( $this->SanitizeInt( $iValue, 1, 12)===TRUE )
         // Sanitize
         if( 1===$iFilter )
         {
-            $sReturn=htmlentities($sReturn,ENT_COMPAT,'UTF-8');
+            $sReturn=htmlentities($sReturn,ENT_QUOTES,'UTF-8');
         }//if( 1===$iFilter )
         return $sReturn;
     }
@@ -412,38 +486,50 @@ class CDate
    /**
      * function: ReadInput
      * description: Read GET or POST input date values
-     * parameters: INTEGER|$iFilter - Filter to apply
+     * parameters: INTEGER|iFilter - Filter to apply
+     *             BOOLEAN|bGetDAy - if true read day values
      * return: BOOLEAN| TRUE or FALSE if no input value
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use constants
      */
-    public function ReadInput($iFilter)
+    public function ReadInput( $iFilter, $bGetDay=FALSE )
     {
         $bReturn = FALSE;
-        if( (($iFilter===INPUT_POST) || ($iFilter===INPUT_GET))
-            && filter_has_var($iFilter,'rem') && filter_has_var($iFilter,'rey') )
+        if( ($iFilter===INPUT_POST) || ($iFilter===INPUT_GET) )
         {
-
-            // Get day
-            if( filter_has_var($iFilter,'red') )
+            if( filter_has_var( $iFilter, CDate::NAXNEXTTAG ) )
             {
-                $tFilter = array('options' => array('min_range' => 1, 'max_range' => 31));
-                $this->SetRequestDay(filter_input($iFilter,'red',FILTER_VALIDATE_INT,$tFilter));
-            }//if( filter_has_var($iFilter,'red') )
-
-            // Get month
-            $tFilter = array('options' => array('min_range' => 1, 'max_range' => 12));
-            $this->SetRequestMonth(filter_input($iFilter,'rem',FILTER_VALIDATE_INT,$tFilter));
-
-            // Get year
-            $tFilter = array('options' => array('min_range' => CDate::MINYEAR, 'max_range' => CDate::MAXYEAR));
-            $this->SetRequestYear(filter_input($iFilter,'rey',FILTER_VALIDATE_INT,$tFilter));
-
-            $bReturn = TRUE;
-
+                /** Navigation: next month
+                 *************************/
+                $bReturn = $this->ReadInputMonth( $iFilter, CDate::CURRENTMONTHTAG);
+                $bReturn = $bReturn && $this->ReadInputYear( $iFilter, CDate::CURRENTYEARTAG);
+                $this->NextRequestMonth();
+            }
+            elseif( filter_has_var( $iFilter, CDate::NAXPREVTAG ) )
+            {
+                /** Navigation: previous month
+                 *****************************/
+                $bReturn = $this->ReadInputMonth( $iFilter, CDate::CURRENTMONTHTAG);
+                $bReturn = $bReturn && $this->ReadInputYear( $iFilter, CDate::CURRENTYEARTAG);
+                $this->PreviousRequestMonth();
+            }
+            else
+            {
+                /** Case: Normal
+                 ***************/
+                // Read year
+                $bReturn = $this->ReadInputYear( $iFilter, CDate::YEARTAG);
+                // Read month
+                $bReturn = $bReturn && $this->ReadInputMonth( $iFilter, CDate::MONTHTAG);
+                // Read day
+                if( $bReturn && $bGetDay )
+                    $bReturn = $this->ReadInputDay( $iFilter, CDate::DAYTAG);
+            }
         }//if( ($iFilter===INPUT_POST) || ($iFilter===INPUT_GET) )
+
         return $bReturn;
     }
 
 }
-define('PBR_DATE_LOADED',1);
+
 ?>

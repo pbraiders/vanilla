@@ -33,8 +33,9 @@
  * description: contain usefull error functions
  * author: Olivier JULLIEN - 2010-05-24
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_PATH')  || !defined('PBR_LOG_LOADED') || !defined('PBR_DB_DBN') )
+if( !defined('PBR_VERSION') || !defined('PBR_URL') || !defined('PBR_PATH') || !defined('PBR_ERROR_LOADED')  || !defined('PBR_LOG_LOADED') )
     die('-1');
+
 
 /**
   * function: ErrorLog
@@ -76,7 +77,7 @@ function ErrorLog( $sLogin, $sTitle, $sDescription, $iType, $bLogToDB)
     // Add to database
     if( defined('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
     {
-		CDb::GetInstance()->ErrorInsert( PBR_DB_DBN, $sLogin, $sType, $sTitle, $sDescription);
+		CDBLayer::GetInstance()->ErrorInsert( PBR_DB_DBN, $sLogin, $sType, $sTitle, $sDescription);
 	}//if( define('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
 }
 
@@ -93,6 +94,8 @@ function ErrorLog( $sLogin, $sTitle, $sDescription, $iType, $bLogToDB)
   */
 function ErrorDBLog( $sLogin, $sTitle, $sDescription, $iCode, $bLogToDB)
 {
+    // Initialize
+    $sType = 'error';
     if( ($iCode===FALSE) || ($iCode<0) )
     {
         // Build message
@@ -109,7 +112,8 @@ function ErrorDBLog( $sLogin, $sTitle, $sDescription, $iCode, $bLogToDB)
         {
 			$sDescription = 'authentification erronée';
             $sBuffer = 'Une erreur est survenue dans '.$sTitle.': '.$sDescription;
-            $bLogToDB=FALSE;
+            $bLogToDB = FALSE;
+            $sType = 'warning';
         }
         elseif( $iCode==-4 )
         {
@@ -126,12 +130,12 @@ function ErrorDBLog( $sLogin, $sTitle, $sDescription, $iCode, $bLogToDB)
         CErrorList::GetInstance()->Add($sBuffer);
 
         // Add to log
-        CLog::GetInstance()->Write( $sLogin, 'error', $sBuffer);
+        CLog::GetInstance()->Write( $sLogin, $sType, $sBuffer);
 
         // Add to database
         if( defined('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
         {
-			CDb::GetInstance()->ErrorInsert( PBR_DB_DBN, $sLogin, 'error', $sTitle, $sDescription);
+			CDBLayer::GetInstance()->ErrorInsert( PBR_DB_DBN, $sLogin, $sType, $sTitle, $sDescription);
         }//if( define('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
 
     }//if( ($iCode===FALSE) || ($iCode<0) )
@@ -149,16 +153,15 @@ function ErrorDBLog( $sLogin, $sTitle, $sDescription, $iCode, $bLogToDB)
   */
 function RedirectError( $iError, $sFile, $iLine)
 {
-	$sUrl=PBR_URL.'logout.php?error=';
-    $iOption=1;
+	$sUrl = PBR_URL.'logout.php?error=';
+    $iOption = 1;
     if( ($iError==-2) || ($iError==-3) )
 	{
-        $sUser=(CUser::GetInstance()->GetUsername()===FALSE?CUser::DEFAULT_USER:CUser::GetInstance()->GetUsername());
         $sTitle='fichier: '.basename($sFile).', ligne:'.$iLine;
-        ErrorLog( $sUser, $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
-		$iOption=2;
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
+        $iOption = 2;
 	}//if( ($iError==-2) || ($iError==-3) )
-	include(PBR_PATH.'/includes/init/initclean.php');
+	include(PBR_PATH.'/includes/init/clean.php');
 	header('Location: '.$sUrl.$iOption);
 }
 

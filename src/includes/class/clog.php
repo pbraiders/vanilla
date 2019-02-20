@@ -31,18 +31,18 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: log file managment
- * author: Olivier JULLIEN - 2010-05-24
+ * author: Olivier JULLIEN - 2010-06-15
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_LOG_DIR') )
+if( !defined('PBR_VERSION') )
     die('-1');
 
-class CLog
+final class CLog extends CDirectoryFileManagement
 {
 
     /** Contants
      ***********/
-    const LOGFILENAME='pbraider_log';
-    const LOGFILESIZE=3145728;
+    const LOGFILENAME = 'pbraider_log';
+    const LOGFILESIZE = 3145728;
 
     /** Private attributs
      ********************/
@@ -50,119 +50,88 @@ class CLog
     // Singleton
     private static $m_pInstance = NULL;
 
-    // File descriptor
-    private $m_pFile = FALSE;
-
     /** Private methods
      ******************/
-
-    /**
-     * function: FolderManagment
-     * description: Creates the folder log if not exists.
-     * parameter: STRING|$sFolder - log folder path.
-     * return: BOOLEAN - FALSE if cannot create the folder.
-     * author: Olivier JULLIEN - 2010-05-24
-     */
-    private function FolderManagment( $sFolder )
-    {
-        $bReturn = FALSE;
-
-        if( is_string($sFolder) && (strlen($sFolder)>0) )
-        {
-            $bReturn = TRUE;
-            if( !is_dir($sFolder) )
-            {
-                if( !mkdir($sFolder) )
-                {
-                   $bReturn = FALSE;
-                }//if( !mkdir($sFolder) )
-            }//if( !is_dir($sFolder) )
-        }//if( is_string($sFolder) && (strlen($sFolder)>0) )
-        return $bReturn;
-    }
-
-    /**
-     * function: FileManagment
-     * description: Save, create and open log file
-     * parameter: STRING|$sFile - log file.
-     * return: BOOLEAN - FALSE if cannot create the file.
-     * author: Olivier JULLIEN - 2010-05-24
-     */
-    private function FileManagment( $sFile )
-    {
-        // Initialize
-        $bReturn = FALSE;
-        $iFileSize = FALSE;
-
-        // Clears file status cache
-        clearstatcache();
-
-        if( is_string($sFile) && (strlen($sFile)>0) )
-        {
-            $bReturn = TRUE;
-
-            // File test
-            if( is_file($sFile) )
-            {
-                // Size test
-                $iFileSize = filesize($sFile);
-                if( $iFileSize>=CLog::LOGFILESIZE )
-                {
-                    // Rename and open
-                    $sFilenameNew = $sFile.'_'.date('Ymd_His');
-                    rename( $sFile, $sFilenameNew );
-                    $bReturn=$this->Open($sFile,'w+b');
-                }
-                else
-                {
-                    // Open
-                    $bReturn=$this->Open($sFile,'a+b');
-                }//if( $iFileSize>=LOGFILESIZE )
-            }
-            else
-            {
-                // Open
-                $bReturn=$this->Open($sFile,'w+b');
-            }// if( is_file($sFile) )
-        }// if( is_string($sFile) && (strlen($sFile)>0) )
-        return $bReturn;
-    }
-
-   /**
-     * function: Open
-     * description: open the file
-     * parameter: STRING|$sFile - path and name file to open
-     *            STRING|$sMode - open mode
-     * return: none
-     * author: Olivier JULLIEN - 2010-05-24
-     */
-    private function Open($sFile,$sMode)
-    {
-        if( is_string($sFile) && (strlen($sFile)>0)
-         && is_string($sMode) && (strlen($sMode)>0))
-        {
-            $this->m_pFile=fopen($sFile,$sMode);
-        }//if( ...
-    }
 
     /**
      * function: __construct
      * description: constructor
      * parameter: none
      * return: none
-     * author: Olivier JULLIEN - 2010-05-24
+     * author: Olivier JULLIEN - 2010-06-15
      */
-    private function __construct()
+    private function __construct(){}
+
+    /** Protected methods
+     ********************/
+
+    /**
+     * function: DirectoryManagement
+     * description: creates directory if not exists
+     * parameter: STRING|$sFolder - directory path and name.
+     * return: BOOLEAN - TRUE or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    protected function DirectoryManagement($sFolder)
     {
-        if( defined('PBR_LOG') && (1==PBR_LOG) )
+        return $this->DirectoryCreate($sFolder);
+    }
+
+    /**
+     * function: FileManagement
+     * description: open file. If full, rename it, create and open a new one.
+     * parameter: STRING|$sFolder - directory path and name.
+     *            STRING|$sFile   - file name.
+     * return: BOOLEAN - TRUE or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    protected function FileManagement( $sFolder, $sFile)
+    {
+        // Initialize
+        $bReturn = FALSE;
+        $iFileSize = 0;
+
+        // Test parameter
+        if( (IsStringNotEmpty( $sFolder, GetRegExPatternDirectory() )===TRUE)
+         && (IsStringNotEmpty( $sFile, GetRegExPatternName() )===TRUE) )
         {
-            $sBuffer=PBR_PATH.'/'.PBR_LOG_DIR;
-            if( $this->FolderManagment($sBuffer) )
+
+            // Build path
+            $this->m_sFile = $sFolder.'/'.$sFile;
+
+            // Clears file status cache
+            clearstatcache();
+
+            // Check the file
+            $bReturn = is_file($this->m_sFile);
+
+            // Check the size
+            if( $bReturn )
             {
-                $sBuffer.='/'.CLog::LOGFILENAME;
-                $this->FileManagment($sBuffer);
-            }//if( $this->FolderManagment($sBuffer) )
-        }//if( defined('PBR_LOG') && (1==PBR_LOG) )
+                $iFileSize = filesize($this->m_sFile);
+                if( $iFileSize>=CLog::LOGFILESIZE )
+                {
+                    // File is full, rename it, create and open a new one
+                    $sFileNew = $this->m_sFile.'_'.date('Ymd_His');
+                    rename( $this->m_sFile, $sFileNew );
+                    $this->m_pFile = fopen( $this->m_sFile, 'w+b');
+                }
+                else
+                {
+                    // File is not full, open it
+                    $this->m_pFile = fopen( $this->m_sFile, 'a+b');
+                }//if( $iFileSize>=LOGFILESIZE )
+            }
+            else
+            {
+                // File does not exist, create and open a new one
+                $this->m_pFile = fopen( $this->m_sFile, 'w+b');
+            }//if( $bReturn )
+
+            $bReturn = $this->IsOpen();
+
+        }//if( IsStringNotEmpty($sPath)===TRUE )
+        return $bReturn;
     }
 
     /** Public methods
@@ -170,10 +139,10 @@ class CLog
 
     /**
      * function: __destruct
-     * description: destructor
+     * description: destructor - close the file
      * parameter: none
      * return: none
-     * author: Olivier JULLIEN - 2010-05-24
+     * author: Olivier JULLIEN - 2010-06-15
      */
     public function __destruct()
     {
@@ -185,7 +154,7 @@ class CLog
      * description: cloning is forbidden
      * parameter: none
      * return: none
-     * author: Olivier JULLIEN - 2010-05-24
+     * author: Olivier JULLIEN - 2010-06-15
      */
     public function __clone(){}
 
@@ -194,7 +163,7 @@ class CLog
      * description: create or return the current instance
      * parameter: none
      * return: this
-     * author: Olivier JULLIEN - 2010-05-24
+     * author: Olivier JULLIEN - 2010-06-15
      */
     public static function GetInstance()
     {
@@ -210,7 +179,7 @@ class CLog
      * description: delete the current instance
      * parameter: none
      * return: none
-     * author: Olivier JULLIEN - 2010-05-24
+     * author: Olivier JULLIEN - 2010-06-15
      */
     public static function DeleteInstance()
     {
@@ -222,61 +191,50 @@ class CLog
         }
     }
 
-   /**
-     * function: IsOpen
-     * description: test if the file is open
-     * parameter: none
-     * return: BOOLEAN - TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-05-24
-     */
-    public function IsOpen()
-    {
-        $bReturn=TRUE;
-        if( $this->m_pFile===FALSE )
-        {
-            $bReturn=FALSE;
-        }//if( $this->m_pFile===FALSE )
-        return $bReturn;
-    }
-
-   /**
-     * function: Close
-     * description: Close the file
-     * parameter: none
-     * return: BOOLEAN - TRUE or FALSE
-     * author: Olivier JULLIEN - 2010-05-24
-     */
-    public function Close()
-    {
-        $bReturn=TRUE;
-        if( $this->IsOpen()===TRUE )
-        {
-            $bReturn=fclose($this->m_pFile);
-            $this->m_pFile=FALSE;
-        }//if( $this->IsOpen()===TRUE )
-        return $bReturn;
-    }
-
     /**
      * function: Write
      * description: Write into the file
      * parameter: STRING|$sUser - logged user
      *            STRING|$sType - log type (warning, error)
      *            STRING|$sLog  - line to log
-     * return: none
-     * author: Olivier JULLIEN - 2010-05-24
+     * return: INTEGER - number of bytes written or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-06-15
      */
     public function Write( $sUser, $sType, $sLog )
     {
-        if( is_string($sLog) && (strlen($sLog)>0)
-         && is_string($sType) && (strlen($sType)>0)
+        $iReturn = FALSE;
+        if( (IsStringNotEmpty($sType)===TRUE)
+         && (IsStringNotEmpty($sLog)===TRUE)
          && $this->IsOpen()===TRUE )
         {
+            // Convert and trim $sUser
+            IsStringNotEmpty($sUser);
+            // Build log line
             $sBuffer='['.date('D M d G:i:s Y').'] ['.$sType.'] [client '.GetIP(1).'] [user '.$sUser.'] '.$sLog."\n";
-            fwrite( $this->m_pFile, $sBuffer);
+            // Lock
+            $bLock = FALSE;
+//            $bLock = flock( $this->m_pFile, LOCK_EX);
+
+            // Write
+            $iReturn = fwrite( $this->m_pFile, $sBuffer);
+
+            // Flush
+            if( $iReturn!==FALSE )
+            {
+                fflush( $this->m_pFile );
+            }//if( $iReturn!==FALSE )
+
+            // Unlock
+            if( $bLock===TRUE )
+            {
+                flock( $this->m_pFile, LOCK_UN);
+            }//if( $bLock===TRUE )
         }//if(...
+        return $iReturn;
     }
 
 }
+
 define('PBR_LOG_LOADED',1);
+
 ?>

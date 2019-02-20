@@ -33,29 +33,89 @@
  * description: describes values for paging
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
+ * update: Olivier JULLIEN - 2010-06-15 - is not a singleton anymore
+ *                                        delete GetInstance()
+ *                                        delete DeleteInstance()
+ *                                        delete __clone
+ *                                        add TAG constants
+ *                                        update ReadInput()
+ *                                        add SanitizeInt()
+ *                                        update Compute()
+ *                                        update SetLimit()
+ *                                        update SetOffset()
+ *                                        update SetMax()
+ *                                        update SetCurrent()
+ *                                        add ResetMe()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
 
-class CPaging
+final class CPaging
 {
+
+    /** Constants
+     ***********/
+    const PAGETAG   = 'pag';
+    const PAGEMIN   = 1;
+    const PAGEMAX   = 16777215;
+    const OFFSETMIN = 0;
+    const OFFSETMAX = 16777215;
+
     /** Private attributs
      ********************/
 
-    // Singleton
-    private static $m_pInstance = NULL;
-
     // Current page
-    private $m_iCurrent=1;
+    private $m_iCurrent;
+
     // Maximum number of pages
-    private $m_iMax=1;
+    private $m_iMax;
+
     // Offset of the first row to return
-    private $m_iOffset=0;
+    private $m_iOffset;
+
     // Maximum number of rows to return
-    private $m_iLimit=16777215;
+    private $m_iLimit;
 
     /** Private methods
      ******************/
+
+    /**
+     * function: SanitizeInt
+     * description: return sanitized integer value.
+     * parameter: INTEGER|iValue - value to sanitize
+     *            INTEGER|iMin   - value min value
+     *            INTEGER|iMax   - value max value
+     * return: INTEGER - sanitized value or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    private function SanitizeInt( $iValue, $iMin, $iMax, $iDefault)
+    {
+        $iReturn = FALSE;
+        // Sanitize
+        if( is_integer($iMin) && is_integer($iMax) && is_integer($iDefault) )
+        {
+            if( is_string($iValue) )
+            {
+                $iValue = trim($iValue);
+            }//if( is_string($iValue) )
+            if( is_numeric($iValue) )
+            {
+                $iValue = $iValue + 0;
+            }//if( is_numeric($iValue) )
+            if( is_integer($iValue) && ($iValue>=$iMin) && ($iValue<=$iMax) )
+            {
+                $iReturn = $iValue;
+            }
+            else
+            {
+                $iReturn = $iDefault;
+            }//if( is_integer($iValue) && ($iValue>=$iMin) && ($iValue<=$iMax) )
+        }//if( is_integer($iMin) && is_integer($iMax) && is_integer($iDefault) )
+        return $iReturn;
+    }
+
+    /** Public methods
+     *****************/
 
     /**
      * function: __construct
@@ -64,10 +124,10 @@ class CPaging
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
-    private function __construct(){}
-
-    /** Public methods
-     *****************/
+    public function __construct()
+    {
+        $this->ResetMe();
+    }
 
     /**
      * function: __destruct
@@ -77,49 +137,6 @@ class CPaging
      * author: Olivier JULLIEN - 2010-02-04
      */
     public function __destruct(){}
-
-   /**
-     * function: __clone
-     * description: cloning is forbidden
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
-     */
-    public function __clone(){}
-
-   /**
-     * function: GetInstance
-     * description: create or return the current instance
-     * parameter: none
-     * return: this
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function GetInstance()
-    {
-        if( is_null(self::$m_pInstance) )
-        {
-            self::$m_pInstance = new CPaging();
-        }
-        return self::$m_pInstance;
-    }
-
-   /**
-     * function: DeleteInstance
-     * description: delete the current instance
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function DeleteInstance()
-    {
-        if( !is_null(self::$m_pInstance) )
-        {
-            $tmp=self::$m_pInstance;
-            self::$m_pInstance=NULL;
-            unset($tmp);
-        }
-    }
 
     /**
      * function: GetCurrent
@@ -163,14 +180,11 @@ class CPaging
      * parameter: INTEGER|$iValues - current page
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - sanitize
      */
     public function SetCurrent( $iValue )
     {
-    	$this->m_iCurrent = 1;
-		if( is_int($iValue) && ($iValue>1) )
-		{
-			$this->m_iCurrent = (integer)$iValue;
-		}//if( is_int($iValue) && ($iValue>1) )
+        $this->m_iCurrent = $this->SanitizeInt( $iValue, CPaging::PAGEMIN, CPaging::PAGEMAX, CPaging::PAGEMIN);
     }
 
     /**
@@ -179,14 +193,11 @@ class CPaging
      * parameter: INTEGER|$iValues - maximum number of page
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - sanitize
      */
     public function SetMax( $iValue )
     {
-    	$this->m_iMax = 1;
-		if( is_int($iValue) && ($iValue>1) )
-		{
-                $this->m_iMax = (integer)$iValue;
-		}//if( is_int($iValue) && ($iValue>1) )
+    	$this->m_iMax = $this->SanitizeInt( $iValue, CPaging::PAGEMIN, CPaging::PAGEMAX, CPaging::PAGEMIN);
     }
 
     /**
@@ -195,14 +206,11 @@ class CPaging
      * parameter: INTEGER|$iValues - offset of the first row to return
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - sanitize
      */
     public function SetOffset( $iValue )
     {
-    	$this->m_iOffset = 0;
-		if( is_int($iValue) && ($iValue>0) )
-		{
-                $this->m_iOffset = (integer)$iValue;
-		}//if( is_int($iValue) && ($iValue>0) )
+    	$this->m_iOffset = $this->SanitizeInt( $iValue, CPaging::OFFSETMIN, CPaging::OFFSETMAX, CPaging::OFFSETMIN);
     }
 
     /**
@@ -211,14 +219,11 @@ class CPaging
      * parameter: INTEGER|$iValues - maximum number of rows to return
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - sanitize
      */
     public function SetLimit( $iValue )
     {
-    	$this->m_iLimit = 16777215;
-		if( is_int($iValue) && ($iValue>0) )
-		{
-                $this->m_iLimit = (integer)$iValue;
-		}//if( is_int($iValue) && ($iValue>0) )
+    	$this->m_iLimit = $this->SanitizeInt( $iValue, 1, CPaging::OFFSETMAX, CPaging::OFFSETMAX);;
     }
 
     /**
@@ -231,19 +236,24 @@ class CPaging
      *            INTEGER|$iRows  - number of records
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - sanitize
      */
     public function Compute( $iLimit, $iRows )
     {
+        // Set the limit
 		$this->SetLimit( $iLimit );
-    	if( is_int($iRows) )
+
+        // Sanitize the numbers of records
+        $iRows = $this->SanitizeInt( $iRows, CPaging::OFFSETMIN, CPaging::OFFSETMAX, CPaging::OFFSETMIN);
+
+        // Compute
+        $iBuffer = (integer)ceil( $iRows / $this->m_iLimit );
+        $this->SetMax($iBuffer);
+        if( $this->m_iCurrent > $this->m_iMax )
         {
-			$this->m_iMax = ceil( $iRows / $this->m_iLimit );
-            if( $this->m_iCurrent > $this->m_iMax )
-            {
-				$this->m_iCurrent=1;
-            }//if( $this->m_iCurrent > $this->m_iMax )
-            $this->m_iOffset = $this->m_iLimit * ($this->m_iCurrent-1);
-        }//if( is_int($iRows) )
+			$this->SetCurrent(1);
+        }//if( $this->m_iCurrent > $this->m_iMax )
+        $this->SetOffset($this->m_iLimit * ($this->m_iCurrent-1));
     }
 
    /**
@@ -252,18 +262,36 @@ class CPaging
      * parameters: none
      * return: BOOLEAN| TRUE or FALSE if no input value
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use constant
      */
     public function ReadInput()
     {
         $bReturn = FALSE;
-        if( filter_has_var(INPUT_GET, 'pag') )
+        if( filter_has_var( INPUT_GET, CPaging::PAGETAG) )
         {
-        	$this->SetCurrent( (integer)filter_input( INPUT_GET, 'pag', FILTER_VALIDATE_INT) );
+            $tFilter = array('options' => array('min_range' => CPaging::PAGEMIN,
+                                                'max_range' => CPaging::PAGEMAX) );
+        	$this->SetCurrent( filter_input( INPUT_GET, CPaging::PAGETAG, FILTER_VALIDATE_INT, $tFilter));
             $bReturn = TRUE;
         }//if( filter_has_var(INPUT_GET, 'pag') )
         return $bReturn;
     }
 
+   /**
+     * function: ResetMe
+     * description: Set the default value.
+     * parameters: none
+     * return: none
+     * author: Olivier JULLIEN - 2010-06-15
+     */
+    public function ResetMe()
+    {
+        $this->m_iCurrent = CPaging::PAGEMIN;
+        $this->m_iMax     = CPaging::PAGEMIN;
+        $this->m_iOffset  = CPaging::OFFSETMIN;
+        $this->m_iLimit   = CPaging::OFFSETMAX;
+    }
+
 }
-define('PBR_PAGE_LOADED',1);
+
 ?>

@@ -32,22 +32,72 @@
  * file encoding: UTF-8
  * description: describes a contact
  * author: Olivier JULLIEN - 2010-02-04
- * update: Olivier JULLIEN - 2010-05-24 - Update __clone()
+ * update: Olivier JULLIEN - 2010-05-24 - update __clone()
+ * update: Olivier JULLIEN - 2010-06-15 - is not a singleton anymore
+ *                                        add TAG constants
+ *                                        delete GetInstance()
+ *                                        delete DeleteInstance()
+ *                                        update Getters
+ *                                        update SetComment()
+ *                                        update ReadInput()
+ *                                        update SanitizeInt()
+ *                                        update Sanitize()
+ *                                        add ResetMe()
+ *                                        add ReadInputLastName()
+ *                                        add ReadInputIdentifier()
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
 
-class CContact
+final class CContact
 {
+
+    /** Contants
+     ***********/
+    const IDENTIFIERTAG = 'cti';
+    const IDENTIFIERMIN = 0;
+    const IDENTIFIERMAX = 16777215;
+
+    const LASTNAMETAG = 'ctl';
+    const LASTNAMEMIN = 1;
+    const LASTNAMEMAX = 40;
+
+    const FIRSTNAMETAG = 'ctf';
+    const FIRSTNAMEMIN = 1;
+    const FIRSTNAMEMAX = 40;
+
+    const TELTAG = 'ctp';
+    const TELMIN = 1;
+    const TELMAX = 40;
+
+    const EMAILTAG = 'cte';
+    const EMAILMIN = 0;
+    const EMAILMAX = 255;
+
+    const ADDRESSTAG = 'cta';
+    const ADDRESSMIN = 0;
+    const ADDRESSMAX = 255;
+
+    const ADDRESSMORETAG = 'ctm';
+    const ADDRESSMOREMIN = 0;
+    const ADDRESSMOREMAX = 255;
+
+    const CITYTAG = 'ctc';
+    const CITYMIN = 0;
+    const CITYMAX = 255;
+
+    const ZIPTAG = 'ctz';
+    const ZIPMIN = 0;
+    const ZIPMAX = 8;
+
+    const COMMENTTAG    = 'ctk';
+    const COMMENTLENGTH = 300;
 
     /** Private attributs
      ********************/
 
-    // Singleton
-    private static $m_pInstance = NULL;
-
     // identifier
-    private $m_iIdentifier = 0;
+    private $m_iIdentifier = CContact::IDENTIFIERMIN;
 
     // last name
     private $m_sLastName = '';
@@ -92,28 +142,32 @@ class CContact
      ******************/
 
     /**
-     * function: __construct
-     * description: constructor, initializes private attributs
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    private function __construct(){}
-
-    /**
      * function: SanitizeInt
      * description: return sanitized integer value
      * parameter: INTEGER|iValue - value to sanitize
      * return: INTEGER
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - fixed minor bug
+     *                                        add min, max and default values
      */
-    private function SanitizeInt($iValue)
+    private function SanitizeInt($iValue, $iMin, $iMax, $iDefault)
     {
-        $iReturn=0;
-        if( is_numeric($iValue) )
+        $iReturn = $iDefault;
+        if( is_scalar($iValue) && is_integer($iMin) && is_integer($iMax) )
         {
-            $iReturn=$iValue+0;
-        }//if( is_numeric($iValue) )
+            if( is_string($iValue) )
+            {
+                $iValue = trim($iValue);
+            }//if( is_string($iValue) )
+            if( is_numeric($iValue) )
+            {
+                $iValue = $iValue + 0;
+            }//if( is_numeric($iValue) )
+            if( is_integer($iValue) && ($iValue>=$iMin) && ($iValue<=$iMax) )
+            {
+                $iReturn = $iValue;
+            }//if( is_integer($iValue) && ($iValue>=$iMin) && ($iValue<=$iMax) )
+        }//if( is_scalar($iValue) && is_integer($iMin) && is_integer($iMax) )
         return $iReturn;
     }
 
@@ -124,10 +178,11 @@ class CContact
      *            STRING|sFilter - regex filter
      * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - fixed minor bug
      */
     private function Sanitize($sValue, $sFilter='')
     {
-        $sReturn='';
+        $sReturn = '';
         if( is_scalar($sValue) && is_scalar($sFilter) )
         {
 			// Trim
@@ -135,17 +190,26 @@ class CContact
             // Authorized caracteres
             if( !empty($sFilter) )
             {
-                if( 0==preg_match($sFilter,$sValue) )
+                if( 0==preg_match( $sFilter, $sReturn) )
                 {
-                    $sReturn='';
-                }//if( 0==preg_match($sFilter,$sValue) )
+                    $sReturn = '';
+                }//if( 0==preg_match($sFilter, $sReturn) )
             }//if( !empty($sFilter) )
-        }//if( is_scalar($sValue) && is_scalar($sFilter) )
+        }//if(...
         return $sReturn;
     }
 
     /** Public methods
      *****************/
+
+    /**
+     * function: __construct
+     * description: constructor, initializes private attributs
+     * parameter: none
+     * return: none
+     * author: Olivier JULLIEN - 2010-02-04
+     */
+    public function __construct(){}
 
     /**
      * function: __destruct
@@ -166,60 +230,44 @@ class CContact
      */
     public function __clone(){}
 
-   /**
-     * function: GetInstance
-     * description: create or return the current instance
-     * parameter: none
-     * return: this
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function GetInstance()
-    {
-        if( is_null(self::$m_pInstance) )
-        {
-            self::$m_pInstance = new CContact();
-        }
-        return self::$m_pInstance;
-    }
-
-   /**
-     * function: DeleteInstance
-     * description: delete the current instance
-     * parameter: none
-     * return: none
-     * author: Olivier JULLIEN - 2010-02-04
-     */
-    public static function DeleteInstance()
-    {
-        if( !is_null(self::$m_pInstance) )
-        {
-            $tmp=self::$m_pInstance;
-            self::$m_pInstance=NULL;
-            unset($tmp);
-        }
-    }
-
     /**
      * function: Getter
      * description: Accessor
      * parameter: INTEGER|iFilter - 1 if characters should be converted into html entities
      * return: STRING
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use ENT_QUOTES instead of ENT_COMPAT
      */
     public function GetIdentifier(){return (integer)$this->m_iIdentifier;}
-    public function GetLastName($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sLastName,ENT_COMPAT,'UTF-8'):$this->m_sLastName);}
-    public function GetFirstName($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sFirstName,ENT_COMPAT,'UTF-8'):$this->m_sFirstName);}
-    public function GetTel($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sTel,ENT_COMPAT,'UTF-8'):$this->m_sTel);}
-    public function GetEmail($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sEmail,ENT_COMPAT,'UTF-8'):$this->m_sEmail);}
-    public function GetAddress($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sAddress,ENT_COMPAT,'UTF-8'):$this->m_sAddress);}
-    public function GetAddressMore($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sAdressMore,ENT_COMPAT,'UTF-8'):$this->m_sAdressMore);}
-    public function GetCity($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sCity,ENT_COMPAT,'UTF-8'):$this->m_sCity);}
-    public function GetZip($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sZip,ENT_COMPAT,'UTF-8'):$this->m_sZip);}
-    public function GetComment($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sComment,ENT_COMPAT,'UTF-8'):$this->m_sComment);}
-    public function GetCreationDate($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sCreationDate,ENT_COMPAT,'UTF-8'):$this->m_sCreationDate);}
-    public function GetCreationUser($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sCreationUser,ENT_COMPAT,'UTF-8'):$this->m_sCreationUser);}
-    public function GetUpdateDate($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sUpdateDate,ENT_COMPAT,'UTF-8'):$this->m_sUpdateDate);}
-    public function GetUpdateUser($iFilter=0){return ((1===$iFilter)?htmlentities($this->m_sUpdateUser,ENT_COMPAT,'UTF-8'):$this->m_sUpdateUser);}
+    public function GetLastName($iFilter=0)
+    {
+        $sReturn = $this->m_sLastName;
+        if( $iFilter==1 )
+        {
+            $sReturn = htmlentities($this->m_sLastName,ENT_QUOTES,'UTF-8');
+        }
+        elseif( $iFilter==2 )
+        {
+            $sReturn = rawurlencode($this->m_sLastName);
+        }
+        else
+        {
+            $sReturn = $this->m_sLastName;
+        }
+        return $sReturn;
+    }
+    public function GetFirstName($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sFirstName,ENT_QUOTES,'UTF-8'):$this->m_sFirstName);}
+    public function GetTel($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sTel,ENT_QUOTES,'UTF-8'):$this->m_sTel);}
+    public function GetEmail($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sEmail,ENT_QUOTES,'UTF-8'):$this->m_sEmail);}
+    public function GetAddress($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sAddress,ENT_QUOTES,'UTF-8'):$this->m_sAddress);}
+    public function GetAddressMore($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sAdressMore,ENT_QUOTES,'UTF-8'):$this->m_sAdressMore);}
+    public function GetCity($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sCity,ENT_QUOTES,'UTF-8'):$this->m_sCity);}
+    public function GetZip($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sZip,ENT_QUOTES,'UTF-8'):$this->m_sZip);}
+    public function GetComment($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sComment,ENT_QUOTES,'UTF-8'):$this->m_sComment);}
+    public function GetCreationDate($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sCreationDate,ENT_QUOTES,'UTF-8'):$this->m_sCreationDate);}
+    public function GetCreationUser($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sCreationUser,ENT_QUOTES,'UTF-8'):$this->m_sCreationUser);}
+    public function GetUpdateDate($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sUpdateDate,ENT_QUOTES,'UTF-8'):$this->m_sUpdateDate);}
+    public function GetUpdateUser($iFilter=0){return ((1==$iFilter)?htmlentities($this->m_sUpdateUser,ENT_QUOTES,'UTF-8'):$this->m_sUpdateUser);}
 
    /**
      * function: Setter
@@ -227,8 +275,12 @@ class CContact
      * parameter: STRING
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - update SetComment - test input parameter
      */
-    public function SetIdentifier($iValue){$this->m_iIdentifier=$this->SanitizeInt($iValue);}
+    public function SetIdentifier($iValue)
+    {
+        $this->m_iIdentifier = $this->SanitizeInt( $iValue , CContact::IDENTIFIERMIN, CContact::IDENTIFIERMAX, 0);
+    }
     public function SetLastName($sValue){$this->m_sLastName=$this->Sanitize($sValue);}
     public function SetFirstName($sValue){$this->m_sFirstName=$this->Sanitize($sValue);}
     public function SetTel($sValue){$this->m_sTel=$this->Sanitize($sValue);}
@@ -239,16 +291,13 @@ class CContact
     public function SetZip($sValue){$this->m_sZip=$this->Sanitize($sValue);}
     public function SetComment($sValue)
     {
-        if( mb_strlen($sValue,'UTF-8')>300 )
-        {
-            $sValue=TruncMe($sValue,300);
-        }
-        $this->m_sComment=$this->Sanitize($sValue);
-	 }
+        $sValue = TruncMe( $sValue, CContact::COMMENTLENGTH);
+        $this->m_sComment = $this->Sanitize($sValue);
+	}
     public function SetCreationDate($sValue){$this->m_sCreationDate=$this->Sanitize($sValue);}
-    public function SetCreationUser($sValue){$this->m_sCreationUser=$this->Sanitize($sValue);}
+    public function SetCreationUser($sValue){$this->m_sCreationUser=$this->Sanitize($sValue,GetRegExPatternName());}
     public function SetUpdateDate($sValue){$this->m_sUpdateDate=$this->Sanitize($sValue);}
-    public function SetUpdateUser($sValue){$this->m_sUpdateUser=$this->Sanitize($sValue);}
+    public function SetUpdateUser($sValue){$this->m_sUpdateUser=$this->Sanitize($sValue,GetRegExPatternName());}
 
    /**
      * function: MandatoriesAreFilled
@@ -276,34 +325,123 @@ class CContact
     }
 
    /**
+     * function: ReadInputLastName
+     * description: Read GET or POST input contact lastname
+     * parameters: INTEGER|$iFilter - Filter to apply
+     *             BOOLEAN|$bRUD    - if TRUE then uses raw url decode
+     *                                only valid with INPUT_GET
+     * return: BOOLEAN| TRUE or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-06-15
+    */
+    public function ReadInputLastName( $iFilter, $bRUD=FALSE )
+    {
+        $bReturn = FALSE;
+        if( (($iFilter===INPUT_POST) || ($iFilter===INPUT_GET))
+         && filter_has_var( $iFilter, CContact::LASTNAMETAG ) )
+        {
+            $sBuffer = filter_input( $iFilter, CContact::LASTNAMETAG, FILTER_UNSAFE_RAW );
+            if( ($iFilter===INPUT_GET) && ($bRUD===TRUE) )
+            {
+                $this->m_sLastName = rawurldecode( trim($sBuffer) );
+            }
+            else
+            {
+                $this->SetLastName( $sBuffer );
+            }
+            if( strlen($this->m_sLastName)>0 )
+            {
+                $bReturn = TRUE;
+            }//if( ($iFilter===INPUT_GET) && ($bRUD===TRUE) )
+        }//if(...
+        return $bReturn;
+    }
+
+   /**
+     * function: ReadInputIdentifier
+     * description: Read GET or POST input contact identifier
+     * parameters: INTEGER|$iFilter - Filter to apply
+     * return: BOOLEAN| TRUE or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-06-15
+    */
+    public function ReadInputIdentifier( $iFilter )
+    {
+        $bReturn = FALSE;
+        if( (($iFilter===INPUT_POST) || ($iFilter===INPUT_GET))
+         && filter_has_var( $iFilter, CContact::IDENTIFIERTAG ) )
+        {
+            $tFilter = array('options' => array('min_range' => CContact::IDENTIFIERMIN,
+                                                'max_range' => CContact::IDENTIFIERMAX) );
+            $this->SetIdentifier( filter_input( $iFilter, CContact::IDENTIFIERTAG, FILTER_VALIDATE_INT, $tFilter));
+            if( $this->GetIdentifier()>0 )
+            {
+                $bReturn = TRUE;
+            }//if( $this->GetIdentifier()>0 )
+        }//if(...
+        return $bReturn;
+    }
+
+   /**
      * function: ReadInput
-     * description: Read POST input date values
+     * description: Read GET or POST input contact values
+     * parameters: INTEGER|$iFilter - Filter to apply
+     * return: BOOLEAN| TRUE or FALSE if an error occures
+     * author: Olivier JULLIEN - 2010-02-04
+     * update: Olivier JULLIEN - 2010-06-15 - use constants
+     *                                        add filter
+    */
+    public function ReadInput($iFilter)
+    {
+        $bReturn = FALSE;
+        if( ($iFilter===INPUT_POST) || ($iFilter===INPUT_GET) )
+        {
+            $this->ReadInputIdentifier( $iFilter );
+            $this->ReadInputLastName( $iFilter );
+            if(filter_has_var( $iFilter, CContact::FIRSTNAMETAG))
+                $this->SetFirstName( filter_input( $iFilter, CContact::FIRSTNAMETAG, FILTER_UNSAFE_RAW));
+            if(filter_has_var( $iFilter, CContact::TELTAG))
+                $this->SetTel(filter_input( $iFilter, CContact::TELTAG, FILTER_UNSAFE_RAW));
+            if(filter_has_var( $iFilter, CContact::EMAILTAG))
+                $this->SetEmail(filter_input( $iFilter, CContact::EMAILTAG, FILTER_UNSAFE_RAW));
+            if(filter_has_var( $iFilter, CContact::ADDRESSTAG))
+                $this->SetAddress( filter_input( $iFilter, CContact::ADDRESSTAG, FILTER_UNSAFE_RAW));
+            if(filter_has_var( $iFilter, CContact::ADDRESSMORETAG))
+                $this->SetAddressMore( filter_input( $iFilter, CContact::ADDRESSMORETAG, FILTER_UNSAFE_RAW));
+            if(filter_has_var( $iFilter, CContact::CITYTAG))
+                $this->SetCity( filter_input( $iFilter, CContact::CITYTAG, FILTER_UNSAFE_RAW));
+            if(filter_has_var( $iFilter, CContact::ZIPTAG))
+                $this->SetZip( filter_input( $iFilter, CContact::ZIPTAG, FILTER_UNSAFE_RAW));
+            if(filter_has_var( $iFilter, CContact::COMMENTTAG))
+                $this->SetComment( filter_input( $iFilter, CContact::COMMENTTAG, FILTER_UNSAFE_RAW));
+            $bReturn = TRUE;
+        }
+        return $bReturn;
+    }
+
+   /**
+     * function: ResetMe
+     * description: Set the default value.
      * parameters: none
      * return: none
-     * author: Olivier JULLIEN - 2010-02-04
+     * author: Olivier JULLIEN - 2010-06-15
      */
-    public function ReadInput()
+    public function ResetMe()
     {
-        if(filter_has_var(INPUT_POST,'ctl'))
-            $this->SetLastName(filter_input(INPUT_POST,'ctl',FILTER_UNSAFE_RAW));
-        if(filter_has_var(INPUT_POST,'ctf'))
-            $this->SetFirstName(filter_input(INPUT_POST,'ctf',FILTER_UNSAFE_RAW));
-        if(filter_has_var(INPUT_POST,'ctp'))
-            $this->SetTel(filter_input(INPUT_POST,'ctp',FILTER_UNSAFE_RAW));
-        if(filter_has_var(INPUT_POST,'cte'))
-            $this->SetEmail(filter_input(INPUT_POST,'cte',FILTER_UNSAFE_RAW));
-        if(filter_has_var(INPUT_POST,'cta'))
-            $this->SetAddress(filter_input(INPUT_POST,'cta',FILTER_UNSAFE_RAW));
-        if(filter_has_var(INPUT_POST,'ctm'))
-            $this->SetAddressMore(filter_input(INPUT_POST,'ctm',FILTER_UNSAFE_RAW));
-        if(filter_has_var(INPUT_POST,'ctc'))
-            $this->SetCity(filter_input(INPUT_POST,'ctc',FILTER_UNSAFE_RAW));
-        if(filter_has_var(INPUT_POST,'ctz'))
-            $this->SetZip(filter_input(INPUT_POST,'ctz',FILTER_UNSAFE_RAW));
-        if(filter_has_var(INPUT_POST,'ctk'))
-            $this->SetComment(filter_input(INPUT_POST,'ctk',FILTER_UNSAFE_RAW));
+        $this->m_iIdentifier = CContact::IDENTIFIERMIN;
+        $this->m_sLastName = '';
+        $this->m_sFirstName = '';
+        $this->m_sTel = '';
+        $this->m_sEmail = '';
+        $this->m_sAddress = '';
+        $this->m_sAdressMore = '';
+        $this->m_sCity = '';
+        $this->m_sZip = '';
+        $this->m_sComment = '';
+        $this->m_sCreationDate = '';
+        $this->m_sCreationUser = '';
+        $this->m_sUpdateDate = '';
+        $this->m_sUpdateUser = '';
     }
 
 }
-define('PBR_CONTACT_LOADED',1);
+
 ?>

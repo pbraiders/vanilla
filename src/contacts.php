@@ -31,14 +31,15 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the contacts page.
- *         GET: act=null|search, ctl=<contact name>, error=<error number>
- *              , pag=<page>
+ *         GET: act=search|export, ctl=<contact name>, error=<error number>
+ *              , pag=<page>, opX=<option>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -49,121 +50,179 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sSearch='';
-    $sAction=NULL;
-    $iMessageCode=0;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/inituser.php');
+    require(PBR_PATH.'/includes/init/authuser.php');
 
-    /** Include main object(s)
-     *************************/
+    /** Initialize
+     *************/
+    require(PBR_PATH.'/includes/class/coption.php');
     require(PBR_PATH.'/includes/class/cpaging.php');
+    require(PBR_PATH.'/includes/class/ccontact.php');
+    require(PBR_PATH.'/includes/class/ccsv.php');
+    require(PBR_PATH.'/includes/function/export.php');
+    $pPaging = new CPaging();
+    $pSearch = new CContact();
+    $pOrder = new COption('1');
+    $pSort = new COption('2');
+    $pCCSV = null;
+    $pHeader = null;
+    $iMessageCode = 0;
+    $bSended = FALSE;
 
 	/** Read input parameters
-    ************************/
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act')
-    											&& filter_has_var(INPUT_GET, 'ctl') )
-	{
-		// Get action
-		$sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
+     ************************/
 
-  	    // Verify action
-   	    if( $sAction=='search' )
-   	    {
-   	        // Get search name
-   	        $sSearch = rawurldecode( trim( filter_input( INPUT_GET,'ctl',FILTER_UNSAFE_RAW)));
-   	    }
-   	    else
-   	    {
-   	        // Parameters are not valid
-   	        CUser::GetInstance()->Invalidate();
-   	    }//if( $sAction=='search' )
+    // Read the options
+    $pOrder->ReadInput(INPUT_GET);
+    $pSort->ReadInput(INPUT_GET);
 
-    }//if( filter_has_var(...
-
-   // Get the message code
-   $iMessageCode=GetMessageCode();
-
-    // Get the page
-    CPaging::GetInstance()->ReadInput();
-
-    /** Build Page
-     *************/
-    if( CUser::GetInstance()->IsAuthenticated() )
+    // Read action
+    require(PBR_PATH.'/includes/class/caction.php');
+    if( CAction::IsValid( INPUT_GET, 'export' ) === CAction::VALID )
     {
-        // Get contact count
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/contactsgetcount.php');
-        $iReturn=ContactsGetCount( CUser::GetInstance()->GetUsername()
-                                  ,CUser::GetInstance()->GetSession()
-                                  ,GetIP().GetUserAgent()
-                                  ,$sSearch);
-        if( $iReturn>=0 )
-        {
-        	// Succeeded
-			CPaging::GetInstance()->Compute( (integer)PBR_PAGE_CONTACTS, (integer)$iReturn );
-        }
-        else
-        {
-            // Failed
-            RedirectError( $iReturn, __FILE__, __LINE__ );
-			exit;
-        }//if( $iReturn>0 )
-
-        // Get contact list
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/contactsget.php');
-        $tRecordset=ContactsGet( CUser::GetInstance()->GetUsername()
-                                ,CUser::GetInstance()->GetSession()
-                                ,GetIP().GetUserAgent()
-                                ,$sSearch
-                                ,CPaging::GetInstance()->GetOffset()
-                                ,CPaging::GetInstance()->GetLimit());
-        if( is_array($tRecordset) )
-        {
-            /** Build header
-             ***************/
-            require(PBR_PATH.'/includes/class/cheader.php');
-            $sBuffer='Contacts';
-            CHeader::GetInstance()->SetNoCache();
-            CHeader::GetInstance()->SetTitle($sBuffer);
-            CHeader::GetInstance()->SetDescription($sBuffer);
-            CHeader::GetInstance()->SetKeywords($sBuffer);
-            if( strlen($sSearch)>0 )
-            {
-                CHeader::GetInstance()->SetTitle($sSearch);
-                CHeader::GetInstance()->SetDescription($sSearch);
-                CHeader::GetInstance()->SetKeywords($sSearch);
-            }//if( strlen($sSearch)>0 )
-
-            /** Display
-             **********/
-            require(PBR_PATH.'/includes/display/displayheader.php');
-            require(PBR_PATH.'/includes/display/displaycontacts.php');
-            require(PBR_PATH.'/includes/display/displayfooter.php');
-
-            /** Clean
-             ********/
-            CHeader::DeleteInstance();
-        }
-        else
-        {
-            //Error
-            RedirectError( $tRecordset, __FILE__, __LINE__ );
-            exit;
-        }//if( is_array($tRecordset) )
+        // Search
+        $pSearch->ReadInputLastName(INPUT_GET);
+        // Export
+        $pCCSV = new CCSV();
     }
     else
     {
-		//Error
-		RedirectError( -2, __FILE__, __LINE__ );
-		exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+        // Search
+        if( CAction::IsValid( INPUT_GET, 'search' ) === CAction::VALID )
+        {
+            $pSearch->ReadInputLastName(INPUT_GET);
+        }//if( (CAction::IsValid(...
+
+        // Read the message code
+        $iMessageCode = GetMessageCode();
+
+        // Read the page
+        $pPaging->ReadInput();
+
+    }//if( CAction::IsValid(...
+
+    /** Get data
+     ***********/
+
+    // Get contact count
+    require(PBR_PATH.'/includes/db/function/contactsgetcount.php');
+    $iReturn = ContactsGetCount( CAuth::GetInstance()->GetUsername()
+                               , CAuth::GetInstance()->GetSession()
+                               , GetIP().GetUserAgent()
+                               , $pSearch );
+
+    // Error
+    if( ($iReturn===FALSE) || ($iReturn<0) )
+    {
+        unset( $pPaging, $pSearch, $pCCSV, $pOrder, $pSort );
+        RedirectError( $iReturn, __FILE__, __LINE__ );
+        exit;
+    }//if( ($iReturn===FALSE) || ($iReturn<0) )
+
+    /** Build page
+     *************/
+
+    if( isset($pCCSV) )
+    {
+
+        /** Export case
+         **************/
+
+        // Open file
+        $iReturn = ExportInit( $pCCSV, array('nom','prénom','téléphone','email','adresse','ville','code postal','commentaire','date de création') );
+
+        // Write contact list
+        if( ($iReturn!==FALSE) && $pCCSV->IsOpen() )
+        {
+            require(PBR_PATH.'/includes/db/function/contactsgetexport.php');
+            $iReturn = ContactsGetExport( CAuth::GetInstance()->GetUsername()
+                                        , CAuth::GetInstance()->GetSession()
+                                        , GetIP().GetUserAgent()
+                                        , $pSearch
+                                        , $pPaging
+                                        , $pOrder
+                                        , $pSort
+                                        , $pCCSV );
+        }//if( $pCCSV->IsOpen() )
+
+        // Close the file
+        if( $pCCSV->IsOpen() )
+            $pCCSV->Close();
+
+        // Error
+        if( ($iReturn===FALSE) || ($iReturn<0) )
+        {
+            unset( $pPaging, $pSearch, $pCCSV, $pOrder, $pSort );
+            RedirectError( $iReturn, __FILE__, __LINE__ );
+            exit;
+        }//if( ($iReturn===FALSE) || ($iReturn<0) )
+
+        // Send
+        if( ExportSend( $pCCSV )===FALSE )
+        {
+            require(PBR_PATH.'/includes/display/contactsexport.php');
+        }//Send
+
+    }
+    else
+    {
+
+        /** Normal case
+         **************/
+
+        // Paging
+    	$pPaging->Compute( PBR_PAGE_CONTACTS, $iReturn );
+
+        // Get contact list
+        require(PBR_PATH.'/includes/db/function/contactsget.php');
+        $tRecordset = ContactsGet( CAuth::GetInstance()->GetUsername()
+                                 , CAuth::GetInstance()->GetSession()
+                                 , GetIP().GetUserAgent()
+                                 , $pSearch
+                                 , $pPaging
+                                 , $pOrder
+                                 , $pSort );
+
+        if( !is_array($tRecordset) )
+        {
+            // Error
+            unset( $pPaging, $pSearch, $pCCSV, $pOrder, $pSort );
+            RedirectError( $tRecordset, __FILE__, __LINE__ );
+            exit;
+        }//if( !is_array($tRecordset) )
+
+        /** Build header
+         ***************/
+        require(PBR_PATH.'/includes/class/cheader.php');
+        $pHeader = new CHeader();
+        $sBuffer = 'Contacts';
+        $pHeader->SetNoCache();
+        $pHeader->SetTitle($sBuffer);
+        $pHeader->SetDescription($sBuffer);
+        $pHeader->SetKeywords($sBuffer);
+        if( strlen($pSearch->GetLastName())>0 )
+        {
+            $pHeader->SetTitle($pSearch->GetLastName());
+            $pHeader->SetDescription($pSearch->GetLastName());
+            $pHeader->SetKeywords($pSearch->GetLastName());
+        }//if( strlen($pSearch->GetLastName())>0 )
+
+        /** Display
+         **********/
+        require(PBR_PATH.'/includes/display/header.php');
+        require(PBR_PATH.'/includes/display/contacts.php');
+        require(PBR_PATH.'/includes/display/footer.php');
+
+    }//Display
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset( $pPaging, $pSearch, $pCCSV, $pHeader, $pOrder, $pSort );
+    include(PBR_PATH.'/includes/init/clean.php');
+
 ?>

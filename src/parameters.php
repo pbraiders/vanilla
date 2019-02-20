@@ -31,15 +31,14 @@
 /*************************************************************************
  * file encoding: UTF-8
  * description: build and display the parameters page.
- *         GET: act=show
- *         GET: act=delete, rey=<year>
- *        POST: act=update, paX=<parameter value>
+ *        POST: update=update case, paX=<parameter value>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.1.0');
+    define('PBR_VERSION','1.2.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -50,181 +49,112 @@
      ********************/
     require(PBR_PATH.'/includes/function/functions.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/init/init.php');
-    $sAction=NULL;
-    $iMessageCode=0;
-    $iYear=NULL;
-    $tMonthMax=NULL;
+    /** Initialize context
+     *********************/
+    require(PBR_PATH.'/includes/init/context.php');
 
     /** Authenticate
      ***************/
-    require(PBR_PATH.'/includes/init/initadmin.php');
+    require(PBR_PATH.'/includes/init/authadmin.php');
 
-    /** Include main object(s)
-     *************************/
+    /** Initialize
+     *************/
+    require(PBR_PATH.'/includes/class/cmaxrentpermonthlist.php');
     require(PBR_PATH.'/includes/class/cdate.php');
+    $pDate = new CDate();
+    $pMax = null;
+    $iMessageCode = 0;
 
     /** Read input parameters
      ************************/
 
-    // Get the message code
-    $iMessageCode=GetMessageCode();
-
-    // Case action = GET show|delete
-    if( CUser::GetInstance()->IsAuthenticated() && filter_has_var(INPUT_GET, 'act') )
+    // Update
+    if( filter_has_var( INPUT_POST, 'update' ) )
     {
-        // Get the action
-        $sAction = trim(filter_input( INPUT_GET, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        // Get the Date
-        if( ($sAction=='delete') && filter_has_var(INPUT_GET, 'rey') )
+        // Get the month parameters
+        $pMax = new CMaxRentPerMonthList();
+        $pMax->ReadInput();
+        if( $pMax->GetCount()!=12 )
         {
-            $iYear=(integer)filter_input(INPUT_GET,'rey',FILTER_VALIDATE_INT);
-        }//if( ($sAction=='delete') && filter_has_var(INPUT_GET, 'rey') )
-        // Verify action and data
-        if( ($sAction!='show') && ($sAction!='delete') )
-        {
-            // Parameters are not valid
-            CUser::GetInstance()->Invalidate();
-        }//if( ($sAction!='show') && ($sAction!='delete') )
-    }//GET show|delete
-
-    // Case action = POST update
-    if( CUser::GetInstance()->IsAuthenticated() && is_null($sAction)
-                                                && filter_has_var(INPUT_POST, 'act') )
-    {
-        // Get the action
-        $sAction = trim(filter_input( INPUT_POST, 'act', FILTER_SANITIZE_SPECIAL_CHARS));
-        // Get the values
-        $tMonthMax=array();
-        for($iIndex=1;$iIndex<13;$iIndex++)
-        {
-            $sBuffer='pa'.$iIndex;
-            $iValue=0;
-            if( filter_has_var(INPUT_POST,$sBuffer) )
-            {
-                $iValue=filter_input(INPUT_POST,$sBuffer,FILTER_VALIDATE_INT);
-            }//if( filter_has_var(INPUT_POST,$sBuffer) )
-            if( !is_null($iValue) && ($iValue!==FALSE) && ($iValue>=0) )
-            {
-                $tMonthMax['max_rent_'.$iIndex]=$iValue;
-            }
-            else
-            {
-                $tMonthMax=NULL;
-                break;
-            }//if( !is_null($iValue) && ($iValue!==FALSE) && ($iValue>=0) )
-        }//for($iIndex=1;$iIndex<13;$iIndex++)
-        // Verify action and data
-        if( $sAction!='update' )
-        {
-            // Parameters are not valid
-            CUser::GetInstance()->Invalidate();
-        }//if( $sAction!='update')
-    }//POST update
-
-    /** Build the page
-    ******************/
-    if( CUser::GetInstance()->IsAuthenticated() && !is_null($sAction) )
-    {
-        /** Action=update
-         ****************/
-        if( $sAction=='update' )
-        {
-            if( is_null($tMonthMax) )
-            {
-                $iMessageCode=1;
-                $sAction='show';
-            }
-            else
-            {
-                require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/maxupdate.php');
-                $iReturn = MaxUpdate( CUser::GetInstance()->GetUsername()
-                                    , CUser::GetInstance()->GetSession()
-                                    , GetIP().GetUserAgent()
-                                    , $tMonthMax);
-                // Check error
-                if( $iReturn>=0 )
-                {
-                    $iMessageCode=4;
-                    $sAction='show';
-                }
-                else
-		    	{
-			    	// Failed
-				    RedirectError( $iReturn, __FILE__, __LINE__ );
-    				exit;
-	    		}//if( $iReturn>=0 )
-            }//if( is_null($tMonthMax) )
-        }//if( $sAction=='update' )
-
-        /** Action=delete
-         ****************/
-        if( $sAction=='delete' )
-        {
-            if( ($iYear>CDate::GetInstance()->GetCurrentYear()) || ($iYear<=0) )
-            {
-                $iMessageCode=3;
-                $sAction=='show';
-            }
-            else
-            {
-	            // Create session
-	            require(PBR_PATH.'/includes/class/csession.php');
-	            CSession::CreateSession();
-	            // Build token
-	            $sToken = md5(uniqid(rand(), TRUE));
-	            CSession::GetInstance()->SetToken($sToken);
-	            // Send
-	            $sBuffer=PBR_URL.'rentsdelete.php?act=confirm&tok='.$sToken.'&rey='.$iYear;
-	            include(PBR_PATH.'/includes/init/initclean.php');
-	            header('Location: '.$sBuffer);
-	            exit;
-            }//if( ($iYear>=CDate::GetInstance()->GetCurrentYear()) || ($iYear<=0) )
-        }//if( $sAction=='delete' )
-
-        /** Get the max
-         **************/
-        require(PBR_PATH.'/includes/db/'.PBR_DB_DIR.'/maxget.php');
-        $tRecordset=MaxGet( CUser::GetInstance()->GetUsername()
-                           ,CUser::GetInstance()->GetSession()
-                           ,GetIP().GetUserAgent());
-        if( !is_array($tRecordset) )
-        {
-            //Error
-            RedirectError( $tRecordset, __FILE__, __LINE__ );
-            exit;
-        }//if( !is_array($tRecordset) )
-
-        /** Build header
-         ***************/
-        require(PBR_PATH.'/includes/class/cheader.php');
-        $sBuffer='Paramètres';
-        CHeader::GetInstance()->SetNoCache();
-        CHeader::GetInstance()->SetTitle($sBuffer);
-        CHeader::GetInstance()->SetDescription($sBuffer);
-        CHeader::GetInstance()->SetKeywords($sBuffer);
-
-        /** Display
-         **********/
-        require(PBR_PATH.'/includes/display/displayheader.php');
-        require(PBR_PATH.'/includes/display/displayparameters.php');
-        require(PBR_PATH.'/includes/display/displayfooter.php');
-
-        /** Clean
-         ********/
-        CHeader::DeleteInstance();
-
+            unset($pMax);
+            $iMessageCode = 1;
+        }//if( $pMax->GetCount()!=12 )
     }
     else
     {
-        //Error
-        RedirectError( -2, __FILE__, __LINE__ );
+        // Get the message code
+        $iMessageCode = GetMessageCode();
+    }//if( filter_has_var( ...
+
+    /** Update
+     *********/
+    if( isset($pMax) )
+    {
+        require(PBR_PATH.'/includes/db/function/maxupdate.php');
+        $iReturn = MaxUpdate( CAuth::GetInstance()->GetUsername()
+                            , CAuth::GetInstance()->GetSession()
+                            , GetIP().GetUserAgent()
+                            , $pMax );
+
+        unset($pMax);
+
+        // Failed
+        if( ($iReturn===FALSE) || ($iReturn<0) )
+        {
+            RedirectError( $iReturn, __FILE__, __LINE__ );
+            exit;
+        }//if( ($iReturn===FALSE) || ($iReturn<0) )
+
+        // Succeeded
+        $iMessageCode = 4;
+
+    }//if( isset($pMax) )
+
+    /** Read the parameters
+     **********************/
+    require(PBR_PATH.'/includes/db/function/maxget.php');
+    $tRecordset = MaxGet( CAuth::GetInstance()->GetUsername()
+                        , CAuth::GetInstance()->GetSession()
+                        , GetIP().GetUserAgent() );
+
+    if( !is_array($tRecordset) )
+    {
+        // Error
+        RedirectError( $tRecordset, __FILE__, __LINE__ );
         exit;
-    }//if( CUser::GetInstance()->IsAuthenticated() )
+    }//if( !is_array($tRecordset) )
+
+    /** Read the database status
+     ***************************/
+    require(PBR_PATH.'/includes/db/function/dbstatus.php');
+    $tRecordsetDB = DBStatus( CAuth::GetInstance()->GetUsername()
+                            , CAuth::GetInstance()->GetSession()
+                            , GetIP().GetUserAgent() );
+
+    if( !is_array($tRecordsetDB) )
+    {
+        $tRecordsetDB = array('records'=>0, 'size'=>0);
+    }//if( !is_array($tRecordsetDB) )
+
+    /** Build header
+     ***************/
+    require(PBR_PATH.'/includes/class/cheader.php');
+    $pHeader = new Cheader();
+    $sBuffer = 'Paramètres';
+    $pHeader->SetNoCache();
+    $pHeader->SetTitle($sBuffer);
+    $pHeader->SetDescription($sBuffer);
+    $pHeader->SetKeywords($sBuffer);
+
+    /** Display
+     **********/
+    require(PBR_PATH.'/includes/display/header.php');
+    require(PBR_PATH.'/includes/display/parameters.php');
+    require(PBR_PATH.'/includes/display/footer.php');
 
     /** Delete objects
      *****************/
-    include(PBR_PATH.'/includes/init/initclean.php');
+    unset($pDate);
+    unset($pHeader);
+    include(PBR_PATH.'/includes/init/clean.php');
 ?>
