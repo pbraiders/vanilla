@@ -381,7 +381,12 @@ final class CDBLayer
      */
     public function GetInfo()
     {
-        return htmlspecialchars(mysql_get_client_info());
+		if( function_exists('mysql_get_client_info') ) {
+			$sReturn = mysql_get_client_info();
+		} else {
+			$sReturn = $this->m_pDriver->getAttribute( constant('PDO::ATTR_CLIENT_VERSION') );
+		}
+        return htmlspecialchars($sReturn);
     }
 
 

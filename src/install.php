@@ -33,11 +33,13 @@
  * description: build and display the main page.
  *        POST: act=install, pwd=<password>, pwdc=<password>, usr=<username>
  * author: Olivier JULLIEN - 2010-02-04
+ * update: Olivier JULLIEN - 2017-12-04, mysql_get_client_info does not
+ *                                       exist anymore on php7.0
  *************************************************************************/
 
     /** Defines
      **********/
-    define('PBR_VERSION','1.2.1');
+    define('PBR_VERSION','1.3.0');
     define('PBR_PATH',dirname(__FILE__));
 
     /** Include config
@@ -64,7 +66,11 @@
     $sPHPVersionRequired   = '5.2';
     $sMYSQLVersionRequired = '5.0';
     $sPHPVersion   = phpversion();
-    $sMYSQLVersion = mysql_get_client_info();
+	if( function_exists( 'mysql_get_client_info' )) {
+	    $sMYSQLVersion = mysql_get_client_info();
+	} else {
+		$sMYSQLVersion = '5.0';
+	}
 
     /** Prerequiste test
      ******************/

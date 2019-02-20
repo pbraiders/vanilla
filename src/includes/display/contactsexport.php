@@ -46,4 +46,4 @@ if ( !defined('PBR_VERSION') || !defined('PBR_URL') )
     header('Pragma: no-cache');     // For HTTP/1.0 compability
     header('Content-type: text/html; charset=UTF-8');
 ?>
-<html lang="fr"><head><title>Export</title></head><body><h1 style="color:red;">Il est impossible de g&#233;n&#233;rer le fichier d&#039;export.</h1><ol><li>V&#233;rifiez les fichiers de logs pour avoir une description de l'erreur.</li><li>Vous pouvez retourner &agrave; la liste des contacts en cliquant sur le lien: <a title="Contacts" href="<?php echo PBR_URL;?>contacts.php">PBRaiders</a></li></ol></body></html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr"><head><title>Export</title></head><body><h1 style="color:red;">Il est impossible de g&#233;n&#233;rer le fichier d&#039;export.</h1><ol><li>V&#233;rifiez les fichiers de logs pour avoir une description de l'erreur.</li><li>Vous pouvez retourner &agrave; la liste des contacts en cliquant sur le lien: <a title="Contacts" href="<?php echo PBR_URL;?>contacts.php">PBRaiders</a></li></ol></body></html>
