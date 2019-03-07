@@ -10,7 +10,7 @@ PBRaiders has been developed for simplicity, speed, performance, robustness and 
 
 ## Table of Contents
 
-- [Requirements](#requirements) | [Installation](#installation) | [Documentation](#documentation) | [Contributing](#contributing) | [License](#license)i
+- [Requirements](#requirements) | [Installation](#installation) | [Documentation](#documentation) | [Contributing](#contributing) | [License](#license)
 
 ## Requirements
 
