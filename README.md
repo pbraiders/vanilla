@@ -40,4 +40,4 @@ Be sure to include a title and clear description,as much relevant information as
 
 ## License
 
-**PBRaiders Vanilla** is open-source and are licensed under the [GNU General Public License v3.0 License](https://github.com/pbraiders/pbraiders.vanilla/blob/master/LICENSE).
+**PBRaiders Vanilla** is open-source and is licensed under the [GNU General Public License v3.0 License](https://github.com/pbraiders/pbraiders.vanilla/blob/master/LICENSE).
