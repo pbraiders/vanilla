@@ -15,7 +15,7 @@ PBRaiders has been developed for simplicity, speed, performance, robustness and 
 ## Requirements
 
 - PHP: ~5.2
-- MysSQL: ~5.0
+- MySQL: ~5.0
 - PHP extensions: GD and PDO driver for MysSQL.
 
 ## Installation
@@ -40,4 +40,4 @@ Be sure to include a title and clear description,as much relevant information as
 
 ## License
 
-**PBRaiders Vanilla** is open-source and are licensed under the [GNU General Public License v3.0 License License](https://github.com/pbraiders/pbraiders.vanilla/blob/master/LICENSE).
+**PBRaiders Vanilla** is open-source and are licensed under the [GNU General Public License v3.0 License](https://github.com/pbraiders/pbraiders.vanilla/blob/master/LICENSE).
