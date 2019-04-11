@@ -14,7 +14,7 @@ PBRaiders has been developed for simplicity, speed, performance, robustness and 
 
 ## Requirements
 
-- PHP: ~5.2
+- PHP: >=5.2
 - MySQL: ~5.0
 - PHP extensions: GD and PDO driver for MysSQL.
 
