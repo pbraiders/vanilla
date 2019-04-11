@@ -2,7 +2,7 @@
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
- * Tous droits réservés - All rights reserved                            *
+ * Tous droits rÃ©servÃ©s - All rights reserved                            *
  *                                                                       *
  *************************************************************************
  *                                                                       *
@@ -36,6 +36,7 @@
  *                                        update Open()
  *                                        update and rename ErrorInsert()
  * update: Olivier JULLIEN - 2010-06-15 - improvement
+ * update: Olivier JULLIEN - 2017-04-12 - PHP7 fixes
  *************************************************************************/
 if( !defined('PBR_VERSION') )
     die('-1');
@@ -377,15 +378,11 @@ final class CDBLayer
      * description: Get client info
      * parameter:none
      * return: STRING - sanitized
-     * author: Olivier JULLIEN - 2010-06-15
+     * author: Olivier JULLIEN - 2017-04-12
      */
     public function GetInfo()
     {
-		if( function_exists('mysql_get_client_info') ) {
-			$sReturn = mysql_get_client_info();
-		} else {
-			$sReturn = $this->m_pDriver->getAttribute( constant('PDO::ATTR_CLIENT_VERSION') );
-		}
+        $sReturn = $this->m_pDriver->getAttribute( constant('PDO::ATTR_CLIENT_VERSION') );
         return htmlspecialchars($sReturn);
     }
 

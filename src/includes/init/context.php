@@ -40,6 +40,7 @@
  * author: Olivier JULLIEN - 2010-02-04
  * update: Olivier JULLIEN - 2010-05-24 - recode "Strip slashes" section
  *                                        add log managment
+ * update: Olivier JULLIEN - 2017-04-12 - PHP7 fixes
  *************************************************************************/
 if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
     die('-1');
@@ -59,56 +60,6 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
     {
         @ini_set('memory_limit', PBR_MEMORY_LIMIT);
     }// if( function_exists('memory_get_usage')
-
-    /** Register global
-     ******************/
-    unset($sBuffer);
-    $sBuffer = @ini_get('register_globals');
-    if( isset($sBuffer) && ($sBuffer!=FALSE) && (strlen($sBuffer)>0) && ($sBuffer!='0') )
-    {
-        // register globals is ON
-
-        // No hack
-        if ( isset($_REQUEST['GLOBALS']) ) die('GLOBALS overwrite attempt detected');
-
-        // Variables that shouldn't be unset
-        $tNoUnset = array('GLOBALS', '_GET', '_POST', '_COOKIE', '_REQUEST', '_SERVER', '_ENV', '_FILES', 'token');
-        // Merge All
-        $tAll = array_merge($_GET, $_POST, $_COOKIE, $_SERVER, $_ENV, $_FILES
-                            , isset($_SESSION) && is_array($_SESSION) ? $_SESSION : array());
-        // Parse All
-        foreach( $tAll as $sKey=>$sValue )
-        {
-            // Unset duplicate GLOBALS param
-            if( !in_array($sKey, $tNoUnset) && isset($GLOBALS[$sKey]) )
-            {
-                $GLOBALS[$sKey] = NULL;
-                unset($GLOBALS[$sKey]);
-                // Double unset to circumvent the zend_hash_del_key_or_index hole in PHP <4.4.3 and <5.1.4
-                unset($GLOBALS[$sKey]);
-            }//if( !in_array($sKey, $tNoUnset) && isset($GLOBALS[$sKey]) )
-        }// foreach( $tAll as $sKey=>$sValue )
-    }// if( isset($sBuffer) && ($sBuffer!=FALSE) && (strlen($sBuffer)>0) && ($sBuffer!='0') )
-    unset($sBuffer);
-    unset($tNoUnset);
-
-    /** Disable magic quotes
-     ***********************/
-    $sPHPVersion=phpversion();
-    $sPHPVersionRequired='5.3';
-    if( (version_compare( $sPHPVersion, $sPHPVersionRequired, '<')) && (get_magic_quotes_runtime()==1) )
-    {
-        set_magic_quotes_runtime(0);
-    }//if( (version_compare( $sPHPVersion, $sPHPVersionRequired, '<')) && (get_magic_quotes_runtime()==1) )
-    @ini_set('magic_quotes_sybase', 0);
-
-    // Strip slashes from GET/POST/COOKIE
-    if ( get_magic_quotes_gpc() )
-    {
-        $_GET    = stripslashes_deep($_GET   );
-        $_POST   = stripslashes_deep($_POST  );
-        $_COOKIE = stripslashes_deep($_COOKIE);
-    }// if ( get_magic_quotes_gpc() )
 
     /** Set error level
      ******************/

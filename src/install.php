@@ -63,11 +63,11 @@
      *************/
     require(PBR_PATH.'/includes/class/cuser.php');
     $pUser = new CUser();
-    $sPHPVersionRequired   = '5.2';
+    $sPHPVersionRequired   = '7.0';
     $sMYSQLVersionRequired = '5.0';
     $sPHPVersion   = phpversion();
-	if( function_exists( 'mysql_get_client_info' )) {
-	    $sMYSQLVersion = mysql_get_client_info();
+	if( function_exists( 'mysqli_get_client_info' )) {
+	    $sMYSQLVersion = mysqli_get_client_info();
 	} else {
 		$sMYSQLVersion = '5.0';
 	}

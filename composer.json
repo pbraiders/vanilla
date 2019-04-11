@@ -1,0 +1,39 @@
+{
+    "name": "pbraiders/pbraiders-vanilla",
+    "type": "project",
+    "description": "Paintball reservation management system",
+    "keywords": ["Reservation management system","php7"],
+    "homepage":"https://github.com/pbraiders/pbraiders.vanilla",
+    "readme":"README.md",
+    "time":"2010-05-21",
+    "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Olivier Jullien",
+            "homepage": "https://github.com/ojullien"
+        }
+    ],
+    "require": {
+        "php": "^7.3",
+        "ext-gd": "*",
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "require-dev": {
+        "ext-xdebug": "*",
+        "squizlabs/php_codesniffer": "^3.3",
+        "phpcompatibility/php-compatibility": "*"
+    },
+    "prefer-stable" : true,
+    "autoload-dev": {
+        "psr-0": { "": "tests/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
+        "post-update-cmd" : "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
+        "compat" : "\"vendor/bin/phpcs\" -p src/ --standard=PHPCompatibility"
+    }
+}
