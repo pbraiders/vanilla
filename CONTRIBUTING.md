@@ -27,7 +27,7 @@ Pull requests are the best way to propose changes to the codebase. There are war
 
 ## Bug and fix
 
-If you encounter any **bugs**, please open an [issue](https://github.com/pbraiders/pbr-vanilla/issues/new).
+If you encounter any **bugs**, please open an [issue](https://github.com/pbraiders/vanilla/issues/new).
 
 **Great Bug Reports** tend to have:
 
@@ -40,4 +40,4 @@ If you encounter any **bugs**, please open an [issue](https://github.com/pbraide
 - Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
 
 ## License
-By contributing, you agree that your contributions will be licensed under its GNU General Public License v3.0 License.
+By contributing, you agree that your contributions will be licensed under its [GNU General Public License v3.0 License](LICENSE).
