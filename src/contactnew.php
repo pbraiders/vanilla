@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -36,89 +37,86 @@
  * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
-    /** Defines
-     **********/
-    define('PBR_VERSION','1.2.1');
-    define('PBR_PATH',dirname(__FILE__));
+/** Defines
+ **********/
+define('PBR_VERSION', '1.3.2');
+define('PBR_PATH', dirname(__FILE__));
 
-    /** Include config
-     *****************/
-    require(PBR_PATH.'/config.php');
+/** Include config
+ *****************/
+require(PBR_PATH . '/config.php');
 
-    /** Include functions
-     ********************/
-    require(PBR_PATH.'/includes/function/functions.php');
+/** Include functions
+ ********************/
+require(PBR_PATH . '/includes/function/functions.php');
 
-    /** Initialize context
-     *********************/
-    require(PBR_PATH.'/includes/init/context.php');
+/** Initialize context
+ *********************/
+require(PBR_PATH . '/includes/init/context.php');
 
-    /** Authenticate
-     ***************/
-    require(PBR_PATH.'/includes/init/authuser.php');
+/** Authenticate
+ ***************/
+require(PBR_PATH . '/includes/init/authuser.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/class/ccontact.php');
-    $pContact = new CContact();
-    $iMessageCode = 0;
+/** Initialize
+ *************/
+require(PBR_PATH . '/includes/class/ccontact.php');
+$pContact = new CContact();
+$iMessageCode = 0;
 
-    /** Read input parameters
-     ************************/
-    require(PBR_PATH.'/includes/class/caction.php');
-    if( filter_has_var( INPUT_POST, 'new' ) )
-    {
-        // Read data
-        $pContact->ReadInput(INPUT_POST);
-        if( $pContact->MandatoriesAreFilled()===TRUE )
-        {
-            require(PBR_PATH.'/includes/db/function/contactadd.php');
-            $iReturn = ContactAdd( CAuth::GetInstance()->GetUsername()
-                                 , CAuth::GetInstance()->GetSession()
-                                 , GetIP().GetUserAgent()
-                                 , $pContact );
+/** Read input parameters
+ ************************/
+require(PBR_PATH . '/includes/class/caction.php');
+if (filter_has_var(INPUT_POST, 'new')) {
+    // Read data
+    $pContact->ReadInput(INPUT_POST);
+    if ($pContact->MandatoriesAreFilled() === TRUE) {
+        require(PBR_PATH . '/includes/db/function/contactadd.php');
+        $iReturn = ContactAdd(
+            CAuth::GetInstance()->GetUsername(),
+            CAuth::GetInstance()->GetSession(),
+            GetIP() . GetUserAgent(),
+            $pContact
+        );
 
-            // Error
-            if( ($iReturn===FALSE) || ($iReturn<=0) )
-            {
-                unset($pContact);
-                RedirectError( $iReturn, __FILE__, __LINE__ );
-                exit;
-            }//if( ($iReturn===FALSE) || ($iReturn<=0) )
-
-            // Succeed
-            $sBuffer  = PBR_URL.'contacts.php?'.CAction::ACTIONTAG.'=search';
-            $sBuffer .= '&'.CContact::LASTNAMETAG.'='.$pContact->GetLastName(2);
-            $sBuffer .= '&error=1';
+        // Error
+        if (($iReturn === FALSE) || ($iReturn <= 0)) {
             unset($pContact);
-            include(PBR_PATH.'/includes/init/clean.php');
-            header('Location: '.$sBuffer);
+            RedirectError($iReturn, __FILE__, __LINE__);
             exit;
-        }
-        else
-        {
-            // Missing values
-            $iMessageCode = 1;
-        }//if( $pContact->MandatoriesAreFilled()===TRUE )
-    }//if( CAction::IsValid(...
+        } //if( ($iReturn===FALSE) || ($iReturn<=0) )
 
-    /** Build header
-     ***************/
-    require(PBR_PATH.'/includes/class/cheader.php');
-    $pHeader = new CHeader();
-    $sBuffer = 'Nouveau contact';
-    $pHeader->SetNoCache();
-    $pHeader->SetTitle($sBuffer);
-    $pHeader->SetDescription($sBuffer);
-    $pHeader->SetKeywords($sBuffer);
+        // Succeed
+        $sBuffer  = PBR_URL . 'contacts.php?' . CAction::ACTIONTAG . '=search';
+        $sBuffer .= '&' . CContact::LASTNAMETAG . '=' . $pContact->GetLastName(2);
+        $sBuffer .= '&error=1';
+        unset($pContact);
+        include(PBR_PATH . '/includes/init/clean.php');
+        header('Location: ' . $sBuffer);
+        exit;
+    } else {
+        // Missing values
+        $iMessageCode = 1;
+    } //if( $pContact->MandatoriesAreFilled()===TRUE )
+} //if( CAction::IsValid(...
 
-    /** Display
-     **********/
-    require(PBR_PATH.'/includes/display/header.php');
-    require(PBR_PATH.'/includes/display/contactnew.php');
-    require(PBR_PATH.'/includes/display/footer.php');
+/** Build header
+ ***************/
+require(PBR_PATH . '/includes/class/cheader.php');
+$pHeader = new CHeader();
+$sBuffer = 'Nouveau contact';
+$pHeader->SetNoCache();
+$pHeader->SetTitle($sBuffer);
+$pHeader->SetDescription($sBuffer);
+$pHeader->SetKeywords($sBuffer);
 
-    /** Delete objects
-     *****************/
-    unset( $pContact, $pHeader );
-    include(PBR_PATH.'/includes/init/clean.php');
+/** Display
+ **********/
+require(PBR_PATH . '/includes/display/header.php');
+require(PBR_PATH . '/includes/display/contactnew.php');
+require(PBR_PATH . '/includes/display/footer.php');
+
+/** Delete objects
+ *****************/
+unset($pContact, $pHeader);
+include(PBR_PATH . '/includes/init/clean.php');

@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -38,166 +39,161 @@
  * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
-    /** Defines
-     **********/
-    define('PBR_VERSION','1.2.1');
-    define('PBR_PATH',dirname(__FILE__));
+/** Defines
+ **********/
+define('PBR_VERSION', '1.3.2');
+define('PBR_PATH', dirname(__FILE__));
 
-    /** Include config
-     *****************/
-    require(PBR_PATH.'/config.php');
+/** Include config
+ *****************/
+require(PBR_PATH . '/config.php');
 
-    /** Include functions
-     ********************/
-    require(PBR_PATH.'/includes/function/functions.php');
+/** Include functions
+ ********************/
+require(PBR_PATH . '/includes/function/functions.php');
 
-    /** Initialize context
-     *********************/
-    require(PBR_PATH.'/includes/init/context.php');
+/** Initialize context
+ *********************/
+require(PBR_PATH . '/includes/init/context.php');
 
-    /** Authenticate
-     ***************/
-    require(PBR_PATH.'/includes/init/authuser.php');
+/** Authenticate
+ ***************/
+require(PBR_PATH . '/includes/init/authuser.php');
 
-    /** Read input identifier
-     ************************/
-    require(PBR_PATH.'/includes/class/crent.php');
-    $pRent = new CRent();
-    if( ($pRent->ReadInputIdentifier(INPUT_GET)===FALSE) && ($pRent->ReadInputIdentifier(INPUT_POST)===FALSE) )
-    {
-        //Error
-        unset($pRent);
-        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
-        RedirectError( -2, __FILE__, __LINE__ );
-        exit;
-    }//if( ($pRent->ReadInputIdentifier(
+/** Read input identifier
+ ************************/
+require(PBR_PATH . '/includes/class/crent.php');
+$pRent = new CRent();
+if (($pRent->ReadInputIdentifier(INPUT_GET) === FALSE) && ($pRent->ReadInputIdentifier(INPUT_POST) === FALSE)) {
+    //Error
+    unset($pRent);
+    $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+    ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
+    RedirectError(-2, __FILE__, __LINE__);
+    exit;
+} //if( ($pRent->ReadInputIdentifier(
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/class/ccontact.php');
-    require(PBR_PATH.'/includes/class/cdate.php');
-    $pContact = new CContact();
-    $pDate = new CDate();
-    $sCalendarHRef = '';
+/** Initialize
+ *************/
+require(PBR_PATH . '/includes/class/ccontact.php');
+require(PBR_PATH . '/includes/class/cdate.php');
+$pContact = new CContact();
+$pDate = new CDate();
+$sCalendarHRef = '';
 
-    // Get rent
-    require(PBR_PATH.'/includes/db/function/rentget.php');
-    $iReturn = RentGet( CAuth::GetInstance()->GetUsername()
-                      , CAuth::GetInstance()->GetSession()
-                      , GetIP().GetUserAgent()
-                      , $pRent
-                      , $pDate
-                      , $pContact );
+// Get rent
+require(PBR_PATH . '/includes/db/function/rentget.php');
+$iReturn = RentGet(
+    CAuth::GetInstance()->GetUsername(),
+    CAuth::GetInstance()->GetSession(),
+    GetIP() . GetUserAgent(),
+    $pRent,
+    $pDate,
+    $pContact
+);
 
-    // Error
-    if( ($iReturn===FALSE) || ($iReturn<=0) )
-    {
-        unset( $pRent, $pDate, $pContact );
-        if( $iReturn===0 )
-        {
-            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
-            $iReturn=-2;
-        }//if( $iReturn==0 )
-        RedirectError( $iReturn, __FILE__, __LINE__ );
-        exit;
-    }//if( ($iReturn===FALSE) || ($iReturn<=0) )
+// Error
+if (($iReturn === FALSE) || ($iReturn <= 0)) {
+    unset($pRent, $pDate, $pContact);
+    if ($iReturn === 0) {
+        $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+        ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
+        $iReturn = -2;
+    } //if( $iReturn==0 )
+    RedirectError($iReturn, __FILE__, __LINE__);
+    exit;
+} //if( ($iReturn===FALSE) || ($iReturn<=0) )
 
-    /** Cancel
-     *********/
-    if( filter_has_var( INPUT_POST, 'can') )
-    {
-        $sBuffer = CRent::IDENTIFIERTAG.'='.$pRent->GetIdentifier();
-        unset( $pRent, $pDate, $pContact );
-        include(PBR_PATH.'/includes/init/clean.php');
-        header('Location: '.PBR_URL.'rent.php?'.$sBuffer);
-        exit;
-    }//Cancel
+/** Cancel
+ *********/
+if (filter_has_var(INPUT_POST, 'can')) {
+    $sBuffer = CRent::IDENTIFIERTAG . '=' . $pRent->GetIdentifier();
+    unset($pRent, $pDate, $pContact);
+    include(PBR_PATH . '/includes/init/clean.php');
+    header('Location: ' . PBR_URL . 'rent.php?' . $sBuffer);
+    exit;
+} //Cancel
 
-    /** Create session
-     *****************/
-    require(PBR_PATH.'/includes/class/cphpsession.php');
-    CPHPSession::CreateSession();
+/** Create session
+ *****************/
+require(PBR_PATH . '/includes/class/cphpsession.php');
+CPHPSession::CreateSession();
+
+/** Delete
+ *********/
+if (filter_has_var(INPUT_POST, 'con') && (CPHPSession::GetInstance()->ValidInput(INPUT_POST) === TRUE)) {
+    // Clean SESSION
+    CPHPSession::CleanToken();
+    CPHPSession::Clean();
+
+    // Build href for calendar
+    $sCalendarHRef  = PBR_URL . 'day.php';
+    $sCalendarHRef .= '?' . CDate::YEARTAG . '=' . $pDate->GetRequestYear();
+    $sCalendarHRef .= '&' . CDate::MONTHTAG . '=' . $pDate->GetRequestMonth();
+    $sCalendarHRef .= '&' . CDate::DAYTAG . '=' . $pDate->GetRequestDay();
 
     /** Delete
      *********/
-    if( filter_has_var( INPUT_POST, 'con') && (CPHPSession::GetInstance()->ValidInput(INPUT_POST)===TRUE) )
-    {
-        // Clean SESSION
-        CPHPSession::CleanToken();
-        CPHPSession::Clean();
+    require(PBR_PATH . '/includes/db/function/rentdel.php');
+    $iReturn = RentDel(
+        CAuth::GetInstance()->GetUsername(),
+        CAuth::GetInstance()->GetSession(),
+        GetIP() . GetUserAgent(),
+        $pRent
+    );
 
-        // Build href for calendar
-        $sCalendarHRef  = PBR_URL.'day.php';
-        $sCalendarHRef .= '?'.CDate::YEARTAG.'='.$pDate->GetRequestYear();
-        $sCalendarHRef .= '&'.CDate::MONTHTAG.'='.$pDate->GetRequestMonth();
-        $sCalendarHRef .= '&'.CDate::DAYTAG.'='.$pDate->GetRequestDay();
+    unset($pRent, $pDate, $pContact);
 
-        /** Delete
-         *********/
-        require( PBR_PATH.'/includes/db/function/rentdel.php');
-        $iReturn = RentDel( CAuth::GetInstance()->GetUsername()
-                          , CAuth::GetInstance()->GetSession()
-                          , GetIP().GetUserAgent()
-                          , $pRent );
-
-        unset( $pRent, $pDate, $pContact );
-
-        // Failed
-        if( ($iReturn===FALSE) || ($iReturn<=0) )
-        {
-            if( $iReturn===0 )
-            {
-                $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-                ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
-                $iReturn=-2;
-            }//if( $iReturn==0 )
-            RedirectError( $iReturn, __FILE__, __LINE__ );
-            exit;
-        }//if( ($iReturn===FALSE) || ($iReturn<0) )
-
-        // Succeeded
-        include(PBR_PATH.'/includes/init/clean.php');
-        header('Location: '.$sCalendarHRef.'&error=3');
+    // Failed
+    if (($iReturn === FALSE) || ($iReturn <= 0)) {
+        if ($iReturn === 0) {
+            $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+            ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
+            $iReturn = -2;
+        } //if( $iReturn==0 )
+        RedirectError($iReturn, __FILE__, __LINE__);
         exit;
+    } //if( ($iReturn===FALSE) || ($iReturn<0) )
 
-    }//Delete
+    // Succeeded
+    include(PBR_PATH . '/includes/init/clean.php');
+    header('Location: ' . $sCalendarHRef . '&error=3');
+    exit;
+} //Delete
 
-    // Clean SESSION token
+// Clean SESSION token
+CPHPSession::CleanToken();
+
+/** Generate and write SESSION token
+ ***********************************/
+$sToken = CPHPSession::GetInstance()->WriteToken();
+if ($sToken === FALSE) {
+    $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+    ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de fixer le jeton de la session', E_USER_ERROR, TRUE);
     CPHPSession::CleanToken();
+    CPHPSession::Clean();
+    unset($pRent, $pDate, $pContact);
+    RedirectError(1, __FILE__, __LINE__);
+    exit;
+} //if( $sToken===FALSE )
 
-    /** Generate and write SESSION token
-     ***********************************/
-    $sToken = CPHPSession::GetInstance()->WriteToken();
-    if( $sToken===FALSE )
-    {
-        $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de fixer le jeton de la session', E_USER_ERROR, TRUE);
-        CPHPSession::CleanToken();
-        CPHPSession::Clean();
-        unset( $pRent, $pDate, $pContact );
-        RedirectError( 1, __FILE__, __LINE__ );
-        exit;
-    }//if( $sToken===FALSE )
+/** Build header
+ ***************/
+require(PBR_PATH . '/includes/class/cheader.php');
+$pHeader = new CHeader();
+$sBuffer = 'Supprimer une réservation';
+$pHeader->SetNoCache();
+$pHeader->SetTitle($sBuffer);
+$pHeader->SetDescription($sBuffer);
+$pHeader->SetKeywords('delete,erase,effacer,supprimer,suppression,rent,reservation');
 
-    /** Build header
-     ***************/
-    require(PBR_PATH.'/includes/class/cheader.php');
-    $pHeader = new CHeader();
-    $sBuffer = 'Supprimer une réservation';
-    $pHeader->SetNoCache();
-    $pHeader->SetTitle($sBuffer);
-    $pHeader->SetDescription($sBuffer);
-    $pHeader->SetKeywords('delete,erase,effacer,supprimer,suppression,rent,reservation');
+/** Display
+ **********/
+require(PBR_PATH . '/includes/display/header.php');
+require(PBR_PATH . '/includes/display/rentdelete.php');
+require(PBR_PATH . '/includes/display/footer.php');
 
-    /** Display
-     **********/
-    require(PBR_PATH.'/includes/display/header.php');
-    require(PBR_PATH.'/includes/display/rentdelete.php');
-    require(PBR_PATH.'/includes/display/footer.php');
-
-    /** Delete objects
-     *****************/
-    unset( $pRent, $pDate, $pContact );
-    include(PBR_PATH.'/includes/init/clean.php');
+/** Delete objects
+ *****************/
+unset($pRent, $pDate, $pContact);
+include(PBR_PATH . '/includes/init/clean.php');

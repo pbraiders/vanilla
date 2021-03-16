@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -38,147 +39,143 @@
  * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
-    /** Defines
-     **********/
-    define('PBR_VERSION','1.2.1');
-    define('PBR_PATH',dirname(__FILE__));
+/** Defines
+ **********/
+define('PBR_VERSION', '1.3.2');
+define('PBR_PATH', dirname(__FILE__));
 
-    /** Include config
-     *****************/
-    require(PBR_PATH.'/config.php');
+/** Include config
+ *****************/
+require(PBR_PATH . '/config.php');
 
-    /** Include functions
-     ********************/
-    require(PBR_PATH.'/includes/function/functions.php');
+/** Include functions
+ ********************/
+require(PBR_PATH . '/includes/function/functions.php');
 
-    /** Initialize context
-     *********************/
-    require(PBR_PATH.'/includes/init/context.php');
+/** Initialize context
+ *********************/
+require(PBR_PATH . '/includes/init/context.php');
 
-    /** Authenticate
-     ***************/
-    require(PBR_PATH.'/includes/init/authuser.php');
+/** Authenticate
+ ***************/
+require(PBR_PATH . '/includes/init/authuser.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/class/ccontact.php');
-    $pContact = new CContact();
+/** Initialize
+ *************/
+require(PBR_PATH . '/includes/class/ccontact.php');
+$pContact = new CContact();
 
-    /** Cancel
-     *********/
-    if( filter_has_var( INPUT_POST, 'can') )
-    {
-        // Read contact identifier
-        $pContact->ReadInputIdentifier(INPUT_POST);
-        $sBuffer = CContact::IDENTIFIERTAG.'='.$pContact->GetIdentifier();
-        unset( $pContact );
-        include(PBR_PATH.'/includes/init/clean.php');
-        header('Location: '.PBR_URL.'contact.php?'.$sBuffer);
-        exit;
-    }//Cancel
+/** Cancel
+ *********/
+if (filter_has_var(INPUT_POST, 'can')) {
+    // Read contact identifier
+    $pContact->ReadInputIdentifier(INPUT_POST);
+    $sBuffer = CContact::IDENTIFIERTAG . '=' . $pContact->GetIdentifier();
+    unset($pContact);
+    include(PBR_PATH . '/includes/init/clean.php');
+    header('Location: ' . PBR_URL . 'contact.php?' . $sBuffer);
+    exit;
+} //Cancel
 
-    /** Create session
-     *****************/
-    require(PBR_PATH.'/includes/class/cphpsession.php');
-    CPHPSession::CreateSession();
+/** Create session
+ *****************/
+require(PBR_PATH . '/includes/class/cphpsession.php');
+CPHPSession::CreateSession();
 
-    /** Delete
-     *********/
-    if( filter_has_var( INPUT_POST, 'con') && (CPHPSession::GetInstance()->ValidInput(INPUT_POST)===TRUE) )
-    {
-        // Read contact identifier
-        $pContact->ReadInputIdentifier(INPUT_POST);
+/** Delete
+ *********/
+if (filter_has_var(INPUT_POST, 'con') && (CPHPSession::GetInstance()->ValidInput(INPUT_POST) === TRUE)) {
+    // Read contact identifier
+    $pContact->ReadInputIdentifier(INPUT_POST);
 
-        // Clean SESSION
-        CPHPSession::CleanToken();
-        CPHPSession::Clean();
-
-        // Delete
-        require(PBR_PATH.'/includes/db/function/contactdel.php');
-        $iReturn = ContactDel( CAuth::GetInstance()->GetUsername()
-                             , CAuth::GetInstance()->GetSession()
-                             , GetIP().GetUserAgent()
-                             , $pContact );
-
-        unset($pContact);
-
-        // Failed
-        if( ($iReturn===FALSE) || ($iReturn<=0) )
-        {
-            if( $iReturn===0 )
-            {
-                $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-                ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
-                $iReturn=-2;
-            }//if( $iReturn==0 )
-            RedirectError( $iReturn, __FILE__, __LINE__ );
-            exit;
-        }//if( ($iReturn===FALSE) || ($iReturn<0) )
-
-        // Succeeded
-        include(PBR_PATH.'/includes/init/clean.php');
-        header('Location: '.PBR_URL.'contacts.php?error=3');
-        exit;
-
-    }//Delete
-
-    // Clean SESSION token
+    // Clean SESSION
     CPHPSession::CleanToken();
+    CPHPSession::Clean();
 
-    /** Generate and write SESSION token
-     ***********************************/
-    $sToken = CPHPSession::GetInstance()->WriteToken();
-    if( $sToken===FALSE )
-    {
-        $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de fixer le jeton de la session', E_USER_ERROR, TRUE);
-        CPHPSession::CleanToken();
-        CPHPSession::Clean();
-        unset($pContact);
-        RedirectError( 1, __FILE__, __LINE__ );
+    // Delete
+    require(PBR_PATH . '/includes/db/function/contactdel.php');
+    $iReturn = ContactDel(
+        CAuth::GetInstance()->GetUsername(),
+        CAuth::GetInstance()->GetSession(),
+        GetIP() . GetUserAgent(),
+        $pContact
+    );
+
+    unset($pContact);
+
+    // Failed
+    if (($iReturn === FALSE) || ($iReturn <= 0)) {
+        if ($iReturn === 0) {
+            $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+            ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
+            $iReturn = -2;
+        } //if( $iReturn==0 )
+        RedirectError($iReturn, __FILE__, __LINE__);
         exit;
-    }//if( $sToken===FALSE )
+    } //if( ($iReturn===FALSE) || ($iReturn<0) )
 
-    /** Get contact data
-     *******************/
-    $pContact->ReadInputIdentifier(INPUT_GET);
-    require(PBR_PATH.'/includes/db/function/contactget.php');
-    $iReturn = ContactGet( CAuth::GetInstance()->GetUsername()
-                         , CAuth::GetInstance()->GetSession()
-                         , GetIP().GetUserAgent()
-                         , $pContact );
+    // Succeeded
+    include(PBR_PATH . '/includes/init/clean.php');
+    header('Location: ' . PBR_URL . 'contacts.php?error=3');
+    exit;
+} //Delete
 
-    // Error
-    if( ($iReturn===FALSE) || ($iReturn<=0) )
-    {
-        unset( $pContact );
-        if( $iReturn===0 )
-        {
-            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
-            $iReturn=-2;
-        }//if( $iReturn==0 )
-        RedirectError( $iReturn, __FILE__, __LINE__ );
-        exit;
-    }//if( ($iReturn===FALSE) || ($iReturn<=0) )
+// Clean SESSION token
+CPHPSession::CleanToken();
 
-    /** Build header
-     ***************/
-    require(PBR_PATH.'/includes/class/cheader.php');
-    $pHeader = new CHeader();
-    $sBuffer='Supprimer '.$pContact->GetLastName().' '.$pContact->GetFirstName();
-    $pHeader->SetNoCache();
-    $pHeader->SetTitle($sBuffer);
-    $pHeader->SetDescription($sBuffer);
-    $pHeader->SetKeywords('delete,erase,effacer,supprimer,suppression,contact');
+/** Generate and write SESSION token
+ ***********************************/
+$sToken = CPHPSession::GetInstance()->WriteToken();
+if ($sToken === FALSE) {
+    $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+    ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de fixer le jeton de la session', E_USER_ERROR, TRUE);
+    CPHPSession::CleanToken();
+    CPHPSession::Clean();
+    unset($pContact);
+    RedirectError(1, __FILE__, __LINE__);
+    exit;
+} //if( $sToken===FALSE )
 
-    /** Display
-     **********/
-    require(PBR_PATH.'/includes/display/header.php');
-    require(PBR_PATH.'/includes/display/contactdelete.php');
-    require(PBR_PATH.'/includes/display/footer.php');
+/** Get contact data
+ *******************/
+$pContact->ReadInputIdentifier(INPUT_GET);
+require(PBR_PATH . '/includes/db/function/contactget.php');
+$iReturn = ContactGet(
+    CAuth::GetInstance()->GetUsername(),
+    CAuth::GetInstance()->GetSession(),
+    GetIP() . GetUserAgent(),
+    $pContact
+);
 
-    /** Delete objects
-     *****************/
-    unset( $pContact );
-    include(PBR_PATH.'/includes/init/clean.php');
+// Error
+if (($iReturn === FALSE) || ($iReturn <= 0)) {
+    unset($pContact);
+    if ($iReturn === 0) {
+        $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+        ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'identifiant inconnu', E_USER_ERROR, TRUE);
+        $iReturn = -2;
+    } //if( $iReturn==0 )
+    RedirectError($iReturn, __FILE__, __LINE__);
+    exit;
+} //if( ($iReturn===FALSE) || ($iReturn<=0) )
+
+/** Build header
+ ***************/
+require(PBR_PATH . '/includes/class/cheader.php');
+$pHeader = new CHeader();
+$sBuffer = 'Supprimer ' . $pContact->GetLastName() . ' ' . $pContact->GetFirstName();
+$pHeader->SetNoCache();
+$pHeader->SetTitle($sBuffer);
+$pHeader->SetDescription($sBuffer);
+$pHeader->SetKeywords('delete,erase,effacer,supprimer,suppression,contact');
+
+/** Display
+ **********/
+require(PBR_PATH . '/includes/display/header.php');
+require(PBR_PATH . '/includes/display/contactdelete.php');
+require(PBR_PATH . '/includes/display/footer.php');
+
+/** Delete objects
+ *****************/
+unset($pContact);
+include(PBR_PATH . '/includes/init/clean.php');

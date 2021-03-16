@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -36,101 +37,96 @@
  * author: Olivier JULLIEN - 2010-06-15
  *************************************************************************/
 
-    /** Defines
-     **********/
-    define('PBR_VERSION','1.2.1');
-    define('PBR_PATH',dirname(__FILE__).'/..');
-    define('PBR_FONT_PATH',dirname(__FILE__));
+/** Defines
+ **********/
+define('PBR_VERSION', '1.3.2');
+define('PBR_PATH', dirname(__FILE__) . '/..');
+define('PBR_FONT_PATH', dirname(__FILE__));
 
-    /** Include config
-     *****************/
-    require(PBR_PATH.'/config.php');
+/** Include config
+ *****************/
+require(PBR_PATH . '/config.php');
 
-    /** Include functions
-     ********************/
-    require(PBR_PATH.'/includes/function/functions.php');
+/** Include functions
+ ********************/
+require(PBR_PATH . '/includes/function/functions.php');
 
-    /** Initialize context
-     *********************/
-    require(PBR_PATH.'/includes/init/context.php');
+/** Initialize context
+ *********************/
+require(PBR_PATH . '/includes/init/context.php');
 
-    /** Authenticate
-     ***************/
-    require(PBR_PATH.'/includes/init/authadmin.php');
+/** Authenticate
+ ***************/
+require(PBR_PATH . '/includes/init/authadmin.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/class/coption.php');
-    require(PBR_PATH.'/includes/class/cdate.php');
-    require(PBR_PATH.'/includes/class/cgraph.php');
-    require(PBR_PATH.'/includes/class/cgline.php');
-    require(PBR_PATH.'/includes/class/ccsv.php');
-    require(PBR_PATH.'/includes/function/graphs.php');
-    require(PBR_PATH.'/includes/function/export.php');
-    $pInterval = new COption('2', 0, 60);
-    $pDate = new CDate();
-    $pCCSV = null;
+/** Initialize
+ *************/
+require(PBR_PATH . '/includes/class/coption.php');
+require(PBR_PATH . '/includes/class/cdate.php');
+require(PBR_PATH . '/includes/class/cgraph.php');
+require(PBR_PATH . '/includes/class/cgline.php');
+require(PBR_PATH . '/includes/class/ccsv.php');
+require(PBR_PATH . '/includes/function/graphs.php');
+require(PBR_PATH . '/includes/function/export.php');
+$pInterval = new COption('2', 0, 60);
+$pDate = new CDate();
+$pCCSV = null;
 
-    /** Read input parameters
-     ************************/
-    $pInterval->ReadInput(INPUT_GET);
-    if( filter_has_var( INPUT_POST, 'exp') )
-    {
-        // Export
-        $pCCSV = new CCSV();
-    }
+/** Read input parameters
+ ************************/
+$pInterval->ReadInput(INPUT_GET);
+if (filter_has_var(INPUT_POST, 'exp')) {
+    // Export
+    $pCCSV = new CCSV();
+}
 
-    /** Read the count of rent by years
-     **********************************/
-    require(PBR_PATH.'/includes/db/function/rentsyearcount.php');
-    $tRecordset = RentsYearCount( CAuth::GetInstance()->GetUsername()
-                                , CAuth::GetInstance()->GetSession()
-                                , GetIP().GetUserAgent()
-                                , $pDate
-                                , $pInterval );
+/** Read the count of rent by years
+ **********************************/
+require(PBR_PATH . '/includes/db/function/rentsyearcount.php');
+$tRecordset = RentsYearCount(
+    CAuth::GetInstance()->GetUsername(),
+    CAuth::GetInstance()->GetSession(),
+    GetIP() . GetUserAgent(),
+    $pDate,
+    $pInterval
+);
 
-    unset( $pInterval, $pDate );
+unset($pInterval, $pDate);
 
-    if( !is_array($tRecordset) )
-    {
-        // Error
+if (!is_array($tRecordset)) {
+    // Error
+    unset($pCCSV);
+    RedirectError($tRecordset, __FILE__, __LINE__);
+    exit;
+} //if( !is_array($tRecordset) )
+
+/** Build page
+ *************/
+
+if (isset($pCCSV)) {
+    /** Export case
+     **************/
+    if (ExportYearCount($pCCSV, $tRecordset['values']) === FALSE) {
+        $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+        ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de générer le fichier export', E_USER_ERROR, TRUE);
         unset($pCCSV);
-        RedirectError( $tRecordset, __FILE__, __LINE__ );
+        RedirectError(FALSE, __FILE__, __LINE__);
         exit;
-    }//if( !is_array($tRecordset) )
-
-    /** Build page
+    } //if( ExportMonthCount( ...
+} else {
+    /** Image case
      *************/
 
-    if( isset($pCCSV) )
-    {
-        /** Export case
-         **************/
-        if( ExportYearCount( $pCCSV, $tRecordset['values'] )===FALSE )
-        {
-            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de générer le fichier export', E_USER_ERROR, TRUE);
-            unset($pCCSV);
-            RedirectError( FALSE, __FILE__, __LINE__ );
-            exit;
-        }//if( ExportMonthCount( ...
-    }
-    else
-    {
-        /** Image case
-         *************/
+    // Draw chart
+    $pGraph = new CGLine();
+    if (DrawGraph($pGraph, $tRecordset) === FALSE) {
+        $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+        ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de dessiner le graphique', E_USER_ERROR, TRUE);
+    } //if( DrawGraph($pGraph,$tRecordset)===FALSE )
 
-        // Draw chart
-        $pGraph = new CGLine();
-        if( DrawGraph( $pGraph, $tRecordset)===FALSE )
-        {
-            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible de dessiner le graphique', E_USER_ERROR, TRUE);
-        }//if( DrawGraph($pGraph,$tRecordset)===FALSE )
+} //Case
 
-    }//Case
-
-    /** Delete objects
-     *****************/
-    unset( $pGraph, $pCCSV);
-    include(PBR_PATH.'/includes/init/clean.php');
+/** Delete objects
+ *****************/
+unset($pGraph, $pCCSV);
+include(PBR_PATH . '/includes/init/clean.php');

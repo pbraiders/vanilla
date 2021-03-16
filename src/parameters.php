@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -36,124 +37,121 @@
  * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
-    /** Defines
-     **********/
-    define('PBR_VERSION','1.2.1');
-    define('PBR_PATH',dirname(__FILE__));
+/** Defines
+ **********/
+define('PBR_VERSION', '1.3.2');
+define('PBR_PATH', dirname(__FILE__));
 
-    /** Include config
-     *****************/
-    require(PBR_PATH.'/config.php');
+/** Include config
+ *****************/
+require(PBR_PATH . '/config.php');
 
-    /** Include functions
-     ********************/
-    require(PBR_PATH.'/includes/function/functions.php');
+/** Include functions
+ ********************/
+require(PBR_PATH . '/includes/function/functions.php');
 
-    /** Initialize context
-     *********************/
-    require(PBR_PATH.'/includes/init/context.php');
+/** Initialize context
+ *********************/
+require(PBR_PATH . '/includes/init/context.php');
 
-    /** Authenticate
-     ***************/
-    require(PBR_PATH.'/includes/init/authadmin.php');
+/** Authenticate
+ ***************/
+require(PBR_PATH . '/includes/init/authadmin.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/class/cmaxrentpermonthlist.php');
-    require(PBR_PATH.'/includes/class/cdate.php');
-    $pDate = new CDate();
-    $pMax = null;
-    $iMessageCode = 0;
+/** Initialize
+ *************/
+require(PBR_PATH . '/includes/class/cmaxrentpermonthlist.php');
+require(PBR_PATH . '/includes/class/cdate.php');
+$pDate = new CDate();
+$pMax = null;
+$iMessageCode = 0;
 
-    /** Read input parameters
-     ************************/
+/** Read input parameters
+ ************************/
 
-    // Update
-    if( filter_has_var( INPUT_POST, 'update' ) )
-    {
-        // Get the month parameters
-        $pMax = new CMaxRentPerMonthList();
-        $pMax->ReadInput();
-        if( $pMax->GetCount()!=12 )
-        {
-            unset($pMax);
-            $iMessageCode = 1;
-        }//if( $pMax->GetCount()!=12 )
-    }
-    else
-    {
-        // Get the message code
-        $iMessageCode = GetMessageCode();
-    }//if( filter_has_var( ...
-
-    /** Update
-     *********/
-    if( isset($pMax) )
-    {
-        require(PBR_PATH.'/includes/db/function/maxupdate.php');
-        $iReturn = MaxUpdate( CAuth::GetInstance()->GetUsername()
-                            , CAuth::GetInstance()->GetSession()
-                            , GetIP().GetUserAgent()
-                            , $pMax );
-
+// Update
+if (filter_has_var(INPUT_POST, 'update')) {
+    // Get the month parameters
+    $pMax = new CMaxRentPerMonthList();
+    $pMax->ReadInput();
+    if ($pMax->GetCount() != 12) {
         unset($pMax);
+        $iMessageCode = 1;
+    } //if( $pMax->GetCount()!=12 )
+} else {
+    // Get the message code
+    $iMessageCode = GetMessageCode();
+} //if( filter_has_var( ...
 
-        // Failed
-        if( ($iReturn===FALSE) || ($iReturn<0) )
-        {
-            RedirectError( $iReturn, __FILE__, __LINE__ );
-            exit;
-        }//if( ($iReturn===FALSE) || ($iReturn<0) )
+/** Update
+ *********/
+if (isset($pMax)) {
+    require(PBR_PATH . '/includes/db/function/maxupdate.php');
+    $iReturn = MaxUpdate(
+        CAuth::GetInstance()->GetUsername(),
+        CAuth::GetInstance()->GetSession(),
+        GetIP() . GetUserAgent(),
+        $pMax
+    );
 
-        // Succeeded
-        $iMessageCode = 4;
+    unset($pMax);
 
-    }//if( isset($pMax) )
-
-    /** Read the parameters
-     **********************/
-    require(PBR_PATH.'/includes/db/function/maxget.php');
-    $tRecordset = MaxGet( CAuth::GetInstance()->GetUsername()
-                        , CAuth::GetInstance()->GetSession()
-                        , GetIP().GetUserAgent() );
-
-    if( !is_array($tRecordset) )
-    {
-        // Error
-        RedirectError( $tRecordset, __FILE__, __LINE__ );
+    // Failed
+    if (($iReturn === FALSE) || ($iReturn < 0)) {
+        RedirectError($iReturn, __FILE__, __LINE__);
         exit;
-    }//if( !is_array($tRecordset) )
+    } //if( ($iReturn===FALSE) || ($iReturn<0) )
 
-    /** Read the database status
-     ***************************/
-    require(PBR_PATH.'/includes/db/function/dbstatus.php');
-    $tRecordsetDB = DBStatus( CAuth::GetInstance()->GetUsername()
-                            , CAuth::GetInstance()->GetSession()
-                            , GetIP().GetUserAgent() );
+    // Succeeded
+    $iMessageCode = 4;
+} //if( isset($pMax) )
 
-    if( !is_array($tRecordsetDB) )
-    {
-        $tRecordsetDB = array('records'=>0, 'size'=>0);
-    }//if( !is_array($tRecordsetDB) )
+/** Read the parameters
+ **********************/
+require(PBR_PATH . '/includes/db/function/maxget.php');
+$tRecordset = MaxGet(
+    CAuth::GetInstance()->GetUsername(),
+    CAuth::GetInstance()->GetSession(),
+    GetIP() . GetUserAgent()
+);
 
-    /** Build header
-     ***************/
-    require(PBR_PATH.'/includes/class/cheader.php');
-    $pHeader = new Cheader();
-    $sBuffer = 'Paramètres';
-    $pHeader->SetNoCache();
-    $pHeader->SetTitle($sBuffer);
-    $pHeader->SetDescription($sBuffer);
-    $pHeader->SetKeywords($sBuffer);
+if (!is_array($tRecordset)) {
+    // Error
+    RedirectError($tRecordset, __FILE__, __LINE__);
+    exit;
+} //if( !is_array($tRecordset) )
 
-    /** Display
-     **********/
-    require(PBR_PATH.'/includes/display/header.php');
-    require(PBR_PATH.'/includes/display/parameters.php');
-    require(PBR_PATH.'/includes/display/footer.php');
+/** Read the database status
+ ***************************/
+require(PBR_PATH . '/includes/db/function/dbstatus.php');
+$tRecordsetDB = DBStatus(
+    CAuth::GetInstance()->GetUsername(),
+    CAuth::GetInstance()->GetSession(),
+    GetIP() . GetUserAgent()
+);
 
-    /** Delete objects
-     *****************/
-    unset($pDate);
-    unset($pHeader);
-    include(PBR_PATH.'/includes/init/clean.php');
+if (!is_array($tRecordsetDB)) {
+    $tRecordsetDB = array('records' => 0, 'size' => 0);
+} //if( !is_array($tRecordsetDB) )
+
+/** Build header
+ ***************/
+require(PBR_PATH . '/includes/class/cheader.php');
+$pHeader = new Cheader();
+$sBuffer = 'Paramètres';
+$pHeader->SetNoCache();
+$pHeader->SetTitle($sBuffer);
+$pHeader->SetDescription($sBuffer);
+$pHeader->SetKeywords($sBuffer);
+
+/** Display
+ **********/
+require(PBR_PATH . '/includes/display/header.php');
+require(PBR_PATH . '/includes/display/parameters.php');
+require(PBR_PATH . '/includes/display/footer.php');
+
+/** Delete objects
+ *****************/
+unset($pDate);
+unset($pHeader);
+include(PBR_PATH . '/includes/init/clean.php');

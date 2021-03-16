@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -36,104 +37,105 @@
  * update: Olivier JULLIEN - 2010-06-15 - improvement
  *************************************************************************/
 
-    /** Defines
-     **********/
-    define('PBR_VERSION','1.2.1');
-    define('PBR_PATH',dirname(__FILE__));
+/** Defines
+ **********/
+define('PBR_VERSION', '1.3.2');
+define('PBR_PATH', dirname(__FILE__));
 
-    /** Include config
-     *****************/
-    require(PBR_PATH.'/config.php');
+/** Include config
+ *****************/
+require(PBR_PATH . '/config.php');
 
-    /** Include functions
-     ********************/
-    require(PBR_PATH.'/includes/function/functions.php');
+/** Include functions
+ ********************/
+require(PBR_PATH . '/includes/function/functions.php');
 
-    /** Initialize context
-     *********************/
-    require(PBR_PATH.'/includes/init/context.php');
+/** Initialize context
+ *********************/
+require(PBR_PATH . '/includes/init/context.php');
 
-    /** Authenticate
-     ***************/
-    require(PBR_PATH.'/includes/init/authuser.php');
+/** Authenticate
+ ***************/
+require(PBR_PATH . '/includes/init/authuser.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/class/cdate.php');
-    require(PBR_PATH.'/includes/class/cpaging.php');
-    $pDate = new CDate();
-    $pPaging = new CPaging();
+/** Initialize
+ *************/
+require(PBR_PATH . '/includes/class/cdate.php');
+require(PBR_PATH . '/includes/class/cpaging.php');
+$pDate = new CDate();
+$pPaging = new CPaging();
 
-    /** Read input parameters
-     ************************/
+/** Read input parameters
+ ************************/
 
-    // Read date values
-    if( $pDate->ReadInput( INPUT_GET, TRUE )===FALSE )
-    {
-        // mandatory parameters are not valid
-        unset( $pDate, $pPaging);
-        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'date invalide', E_USER_WARNING, FALSE);
-        RedirectError( -2, __FILE__, __LINE__ );
-        exit;
-    }//if( $pDate->ReadInput(...
+// Read date values
+if ($pDate->ReadInput(INPUT_GET, TRUE) === FALSE) {
+    // mandatory parameters are not valid
+    unset($pDate, $pPaging);
+    $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+    ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'date invalide', E_USER_WARNING, FALSE);
+    RedirectError(-2, __FILE__, __LINE__);
+    exit;
+} //if( $pDate->ReadInput(...
 
-    /** Build the page
-     *****************/
+/** Build the page
+ *****************/
 
-    // Get the reservations count
-    require(PBR_PATH.'/includes/db/function/rentsgetcount.php');
-    $iReturn = RentsGetCount( CAuth::GetInstance()->GetUsername()
-                            , CAuth::GetInstance()->GetSession()
-                            , GetIP().GetUserAgent()
-                            , $pDate );
+// Get the reservations count
+require(PBR_PATH . '/includes/db/function/rentsgetcount.php');
+$iReturn = RentsGetCount(
+    CAuth::GetInstance()->GetUsername(),
+    CAuth::GetInstance()->GetSession(),
+    GetIP() . GetUserAgent(),
+    $pDate
+);
 
-    // Error
-    if( ($iReturn===FALSE) || ($iReturn<0) )
-    {
-        unset( $pDate, $pPaging);
-        RedirectError( $iReturn, __FILE__, __LINE__ );
-        exit;
-    }//if( ($iReturn===FALSE) || ($iReturn<0) )
+// Error
+if (($iReturn === FALSE) || ($iReturn < 0)) {
+    unset($pDate, $pPaging);
+    RedirectError($iReturn, __FILE__, __LINE__);
+    exit;
+} //if( ($iReturn===FALSE) || ($iReturn<0) )
 
-    // Get rents
-    require(PBR_PATH.'/includes/db/function/rentsget.php');
-    $tRecordset = RentsGet( CAuth::GetInstance()->GetUsername()
-                          , CAuth::GetInstance()->GetSession()
-                          , GetIP().GetUserAgent()
-                          , $pDate
-                          , $pPaging );
+// Get rents
+require(PBR_PATH . '/includes/db/function/rentsget.php');
+$tRecordset = RentsGet(
+    CAuth::GetInstance()->GetUsername(),
+    CAuth::GetInstance()->GetSession(),
+    GetIP() . GetUserAgent(),
+    $pDate,
+    $pPaging
+);
 
-    // Error
-    if( !is_array($tRecordset) )
-    {
-        unset( $pDate, $pPaging);
-        RedirectError( $tRecordset, __FILE__, __LINE__ );
-        exit;
-    }//if( !is_array($tRecordset) )
+// Error
+if (!is_array($tRecordset)) {
+    unset($pDate, $pPaging);
+    RedirectError($tRecordset, __FILE__, __LINE__);
+    exit;
+} //if( !is_array($tRecordset) )
 
-    /** Build header
-     ***************/
-    require(PBR_PATH.'/includes/class/cheader.php');
-    $pHeader = new CHeader();
-    $sFormTitle  = $pDate->GetRequestDay().' ';
-    $sFormTitle .= $pDate->GetMonthName( $pDate->GetRequestMonth() ).' ';
-    $sFormTitle .= $pDate->GetRequestYear();
-    $pHeader->SetNoCache();
-    $pHeader->ToPrint();
-    $pHeader->SetTitle($sFormTitle);
-    $pHeader->SetDescription($sFormTitle);
-    $pHeader->SetKeywords($sFormTitle);
-    $pHeader->SetTitle('Imprimer');
-    $pHeader->SetDescription('Imprimer');
-    $pHeader->SetKeywords('imprimer,print');
+/** Build header
+ ***************/
+require(PBR_PATH . '/includes/class/cheader.php');
+$pHeader = new CHeader();
+$sFormTitle  = $pDate->GetRequestDay() . ' ';
+$sFormTitle .= $pDate->GetMonthName($pDate->GetRequestMonth()) . ' ';
+$sFormTitle .= $pDate->GetRequestYear();
+$pHeader->SetNoCache();
+$pHeader->ToPrint();
+$pHeader->SetTitle($sFormTitle);
+$pHeader->SetDescription($sFormTitle);
+$pHeader->SetKeywords($sFormTitle);
+$pHeader->SetTitle('Imprimer');
+$pHeader->SetDescription('Imprimer');
+$pHeader->SetKeywords('imprimer,print');
 
-    /** Display
-     **********/
-    require(PBR_PATH.'/includes/display/header.php');
-    require(PBR_PATH.'/includes/display/dayprint.php');
+/** Display
+ **********/
+require(PBR_PATH . '/includes/display/header.php');
+require(PBR_PATH . '/includes/display/dayprint.php');
 
-    /** Delete objects
-     *****************/
-    unset( $pDate, $pPaging);
-    include(PBR_PATH.'/includes/init/clean.php');
+/** Delete objects
+ *****************/
+unset($pDate, $pPaging);
+include(PBR_PATH . '/includes/init/clean.php');
