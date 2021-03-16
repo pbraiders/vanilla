@@ -87,7 +87,7 @@ final class CSource
         {
             if( filter_has_var( $iFilter, CSource::SOURCETAG) )
             {
-                $sReturn = CSource::Sanitize( filter_input( $iFilter, CSource::ACTIONTAG, FILTER_SANITIZE_SPECIAL_CHARS), GetRegExPatternName() );
+                $sReturn = CSource::Sanitize( filter_input( $iFilter, CSource::SOURCETAG, FILTER_SANITIZE_SPECIAL_CHARS), GetRegExPatternName() );
             }//if( filter_has_var( $iFilter, CSource::ACTIONTAG) )
         }//if( ($iFilter===INPUT_POST) || ($iFilter===INPUT_GET) )
         return $sReturn;
@@ -104,7 +104,7 @@ final class CSource
     public static function IsValidInput( $iFilter, $sIn)
     {
         $iReturn = CSource::UNKNOWN;
-        $sAction = CSource::Read( $iFilter );
+        $sSource = CSource::ReadInput( $iFilter );
         if( (strlen($sSource)>0) && is_string($sIn) && !empty($sIn) )
         {
             if( $sIn===$sSource )
