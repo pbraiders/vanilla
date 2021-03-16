@@ -42,6 +42,17 @@
 if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
     die('-1');
 
+    $sPHPVersion = phpversion();
+    $sPHPVersionRequiredMin = '5.3';
+    $sPHPVersionRequiredMax = '8.0';
+    if (version_compare($sPHPVersion, $sPHPVersionRequiredMin, '<') || version_compare($sPHPVersion, $sPHPVersionRequiredMax, '>=')) {
+        header('Content-Type: text/html');
+        echo '<html>';
+        echo sprintf('<body>Votre version de php (%s) n\'est pas valide. Elle doit être >= %s et < %s. </body>',$sPHPVersion,$sPHPVersionRequiredMin,$sPHPVersionRequiredMax);
+        echo '</html>';
+        exit;
+    }
+
     /** Turn off PHP time limit
      **************************/
     @set_time_limit(0);
@@ -96,20 +107,14 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
 
     /** Disable magic quotes
      ***********************/
-    $sPHPVersion=phpversion();
-    $sPHPVersionRequired='5.3';
-    if( (version_compare( $sPHPVersion, $sPHPVersionRequired, '<')) && (get_magic_quotes_runtime()==1) )
-    {
-        set_magic_quotes_runtime(0);
-    }//if( (version_compare( $sPHPVersion, $sPHPVersionRequired, '<')) && (get_magic_quotes_runtime()==1) )
-    @ini_set('magic_quotes_sybase', 0);
-
-    // Strip slashes from GET/POST/COOKIE
-    if ( get_magic_quotes_gpc() )
-    {
-        $_GET    = stripslashes_deep($_GET   );
-        $_POST   = stripslashes_deep($_POST  );
-    }// if ( get_magic_quotes_gpc() )
+    if (version_compare($sPHPVersion, '7.4', '<')) {
+        // Strip slashes from GET/POST/COOKIE
+        if (get_magic_quotes_gpc()) {
+            $_GET    = stripslashes_deep($_GET);
+            $_POST   = stripslashes_deep($_POST);
+            $_COOKIE = stripslashes_deep($_COOKIE);
+        }
+    }
 
     /** Set error level
      ******************/

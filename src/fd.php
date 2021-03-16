@@ -87,4 +87,4 @@
     /** redirect to page
      *******************/
     header('Location: '.PBR_URL);
-    exit
+    exit;
