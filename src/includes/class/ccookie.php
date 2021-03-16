@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -42,7 +43,7 @@
  *                                        update Read()
  *                                        update Write()
  *************************************************************************/
-if( !defined('PBR_VERSION') || !defined('PBR_LIFETIME_COOKIE') )
+if (!defined('PBR_VERSION') || !defined('PBR_LIFETIME_COOKIE'))
     die('-1');
 
 /** Class
@@ -52,10 +53,10 @@ final class CCookie
 
     /** Contants
      ***********/
-    const USER='user';
-    const SESSION='session';
-    const LANGUAGE='language';
-    const FORCEDESKTOP='forcedesktop';
+    const USER = 'user';
+    const SESSION = 'session';
+    const LANGUAGE = 'language';
+    const FORCEDESKTOP = 'forcedesktop';
 
     /** Private attributs
      ********************/
@@ -64,16 +65,16 @@ final class CCookie
     private static $m_pInstance = NULL;
 
     // Name
-    private $m_sName='pbraiders120';
+    private $m_sName = 'pbrvanilla132';
 
     // Expire
-    private $m_iExpire=0;
+    private $m_iExpire = 0;
 
     // Path
-    private $m_sPath='/';
+    private $m_sPath = '/';
 
     // Domain
-    private $m_sDomain='';
+    private $m_sDomain = '';
 
     // Secure
     private $m_iSecure = 0;
@@ -111,18 +112,15 @@ final class CCookie
     private function SanitizeInt($iValue)
     {
         $iReturn = 0;
-        if( is_string($iValue) )
-        {
+        if (is_string($iValue)) {
             $iValue = trim($iValue);
-        }//if( is_string($iValue) )
-        if( is_numeric($iValue) )
-        {
+        } //if( is_string($iValue) )
+        if (is_numeric($iValue)) {
             $iValue = $iValue + 0;
-        }//if( is_numeric($iValue) )
-        if( is_integer($iValue) )
-        {
+        } //if( is_numeric($iValue) )
+        if (is_integer($iValue)) {
             $iReturn = $iValue;
-        }//if( is_integer($iValue) )
+        } //if( is_integer($iValue) )
         return $iReturn;
     }
 
@@ -135,19 +133,17 @@ final class CCookie
      * author: Olivier JULLIEN - 2010-02-04
      * update: Olivier JULLIEN - 2010-06-15 - add regular expression parameter
      */
-    private function Sanitize( $sValue, $sFilter)
+    private function Sanitize($sValue, $sFilter)
     {
         $bReturn = FALSE;
-        if( is_scalar($sValue) && is_scalar($sFilter) )
-        {
+        if (is_scalar($sValue) && is_scalar($sFilter)) {
             // Trim
             $sValue = trim($sValue);
             // Authorized caracteres
-            if( preg_match($sFilter,$sValue) )
-            {
+            if (preg_match($sFilter, $sValue)) {
                 $bReturn = TRUE;
-            }//if( preg_match($sFilter,$sValue) )
-        }//if( is_scalar($sValue) && is_scalar($sFilter) )
+            } //if( preg_match($sFilter,$sValue) )
+        } //if( is_scalar($sValue) && is_scalar($sFilter) )
         return $bReturn;
     }
 
@@ -161,9 +157,11 @@ final class CCookie
      * return: none
      * author: Olivier JULLIEN - 2010-02-04
      */
-    public function __destruct(){}
+    public function __destruct()
+    {
+    }
 
-   /**
+    /**
      * function: __clone
      * description: cloning is forbidden
      * parameter: none
@@ -171,9 +169,11 @@ final class CCookie
      * author: Olivier JULLIEN - 2010-02-04
      * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
      */
-    public function __clone(){}
+    public function __clone()
+    {
+    }
 
-   /**
+    /**
      * function: GetInstance
      * description: create or return the current instance
      * parameter: none
@@ -182,14 +182,13 @@ final class CCookie
      */
     public static function GetInstance()
     {
-        if( is_null(self::$m_pInstance) )
-        {
+        if (is_null(self::$m_pInstance)) {
             self::$m_pInstance = new CCookie();
         }
         return self::$m_pInstance;
     }
 
-   /**
+    /**
      * function: DeleteInstance
      * description: delete the current instance
      * parameter: none
@@ -198,10 +197,9 @@ final class CCookie
      */
     public static function DeleteInstance()
     {
-        if( !is_null(self::$m_pInstance) )
-        {
-            $tmp=self::$m_pInstance;
-            self::$m_pInstance=NULL;
+        if (!is_null(self::$m_pInstance)) {
+            $tmp = self::$m_pInstance;
+            self::$m_pInstance = NULL;
             unset($tmp);
         }
     }
@@ -217,29 +215,23 @@ final class CCookie
     public function Read()
     {
         $tabReturn = FALSE;
-        if( filter_has_var(INPUT_COOKIE,$this->m_sName) )
-        {
+        if (filter_has_var(INPUT_COOKIE, $this->m_sName)) {
             $tabReturn = array();
-            list($tabReturn[CCookie::USER],$tabReturn[CCookie::SESSION],$tabReturn[CCookie::LANGUAGE],$tabReturn[CCookie::FORCEDESKTOP]) = @unserialize( $_COOKIE[$this->m_sName] );
-            if( ($this->Sanitize($tabReturn[CCookie::USER],GetRegExPatternName())===FALSE)
-             || ($this->Sanitize($tabReturn[CCookie::SESSION],GetRegExPatternSession())===FALSE)
-             || ($this->Sanitize($tabReturn[CCookie::LANGUAGE],GetRegExPatternSession())===FALSE) )
-            {
+            list($tabReturn[CCookie::USER], $tabReturn[CCookie::SESSION], $tabReturn[CCookie::LANGUAGE], $tabReturn[CCookie::FORCEDESKTOP]) = @unserialize($_COOKIE[$this->m_sName]);
+            if (($this->Sanitize($tabReturn[CCookie::USER], GetRegExPatternName()) === FALSE)
+                || ($this->Sanitize($tabReturn[CCookie::SESSION], GetRegExPatternSession()) === FALSE)
+                || ($this->Sanitize($tabReturn[CCookie::LANGUAGE], GetRegExPatternSession()) === FALSE)
+            ) {
                 $tabReturn = FALSE;
-            }
-            else
-            {
+            } else {
                 // Format force desktop value
-                if( isset($tabReturn[CCookie::FORCEDESKTOP]) && ($tabReturn[CCookie::FORCEDESKTOP]==1) )
-                {
-                    $tabReturn[CCookie::FORCEDESKTOP]=TRUE;
-                }
-                else
-                {
-                    $tabReturn[CCookie::FORCEDESKTOP]=FALSE;
-                }//Format force desktio value
-            }//if( ($this->Sanitize(///
-        }//if( filter_has_var(///
+                if (isset($tabReturn[CCookie::FORCEDESKTOP]) && ($tabReturn[CCookie::FORCEDESKTOP] == 1)) {
+                    $tabReturn[CCookie::FORCEDESKTOP] = TRUE;
+                } else {
+                    $tabReturn[CCookie::FORCEDESKTOP] = FALSE;
+                } //Format force desktio value
+            } //if( ($this->Sanitize(///
+        } //if( filter_has_var(///
         return $tabReturn;
     }
 
@@ -257,37 +249,37 @@ final class CCookie
      * update: Olivier JULLIEN - 2010-06-15 - redefine Expire time parameter
      *                                        add language and force reload parameters
      */
-    public function Write($sUsername, $sSessionId, $sLanguage, $bForceDesk, $iExpire=NULL)
+    public function Write($sUsername, $sSessionId, $sLanguage, $bForceDesk, $iExpire = NULL)
     {
         $bReturn = FALSE;
 
-        if( ($this->Sanitize($sUsername,GetRegExPatternName())===TRUE)
-         && ($this->Sanitize($sSessionId,GetRegExPatternSession())===TRUE)
-         && ($this->Sanitize($sLanguage,GetRegExPatternSession())===TRUE)
-         && is_bool($bForceDesk) )
-        {
+        if (($this->Sanitize($sUsername, GetRegExPatternName()) === TRUE)
+            && ($this->Sanitize($sSessionId, GetRegExPatternSession()) === TRUE)
+            && ($this->Sanitize($sLanguage, GetRegExPatternSession()) === TRUE)
+            && is_bool($bForceDesk)
+        ) {
             // Default expiration time
-            if( !is_int($iExpire) )
-            {
+            if (!is_int($iExpire)) {
                 $iExpire = time() + $this->m_iExpire;
-            }
-            else
-            {
+            } else {
                 $iExpire = time() + $iExpire;
-            }//if( !is_int($iExpire) )
+            } //if( !is_int($iExpire) )
             // Force desktop
-            if( $bForceDesk==TRUE )
-                $iForceDesk=1;
+            if ($bForceDesk == TRUE)
+                $iForceDesk = 1;
             else
-                $iForceDesk=0;
+                $iForceDesk = 0;
             // Send cookie
-            $bReturn = setcookie($this->m_sName
-                                ,@serialize( array( $sUsername, $sSessionId, $sLanguage, $iForceDesk) )
-                                ,$iExpire
-                                ,$this->m_sPath.'; HttpOnly'
-                                ,$this->m_sDomain
-                                ,$this->m_iSecure);
-        }// if...
+            $bReturn = setcookie(
+                $this->m_sName,
+                @serialize(array($sUsername, $sSessionId, $sLanguage, $iForceDesk)),
+                $iExpire,
+                $this->m_sPath,
+                $this->m_sDomain,
+                $this->m_iSecure,
+                true
+            );
+        } // if...
         return $bReturn;
     }
 
@@ -303,7 +295,6 @@ final class CCookie
         setcookie($this->m_sName);
         unset($_COOKIE[$this->m_sName]);
     }
-
 }
 
-define ('PBR_COOKIE_LOADED',1);
+define('PBR_COOKIE_LOADED', 1);
