@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -37,90 +38,86 @@
  *                                       exist anymore on php7.0
  *************************************************************************/
 
-    /** Defines
-     **********/
-    define('PBR_VERSION','1.3.0');
-    define('PBR_PATH',dirname(__FILE__));
+/** Defines
+ **********/
+define('PBR_VERSION', '1.3.2');
+define('PBR_PATH', dirname(__FILE__));
 
-    /** Include config
-     *****************/
-    require(PBR_PATH.'/config.php');
+/** Include config
+ *****************/
+require(PBR_PATH . '/config.php');
 
-    /** Include functions
-     ********************/
-    require(PBR_PATH.'/includes/function/functions.php');
+/** Include functions
+ ********************/
+require(PBR_PATH . '/includes/function/functions.php');
 
-    /** Initialize context
-     *********************/
-    require(PBR_PATH.'/includes-install/context.php');
-   $tMessageCode = array();
+/** Initialize context
+ *********************/
+require(PBR_PATH . '/includes-install/context.php');
+$tMessageCode = array();
 
-    /** Authenticate
-     ***************/
-    require(PBR_PATH.'/includes-install/authdb.php');
+/** Authenticate
+ ***************/
+require(PBR_PATH . '/includes-install/authdb.php');
 
-    /** Initialize
-     *************/
-    require(PBR_PATH.'/includes/class/cuser.php');
-    $pUser = new CUser();
-    $sPHPVersionRequired   = '5.2';
-    $sMYSQLVersionRequired = '5.0';
-    $sPHPVersion   = phpversion();
-    if( function_exists( 'mysql_get_client_info' )) {
-        $sMYSQLVersion = mysql_get_client_info();
-    } else {
-        $sMYSQLVersion = '5.0';
-    }
+/** Initialize
+ *************/
+require(PBR_PATH . '/includes/class/cuser.php');
+$pUser = new CUser();
+$sPHPVersionRequired   = '5.2';
+$sMYSQLVersionRequired = '5.0';
+$sPHPVersion   = phpversion();
+if (function_exists('mysql_get_client_info')) {
+    $sMYSQLVersion = mysql_get_client_info();
+} else {
+    $sMYSQLVersion = '5.0';
+}
 
-    /** Prerequiste test
-     ******************/
-    if( !version_compare( $sPHPVersion, $sPHPVersionRequired, '>=')
-     && !version_compare( $sMYSQLVersion, $sMYSQLVersionRequired, '>=') )
-    {
-        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'les versions ne sont pas valides', E_USER_ERROR, FALSE);
-        $tMessageCode[] = 3;
-    }//if( !version_compare( $sPHPVersion, $sPHPVersionRequired, '>=') )
+/** Prerequiste test
+ ******************/
+if (
+    !version_compare($sPHPVersion, $sPHPVersionRequired, '>=')
+    && !version_compare($sMYSQLVersion, $sMYSQLVersionRequired, '>=')
+) {
+    $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+    ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'les versions ne sont pas valides', E_USER_ERROR, FALSE);
+    $tMessageCode[] = 3;
+} //if( !version_compare( $sPHPVersion, $sPHPVersionRequired, '>=') )
 
-    /** Read input parameters
-     ************************/
-    if( filter_has_var( INPUT_POST, 'install') )
-    {
-        $pUser->ReadInput(INPUT_POST);
-        if( $pUser->IsValidNew()===FALSE )
-        {
-            // Parameters are not valid
-            $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'les paramètres ne sont pas valides', E_USER_ERROR, FALSE);
-            $tMessageCode[] = 4;
-        }//if( $pUser->IsValidNew()===FALSE )
-    }//if( ($iMessageCode==0) && filter_has_var( INPUT_POST, 'install') )
+/** Read input parameters
+ ************************/
+if (filter_has_var(INPUT_POST, 'install')) {
+    $pUser->ReadInput(INPUT_POST);
+    if ($pUser->IsValidNew() === FALSE) {
+        // Parameters are not valid
+        $sTitle = 'fichier: ' . basename(__FILE__) . ', ligne:' . __LINE__;
+        ErrorLog(CAuth::GetInstance()->GetUsername(), $sTitle, 'les paramètres ne sont pas valides', E_USER_ERROR, FALSE);
+        $tMessageCode[] = 4;
+    } //if( $pUser->IsValidNew()===FALSE )
+} //if( ($iMessageCode==0) && filter_has_var( INPUT_POST, 'install') )
 
-    /** Build header
-     ***************/
-    require(PBR_PATH.'/includes/class/cheader.php');
-    $pHeader = new CHeader();
-    $pHeader->SetNoCache();
-    $pHeader->SetTitle('Installation de PBRaiders '.PBR_VERSION);
-    $pHeader->SetDescription('Installation de PBRaiders '.PBR_VERSION);
-    $pHeader->SetKeywords('install,installation,installer');
+/** Build header
+ ***************/
+require(PBR_PATH . '/includes/class/cheader.php');
+$pHeader = new CHeader();
+$pHeader->SetNoCache();
+$pHeader->SetTitle('Installation de PBRaiders ' . PBR_VERSION);
+$pHeader->SetDescription('Installation de PBRaiders ' . PBR_VERSION);
+$pHeader->SetKeywords('install,installation,installer');
 
-    /** Display or install
-     *********************/
-    require(PBR_PATH.'/includes/display/header.php');
-    if( (count($tMessageCode)==0) && ($pUser->IsValidNew()===TRUE) )
-    {
-        // Install
-        require(PBR_PATH.'/includes-install/install.php');
-    }
-    else
-    {
-        // Display
-        require(PBR_PATH.'/includes-install/welcome.php');
-    }//if( (...
-    require(PBR_PATH.'/includes/display/footer.php');
+/** Display or install
+ *********************/
+require(PBR_PATH . '/includes/display/header.php');
+if ((count($tMessageCode) == 0) && ($pUser->IsValidNew() === TRUE)) {
+    // Install
+    require(PBR_PATH . '/includes-install/install.php');
+} else {
+    // Display
+    require(PBR_PATH . '/includes-install/welcome.php');
+} //if( (...
+require(PBR_PATH . '/includes/display/footer.php');
 
-   /** Delete objects
-    *****************/
-    unset($pUser,$pHeader);
-    include(PBR_PATH.'/includes/init/clean.php');
+/** Delete objects
+ *****************/
+unset($pUser, $pHeader);
+include(PBR_PATH . '/includes/init/clean.php');
