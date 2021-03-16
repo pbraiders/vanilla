@@ -62,7 +62,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function ContactsGet( $sLogin, $sSession, $sInet, CContact $pSearch, CPaging $pPaging, COption $pOrder, COption $pSort )
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sSearch = $pSearch->GetLastName();
@@ -70,7 +70,7 @@ function ContactsGet( $sLogin, $sSession, $sInet, CContact $pSearch, CPaging $pP
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.','.$sSearch.','.$pPaging->GetOffset().','.$pPaging->GetLimit().','.$pOrder->GetValue().','.$pSort->GetValue().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -130,7 +130,7 @@ function ContactsGet( $sLogin, $sSession, $sInet, CContact $pSearch, CPaging $pP
             // Join
             $sSQL_Select .= $sSQL_Join;
             // Where
-           	$sSearch = str_replace('*', '%', $sSearch);
+               $sSearch = str_replace('*', '%', $sSearch);
             $sSQL_Select .= ' WHERE c.`lastname` LIKE :sSearch'.$sSQL_OrderBy2.$sSQL_Limit;
         }//if( $bSearch )
 
@@ -145,7 +145,7 @@ function ContactsGet( $sLogin, $sSession, $sInet, CContact $pSearch, CPaging $pP
                 $pPDOStatement->bindValue(':sSearch',$sSearch,PDO::PARAM_STR);
             }//if( $bSearch )
             $pPDOStatement->bindValue(':iOffset',$pPaging->GetOffset(),PDO::PARAM_INT);
-  			$pPDOStatement->bindValue(':iLimit',$pPaging->GetLimit(),PDO::PARAM_INT);
+              $pPDOStatement->bindValue(':iLimit',$pPaging->GetLimit(),PDO::PARAM_INT);
             // Execute
             $pPDOStatement->execute();
             // Fetch
@@ -170,5 +170,3 @@ function ContactsGet( $sLogin, $sSession, $sInet, CContact $pSearch, CPaging $pP
 
     return $iReturn;
 }
-
-?>

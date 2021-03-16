@@ -142,5 +142,3 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
     CAuth::GetInstance()->SetUsername('install');
     // Set session
     CAuth::GetInstance()->SetSession('2010');
-
-?>

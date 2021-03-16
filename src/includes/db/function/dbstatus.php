@@ -51,13 +51,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function DBStatus( $sLogin, $sSession, $sInet )
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated])';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -72,7 +72,7 @@ function DBStatus( $sLogin, $sSession, $sInet )
         try
         {
             // Prepare
-    		$sSQL = 'SHOW TABLE STATUS FROM `'.PBR_DB_DBN.'`';
+            $sSQL = 'SHOW TABLE STATUS FROM `'.PBR_DB_DBN.'`';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Execute
             $pPDOStatement->execute();
@@ -137,5 +137,3 @@ function DBStatus( $sLogin, $sSession, $sInet )
 
     return $iReturn;
 }
-
-?>

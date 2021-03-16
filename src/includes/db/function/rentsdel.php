@@ -101,5 +101,3 @@ function RentsDel( $sLogin, $sSession, $sInet, $iYear)
 
     return $iReturn;
 }
-
-?>

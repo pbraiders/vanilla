@@ -285,5 +285,3 @@ final class CGPie extends CGraph
     }
 
 }
-
-?>

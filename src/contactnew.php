@@ -122,4 +122,3 @@
      *****************/
     unset( $pContact, $pHeader );
     include(PBR_PATH.'/includes/init/clean.php');
-?>

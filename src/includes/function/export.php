@@ -162,5 +162,3 @@ function ExportInit( CCSV $pCCSV, $tCSV )
         $bReturn = ExportWrite( $pCCSV, $tCSV );
     return $bReturn;
 }
-
-?>

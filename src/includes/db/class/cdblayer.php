@@ -168,7 +168,7 @@ final class CDBLayer
             catch(PDOException $e)
             {
                 $this->Close();
-		        $sTitle = __CLASS__ . '::' . __METHOD__ . '()';
+                $sTitle = __CLASS__ . '::' . __METHOD__ . '()';
                 ErrorDBLog( $sLogin, $sTitle, $e->getMessage(), FALSE, FALSE);
             }//try
         }//if ...
@@ -362,7 +362,7 @@ final class CDBLayer
             }
             catch(PDOException $e)
             {
-		        $sTitle = __CLASS__ . '::' . __METHOD__ .'()';
+                $sTitle = __CLASS__ . '::' . __METHOD__ .'()';
                 ErrorDBLog( $sLogin, $sTitle, $e->getMessage(), FALSE, FALSE);
             }//try
 
@@ -381,11 +381,11 @@ final class CDBLayer
      */
     public function GetInfo()
     {
-		if( function_exists('mysql_get_client_info') ) {
-			$sReturn = mysql_get_client_info();
-		} else {
-			$sReturn = $this->m_pDriver->getAttribute( constant('PDO::ATTR_CLIENT_VERSION') );
-		}
+        if( function_exists('mysql_get_client_info') ) {
+            $sReturn = mysql_get_client_info();
+        } else {
+            $sReturn = $this->m_pDriver->getAttribute( constant('PDO::ATTR_CLIENT_VERSION') );
+        }
         return htmlspecialchars($sReturn);
     }
 
@@ -393,5 +393,3 @@ final class CDBLayer
 }
 
 define('PBR_DB_LOADED',1);
-
-?>

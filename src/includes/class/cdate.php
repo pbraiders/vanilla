@@ -531,5 +531,3 @@ final class CDate
     }
 
 }
-
-?>

@@ -145,8 +145,8 @@ final class CUser
         $sReturn = '';
         if( is_scalar($sValue) && is_scalar($sFilter) && is_integer($iMin) && is_integer($iMax) )
         {
-			// Trim
-			$sValue = trim($sValue);
+            // Trim
+            $sValue = trim($sValue);
             // Size
             $iSize = mb_strlen( $sValue, 'UTF-8');
             if( ($iSize>=$iMin) && ($iSize<=$iMax) )
@@ -209,7 +209,7 @@ final class CUser
      */
     public function SetUsername( $sValue )
     {
-    	$this->m_sUsername = $this->Sanitize( $sValue, CUser::USERNAMEMIN, CUser::USERNAMEMAX,GetRegExPatternName() );
+        $this->m_sUsername = $this->Sanitize( $sValue, CUser::USERNAMEMIN, CUser::USERNAMEMAX,GetRegExPatternName() );
     }
 
     /**
@@ -307,7 +307,7 @@ final class CUser
      */
     public function SetState($iValue)
     {
-    	$this->m_iState = $this->SanitizeInt( $iValue, CUser::STATEMIN, CUser::STATEMAX, CUser::STATEMIN);
+        $this->m_iState = $this->SanitizeInt( $iValue, CUser::STATEMIN, CUser::STATEMAX, CUser::STATEMIN);
     }
 
    /**
@@ -387,15 +387,15 @@ final class CUser
             // Get user name, passwords and state (POST only)
             if( $iFilter===INPUT_POST )
             {
-	            if( filter_has_var( INPUT_POST, CUser::USERNAMETAG) )
+                if( filter_has_var( INPUT_POST, CUser::USERNAMETAG) )
                     $this->SetUsername( filter_input( INPUT_POST, CUser::USERNAMETAG, FILTER_UNSAFE_RAW) );
 
-    	        if( filter_has_var( INPUT_POST, CUser::PASSWORDTAG) )
-	            {
+                if( filter_has_var( INPUT_POST, CUser::PASSWORDTAG) )
+                {
                     $sBuffer = trim( filter_input( INPUT_POST, CUser::PASSWORDTAG, FILTER_UNSAFE_RAW) );
                     if( strlen($sBuffer)>0 )
                     {
-        	            $this->SetPassword( sha1($sBuffer) );
+                        $this->SetPassword( sha1($sBuffer) );
                     }
                     else
                     {
@@ -417,10 +417,10 @@ final class CUser
                 }//if( filter_has_var( INPUT_POST, CUser::PASSWORDCHECKTAG) )
 
                 if( filter_has_var( INPUT_POST, CUser::STATETAG) )
-	            {
+                {
                     $tFilter = array('options' => array('min_range' => CUser::STATEMIN,
                                                         'max_range' => CUser::STATEMAX) );
-	                $this->SetState( filter_input( INPUT_POST, CUser::STATETAG, FILTER_VALIDATE_INT, $tFilter) );
+                    $this->SetState( filter_input( INPUT_POST, CUser::STATETAG, FILTER_VALIDATE_INT, $tFilter) );
                 }//if( filter_has_var( INPUT_POST, CUser::STATETAG) )
 
             }//if( $iFilter===INPUT_POST )
@@ -449,5 +449,3 @@ final class CUser
     }
 
 }
-
-?>

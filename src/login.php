@@ -98,29 +98,29 @@
                                      , GetIP().GetUserAgent() );
                 if( $iReturn>0 )
                 {
-				    // Set cookie
-				    if( CCookie::GetInstance()->Write( $pUser->GetUsername(), $sSession, CAuth::DEFAULT_LANGUAGE, FALSE  )===FALSE )
+                    // Set cookie
+                    if( CCookie::GetInstance()->Write( $pUser->GetUsername(), $sSession, CAuth::DEFAULT_LANGUAGE, FALSE  )===FALSE )
                     {
-		                $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-			            ErrorLog( $pUser->GetUsername(), $sTitle, 'impossible d\'écrire le cookie', E_USER_WARNING, TRUE);
+                        $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+                        ErrorLog( $pUser->GetUsername(), $sTitle, 'impossible d\'écrire le cookie', E_USER_WARNING, TRUE);
                     }//if(...
 
                     // Redirect
                     unset($pUser);
                     CPHPSession::CleanToken();
                     CPHPSession::Clean();
-	    			include(PBR_PATH.'/includes/init/clean.php');
+                    include(PBR_PATH.'/includes/init/clean.php');
                     header('Location: '.PBR_URL);
                     exit;
 
                 }//if( $iReturn>0 )
 
                 // Trace
-	    		if( ($iReturn==-2)||($iReturn==-3) )
+                if( ($iReturn==-2)||($iReturn==-3) )
                 {
-	                $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-		            ErrorLog( $pUser->GetUsername(), $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
-    			}//if( ($iReturn==-2)||($iReturn==-3) )
+                    $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+                    ErrorLog( $pUser->GetUsername(), $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
+                }//if( ($iReturn==-2)||($iReturn==-3) )
 
             }//if( CDBLayer::GetInstance()->Open(PBR_DB_DSN,PBR_DB_USR,PBR_DB_PWD)===FALSE )
         }//if( $pUser->IsValidLogin() )
@@ -158,4 +158,3 @@
     unset($pUser);
     unset($pHeader);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

@@ -49,15 +49,15 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function SessionValid( $sLogin, $sSession, $iRole, $sInet)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.','.$iRole.',[obfuscated])';
     $sMessage = '';
-	$iUnixTimestamp = time();
+    $iUnixTimestamp = time();
     $iCRC32 = 0;
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -68,9 +68,9 @@ function SessionValid( $sLogin, $sSession, $iRole, $sInet)
     {
         try
         {
-			/** CRC32
+            /** CRC32
              ********/
-			// Prepare
+            // Prepare
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare('SELECT CRC32(:sInet) AS "CRC32"');
             // Bind
             $pPDOStatement->bindValue(':sInet',$sInet,PDO::PARAM_STR);
@@ -84,12 +84,12 @@ function SessionValid( $sLogin, $sSession, $iRole, $sInet)
                 if( array_key_exists('CRC32', $tabResult[0]) )
                     $iCRC32 = $tabResult[0]['CRC32'];
             }//if( !empty($tabResult) && isset($tabResult[0]) && is_array($tabResult[0]) )
-        	// Free resource
-        	$pPDOStatement = NULL;
+            // Free resource
+            $pPDOStatement = NULL;
 
-			/** SessionValid
+            /** SessionValid
              ***************/
-			$iReturn = -2;
+            $iReturn = -2;
             // Prepare
             $sSQL = 'SELECT IFNULL(u.`iduser`,0) AS "SessionValid" FROM `'.PBR_DB_DBN.'`.`user` AS u INNER JOIN '.PBR_DB_DBN.'.`session` AS s ON u.`login`=s.`login` AND s.`logoff`=0 AND s.`session`=:sSession AND s.`inet`=:iCRC32 WHERE u.`login`=:sLogin AND s.`expire_date`>=:iUnixTimestamp AND u.`role`>=:iRole AND u.`state`=1';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
@@ -136,5 +136,3 @@ function SessionValid( $sLogin, $sSession, $iRole, $sInet)
 
     return $iReturn;
 }
-
-?>

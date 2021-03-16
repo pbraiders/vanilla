@@ -51,7 +51,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_URL') || !d
         {
             // Trace
             $sTitle = 'fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-	        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible d\'ouvrir la base de données', E_USER_ERROR, FALSE);
+            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible d\'ouvrir la base de données', E_USER_ERROR, FALSE);
         }
         else
         {
@@ -84,5 +84,3 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_URL') || !d
         header('Location: '.PBR_URL.'login.php');
         exit;
     }//if( !CAuth::GetInstance()->IsAuthenticated(...
-
-?>

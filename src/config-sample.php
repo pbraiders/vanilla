@@ -86,4 +86,3 @@ define('PBR_LOG',0);
 
 // DEBUG MODE - Positionnez la valeur à 1 si vous souhaitez afficher les erreurs à l'écran.
 define('PBR_DEBUG',0);
-?>

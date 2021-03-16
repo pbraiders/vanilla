@@ -171,8 +171,8 @@
                 ErrorLog(CAuth::GetInstance()->GetUsername(),$sTitle,'identifiant inconnu',E_USER_ERROR,TRUE);
                 $iReturn=-2;
             }//if( $iReturn==0 )
-			RedirectError( $iReturn, __FILE__, __LINE__ );
-			exit;
+            RedirectError( $iReturn, __FILE__, __LINE__ );
+            exit;
         }//if( ($iReturn===FALSE) || ($iReturn<=0) )
     }//if( isset($pUser) && ($pUser->GetIdentifier()>0) )
 
@@ -210,4 +210,3 @@
      *****************/
     unset($pHeader,$pUser);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

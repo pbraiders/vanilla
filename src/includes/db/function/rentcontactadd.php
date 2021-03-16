@@ -59,7 +59,7 @@ require(PBR_PATH.'/includes/db/function/rentmax.php');
   */
 function RentContactAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $pDate, CRent $pRent)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
@@ -76,7 +76,7 @@ function RentContactAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $
      ***************************************/
     $iMaxRent = RentMax( $sLogin, $sSession, $sInet, $pDate);
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -86,8 +86,8 @@ function RentContactAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $
      && ($iMaxRent>=0) )
     {
 
-    	/** Start transaction
-    	 ********************/
+        /** Start transaction
+         ********************/
         CDBLayer::GetInstance()->BeginTransaction($sLogin);
 
         /** Insert contact
@@ -108,15 +108,15 @@ function RentContactAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $
             $pPDOStatement->bindValue(':sZip',$pContact->GetZip(),PDO::PARAM_STR);
             $pPDOStatement->bindValue(':iUserId',CAuth::GetInstance()->GetUserBDIdentifier(),PDO::PARAM_INT);
             // Execute
-	        $pPDOStatement->execute();
-			// Last insert id
+            $pPDOStatement->execute();
+            // Last insert id
             $iReturn = CDBLayer::GetInstance()->GetLastInsertId();
             $pContact->SetIdentifier($iReturn);
 
             /** Insert rent
              **************/
-			if( $pContact->GetIdentifier()>0 )
-			{
+            if( $pContact->GetIdentifier()>0 )
+            {
                 // Free resource
                 $pPDOStatement = NULL;
 
@@ -135,33 +135,33 @@ function RentContactAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $
                 $pPDOStatement->bindValue(':iAge',$pRent->GetAge(),PDO::PARAM_INT);
                 $pPDOStatement->bindValue(':iArrhes',$pRent->GetArrhes(),PDO::PARAM_INT);
                 $pPDOStatement->bindValue(':iUserId',CAuth::GetInstance()->GetUserBDIdentifier(),PDO::PARAM_INT);
-	            // Execute
-	            $pPDOStatement->execute();
-				// Last insert id
-	            $iReturn = CDBLayer::GetInstance()->GetLastInsertId();
+                // Execute
+                $pPDOStatement->execute();
+                // Last insert id
+                $iReturn = CDBLayer::GetInstance()->GetLastInsertId();
                 $pRent->SetIdentifier($iReturn);
 
             }//if( $pContact->GetIdentifier()>0 )
 
-			/** Commit transaction
-    		 *********************/
+            /** Commit transaction
+             *********************/
             if( ($pRent->GetIdentifier()>0) && ($pContact->GetIdentifier()>0) )
-   			{
-   				CDBLayer::GetInstance()->Commit($sLogin);
+               {
+                   CDBLayer::GetInstance()->Commit($sLogin);
                 $iReturn = $pRent->GetIdentifier();
             }
             else
             {
                 $iReturn = 0;
-   			    CDBLayer::GetInstance()->Rollback($sLogin);
-    		}//if( ($pRent->GetIdentifier()>0) && ($pContact->GetIdentifier()>0) )
+                   CDBLayer::GetInstance()->Rollback($sLogin);
+            }//if( ($pRent->GetIdentifier()>0) && ($pContact->GetIdentifier()>0) )
 
         }
         catch(PDOException $e)
         {
             $iReturn = FALSE;
             $sMessage = $e->getMessage();
-    		CDBLayer::GetInstance()->RollBack($sLogin);
+            CDBLayer::GetInstance()->RollBack($sLogin);
         }//try
 
         // Free resource
@@ -174,5 +174,3 @@ function RentContactAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $
 
     return $iReturn;
 }
-
-?>

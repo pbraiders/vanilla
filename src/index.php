@@ -114,11 +114,11 @@
     $pHeader->SetKeywords($sBuffer);
 
     /** Admin case
-	 *************/
+     *************/
     if( SessionValid( CAuth::GetInstance()->GetUsername(), CAuth::GetInstance()->GetSession(), 10, GetIP().GetUserAgent())>0 )
-	{
-	    $bAdmin = TRUE;
-	}//admin case
+    {
+        $bAdmin = TRUE;
+    }//admin case
 
     /** Display
      **********/
@@ -131,4 +131,3 @@
     unset($pDate);
     unset($pHeader);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

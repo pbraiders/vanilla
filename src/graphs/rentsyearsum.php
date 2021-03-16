@@ -133,4 +133,3 @@
      *****************/
     unset( $pGraph, $pCCSV);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

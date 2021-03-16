@@ -53,16 +53,16 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') || !defined('PBR_LIFETI
   */
 function SessionSet( $sLogin, $sSession, $sPassword, $sInet)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],[obfuscated])';
     $sMessage = '';
     $iUserId = -2;
-	$iUnixTimestamp = time();
+    $iUnixTimestamp = time();
     $iSessionTimeExpire = $iUnixTimestamp + (integer)PBR_LIFETIME_SESSION + 0;
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -73,10 +73,10 @@ function SessionSet( $sLogin, $sSession, $sPassword, $sInet)
     {
         try
         {
-			/** Check user
+            /** Check user
              *************/
-			// Prepare
-			$sSQL='SELECT IFNULL(u.`iduser`,0) AS "user_id" FROM `'.PBR_DB_DBN.'`.`user`AS u WHERE u.`login`=:sLogin AND u.`state`=1 AND u.`password`=:sPassword';
+            // Prepare
+            $sSQL='SELECT IFNULL(u.`iduser`,0) AS "user_id" FROM `'.PBR_DB_DBN.'`.`user`AS u WHERE u.`login`=:sLogin AND u.`state`=1 AND u.`password`=:sPassword';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':sLogin',$sLogin,PDO::PARAM_STR);
@@ -86,48 +86,48 @@ function SessionSet( $sLogin, $sSession, $sPassword, $sInet)
             // Fetch
             $tabResult = $pPDOStatement->fetchAll();
             // Analyse
-    		$iUserId = $iReturn = -2;
+            $iUserId = $iReturn = -2;
             if( !empty($tabResult) && isset($tabResult[0]) && is_array($tabResult[0]) )
             {
                 if( array_key_exists('user_id', $tabResult[0]) )
                     $iUserId = $tabResult[0]['user_id'];
             }//if( !empty($tabResult) && is_array($tabResult[0]) )
-        	// Free resource
-        	$pPDOStatement = NULL;
+            // Free resource
+            $pPDOStatement = NULL;
 
             if( $iUserId>0 )
-			{
-				/** Insert session
-            	 *****************/
-	            // Prepare
-				$sSQL='REPLACE INTO `'.PBR_DB_DBN.'`.`session`( `login`, `session`, `create_date`, `expire_date`, `logoff`, `inet`) VALUES ( :sLogin, :sSession, :iUnixTimestamp, :iSessionTimeExpire, 0, CRC32(:sInet))';
-				$pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
-            	// Bind
-	            $pPDOStatement->bindValue(':sLogin',$sLogin,PDO::PARAM_STR);
-	            $pPDOStatement->bindValue(':sSession',$sSession,PDO::PARAM_STR);
-	            $pPDOStatement->bindValue(':iUnixTimestamp',$iUnixTimestamp,PDO::PARAM_INT);
-				$pPDOStatement->bindValue(':iSessionTimeExpire',$iSessionTimeExpire,PDO::PARAM_INT);
-	            $pPDOStatement->bindValue(':sInet',$sInet,PDO::PARAM_STR);
-            	// Execute
-            	$pPDOStatement->execute();
-            	// Count
+            {
+                /** Insert session
+                 *****************/
+                // Prepare
+                $sSQL='REPLACE INTO `'.PBR_DB_DBN.'`.`session`( `login`, `session`, `create_date`, `expire_date`, `logoff`, `inet`) VALUES ( :sLogin, :sSession, :iUnixTimestamp, :iSessionTimeExpire, 0, CRC32(:sInet))';
+                $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
+                // Bind
+                $pPDOStatement->bindValue(':sLogin',$sLogin,PDO::PARAM_STR);
+                $pPDOStatement->bindValue(':sSession',$sSession,PDO::PARAM_STR);
+                $pPDOStatement->bindValue(':iUnixTimestamp',$iUnixTimestamp,PDO::PARAM_INT);
+                $pPDOStatement->bindValue(':iSessionTimeExpire',$iSessionTimeExpire,PDO::PARAM_INT);
+                $pPDOStatement->bindValue(':sInet',$sInet,PDO::PARAM_STR);
+                // Execute
+                $pPDOStatement->execute();
+                // Count
                 $iReturn = $pPDOStatement->rowCount();
-        		// Free resource
-        		$pPDOStatement = NULL;
+                // Free resource
+                $pPDOStatement = NULL;
 
-				/** Update user
-            	 **************/
+                /** Update user
+                 **************/
                 if( $iReturn>0 )
                 {
-	            	// Prepare
-					$sSQL='UPDATE `'.PBR_DB_DBN.'`.`user` SET `last_visit`=SYSDATE() WHERE `iduser`=:iUserId';
-					$pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
-            		// Bind
-		            $pPDOStatement->bindValue(':iUserId',$iUserId,PDO::PARAM_INT);
-            		// Execute
-            		$pPDOStatement->execute();
-            		// Count
-                	$iReturn = $pPDOStatement->rowCount();
+                    // Prepare
+                    $sSQL='UPDATE `'.PBR_DB_DBN.'`.`user` SET `last_visit`=SYSDATE() WHERE `iduser`=:iUserId';
+                    $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
+                    // Bind
+                    $pPDOStatement->bindValue(':iUserId',$iUserId,PDO::PARAM_INT);
+                    // Execute
+                    $pPDOStatement->execute();
+                    // Count
+                    $iReturn = $pPDOStatement->rowCount();
                 }//if( $iReturn>0 )
             }//if( $iUserId>0 )
         }
@@ -147,5 +147,3 @@ function SessionSet( $sLogin, $sSession, $sPassword, $sInet)
 
     return $iReturn;
 }
-
-?>

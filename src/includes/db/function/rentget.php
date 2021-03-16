@@ -56,14 +56,14 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function RentGet( $sLogin, $sSession, $sInet, CRent $pRent, CDate $pDate, CContact $pContact)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pRent->GetIdentifier().')';
     $pContact->ResetMe();
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -77,7 +77,7 @@ function RentGet( $sLogin, $sSession, $sInet, CRent $pRent, CDate $pDate, CConta
         try
         {
             // Prepare
-    		$sSQL = 'SELECT r.`idreservation` AS "reservation_id", r.`year` AS "reservation_year", r.`month` AS "reservation_month", r.`day` AS "reservation_day", r.`rent_real` AS "reservation_real", r.`rent_planned` AS "reservation_planned", r.`rent_canceled` AS "reservation_canceled", r.`rent_max` AS "reservation_max", r.`age` AS "reservation_age", r.`arrhe` AS "reservation_arrhes", r.`comment` AS "reservation_comment", r.`create_date` AS "creation_date", u.`login` AS "creation_username", r.`update_date` AS "update_date", v.`login` AS "update_username", c.`lastname` AS "contact_lastname", c.`firstname` AS "contact_firstname", c.`tel` AS "contact_tel", c.`email` AS "contact_email", c.`address` AS "contact_address", c.`address_more` AS "contact_addressmore", c.`city` AS "contact_addresscity", c.`zip` AS "contact_addresszip", c.`idcontact` AS "contact_id" FROM `'.PBR_DB_DBN.'`.`reservation` AS r INNER JOIN `'.PBR_DB_DBN.'`.`contact` AS c ON r.`idcontact`=c.`idcontact` INNER JOIN `'.PBR_DB_DBN.'`.`user` AS u ON r.`create_iduser`=u.`iduser` LEFT JOIN `'.PBR_DB_DBN.'`.`user` AS v ON r.`update_iduser`=v.`iduser` WHERE r.`idreservation`=:iIdentifier';
+            $sSQL = 'SELECT r.`idreservation` AS "reservation_id", r.`year` AS "reservation_year", r.`month` AS "reservation_month", r.`day` AS "reservation_day", r.`rent_real` AS "reservation_real", r.`rent_planned` AS "reservation_planned", r.`rent_canceled` AS "reservation_canceled", r.`rent_max` AS "reservation_max", r.`age` AS "reservation_age", r.`arrhe` AS "reservation_arrhes", r.`comment` AS "reservation_comment", r.`create_date` AS "creation_date", u.`login` AS "creation_username", r.`update_date` AS "update_date", v.`login` AS "update_username", c.`lastname` AS "contact_lastname", c.`firstname` AS "contact_firstname", c.`tel` AS "contact_tel", c.`email` AS "contact_email", c.`address` AS "contact_address", c.`address_more` AS "contact_addressmore", c.`city` AS "contact_addresscity", c.`zip` AS "contact_addresszip", c.`idcontact` AS "contact_id" FROM `'.PBR_DB_DBN.'`.`reservation` AS r INNER JOIN `'.PBR_DB_DBN.'`.`contact` AS c ON r.`idcontact`=c.`idcontact` INNER JOIN `'.PBR_DB_DBN.'`.`user` AS u ON r.`create_iduser`=u.`iduser` LEFT JOIN `'.PBR_DB_DBN.'`.`user` AS v ON r.`update_iduser`=v.`iduser` WHERE r.`idreservation`=:iIdentifier';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iIdentifier', $pRent->GetIdentifier(), PDO::PARAM_INT);
@@ -157,5 +157,3 @@ function RentGet( $sLogin, $sSession, $sInet, CRent $pRent, CDate $pDate, CConta
 
     return $iReturn;
 }
-
-?>

@@ -395,5 +395,3 @@ final class CHeader
     }
 
 }
-
-?>

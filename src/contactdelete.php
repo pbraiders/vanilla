@@ -182,4 +182,3 @@
      *****************/
     unset( $pContact );
     include(PBR_PATH.'/includes/init/clean.php');
-?>

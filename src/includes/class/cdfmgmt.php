@@ -164,5 +164,3 @@ abstract class CDirectoryFileManagement
     abstract protected function FileManagement( $sFolder, $sFile);
 
 }
-
-?>

@@ -53,13 +53,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') || !defined('PBR_AUTH_L
   */
 function ContactUpdate( $sLogin, $sSession, $sInet, CContact $pContact)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pContact->GetIdentifier().',...)';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -71,7 +71,7 @@ function ContactUpdate( $sLogin, $sSession, $sInet, CContact $pContact)
         try
         {
             // Prepare
-	        $sSQL = 'UPDATE `'.PBR_DB_DBN.'`.`contact` SET `lastname`=:sLastName, `firstname`=:sFirstName, `tel`=:sTel, `email`=:sEmail, `address`=:sAddress, `address_more`=:sAddressMore, `city`=:sCity, `zip`=:sZip, `comment`=:sComment, `update_date`=SYSDATE(), `update_iduser`=:iUserId WHERE `idcontact`=:iIdentifier';
+            $sSQL = 'UPDATE `'.PBR_DB_DBN.'`.`contact` SET `lastname`=:sLastName, `firstname`=:sFirstName, `tel`=:sTel, `email`=:sEmail, `address`=:sAddress, `address_more`=:sAddressMore, `city`=:sCity, `zip`=:sZip, `comment`=:sComment, `update_date`=SYSDATE(), `update_iduser`=:iUserId WHERE `idcontact`=:iIdentifier';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iIdentifier',$pContact->GetIdentifier(),PDO::PARAM_INT);
@@ -84,10 +84,10 @@ function ContactUpdate( $sLogin, $sSession, $sInet, CContact $pContact)
             $pPDOStatement->bindValue(':sCity',$pContact->GetCity(),PDO::PARAM_STR);
             $pPDOStatement->bindValue(':sZip',$pContact->GetZip(),PDO::PARAM_STR);
             $pPDOStatement->bindValue(':sComment',$pContact->GetComment(),PDO::PARAM_STR);
-			$pPDOStatement->bindValue(':iUserId',CAuth::GetInstance()->GetUserBDIdentifier(),PDO::PARAM_INT);
+            $pPDOStatement->bindValue(':iUserId',CAuth::GetInstance()->GetUserBDIdentifier(),PDO::PARAM_INT);
             // Execute
-	        $pPDOStatement->execute();
-			// Count
+            $pPDOStatement->execute();
+            // Count
             $iReturn = $pPDOStatement->rowCount();
         }
         catch(PDOException $e)
@@ -106,5 +106,3 @@ function ContactUpdate( $sLogin, $sSession, $sInet, CContact $pContact)
 
     return $iReturn;
 }
-
-?>

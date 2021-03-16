@@ -88,5 +88,3 @@
      *******************/
     header('Location: '.PBR_URL);
     exit
-
-?>

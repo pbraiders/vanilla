@@ -158,4 +158,3 @@
      *****************/
     unset( $pPaging, $pSearch, $pDate, $pHeader, $pOrder, $pSort);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

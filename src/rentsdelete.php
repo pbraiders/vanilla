@@ -159,4 +159,3 @@
     unset($pHeader);
     unset($pDate);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

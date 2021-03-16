@@ -53,13 +53,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function UsersGet( $sLogin, $sSession, $sInet )
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated])';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -70,7 +70,7 @@ function UsersGet( $sLogin, $sSession, $sInet )
         try
         {
             // Prepare
-			$sSQL = 'SELECT u.`iduser` AS "user_id", u.`login` AS "user_name", u.`last_visit` AS "user_lastvisit", u.`state` AS "user_state" FROM `'.PBR_DB_DBN.'`.`user` AS u ORDER BY u.`login`';
+            $sSQL = 'SELECT u.`iduser` AS "user_id", u.`login` AS "user_name", u.`last_visit` AS "user_lastvisit", u.`state` AS "user_state" FROM `'.PBR_DB_DBN.'`.`user` AS u ORDER BY u.`login`';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Execute
             $pPDOStatement->execute();
@@ -96,5 +96,3 @@ function UsersGet( $sLogin, $sSession, $sInet )
 
     return $iReturn;
 }
-
-?>

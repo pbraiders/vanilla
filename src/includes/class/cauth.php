@@ -1,4 +1,5 @@
 <?php
+
 /*************************************************************************
  *                                                                       *
  * Copyright (C) 2010   Olivier JULLIEN - PBRAIDERS.COM                  *
@@ -45,7 +46,7 @@
  *                                        add SetForceDesktop()
  *                                        add GetForceDesktop()
  *************************************************************************/
-if( !defined('PBR_VERSION') )
+if (!defined('PBR_VERSION'))
     die('-1');
 
 final class CAuth
@@ -105,22 +106,19 @@ final class CAuth
      * author: Olivier JULLIEN - 2010-02-04
      * update: Olivier JULLIEN - 2010-06-15 - recode
      */
-    private function Sanitize( $sValue, $sFilter='')
+    private function Sanitize($sValue, $sFilter = '')
     {
         $sReturn = '';
-        if( is_scalar($sValue) && is_scalar($sFilter) )
-        {
+        if (is_scalar($sValue) && is_scalar($sFilter)) {
             // Trim
             $sReturn = trim($sValue);
             // Authorized caracteres
-            if( !empty($sFilter) )
-            {
-                if( 0==preg_match( $sFilter, $sReturn) )
-                {
+            if (!empty($sFilter)) {
+                if (0 == preg_match($sFilter, $sReturn)) {
                     $sReturn = '';
-                }//if( 0==preg_match( $sFilter, $sReturn) )
-            }//if( !empty($sFilter) )
-        }//if( is_scalar($sValue) && is_scalar($sFilter) )
+                } //if( 0==preg_match( $sFilter, $sReturn) )
+            } //if( !empty($sFilter) )
+        } //if( is_scalar($sValue) && is_scalar($sFilter) )
         return $sReturn;
     }
 
@@ -139,7 +137,7 @@ final class CAuth
         $this->Invalidate();
     }
 
-   /**
+    /**
      * function: __clone
      * description: cloning is forbidden
      * parameter: none
@@ -147,9 +145,11 @@ final class CAuth
      * author: Olivier JULLIEN - 2010-02-04
      * update: Olivier JULLIEN - 2010-05-24 - Remove trigger_error
      */
-    public function __clone(){}
+    public function __clone()
+    {
+    }
 
-   /**
+    /**
      * function: GetInstance
      * description: create or return the current instance
      * parameter: none
@@ -158,14 +158,13 @@ final class CAuth
      */
     public static function GetInstance()
     {
-        if( is_null(self::$m_pInstance) )
-        {
+        if (is_null(self::$m_pInstance)) {
             self::$m_pInstance = new CAuth();
         }
         return self::$m_pInstance;
     }
 
-   /**
+    /**
      * function: DeleteInstance
      * description: delete the current instance
      * parameter: none
@@ -174,10 +173,9 @@ final class CAuth
      */
     public static function DeleteInstance()
     {
-        if( !is_null(self::$m_pInstance) )
-        {
-            $tmp=self::$m_pInstance;
-            self::$m_pInstance=NULL;
+        if (!is_null(self::$m_pInstance)) {
+            $tmp = self::$m_pInstance;
+            self::$m_pInstance = NULL;
             unset($tmp);
         }
     }
@@ -190,12 +188,12 @@ final class CAuth
      * author: Olivier JULLIEN - 2010-02-04
      * update: Olivier JULLIEN - 2010-06-15 - recode
      */
-    public function GetUsername($iFilter=0)
+    public function GetUsername($iFilter = 0)
     {
-        return ((1==$iFilter)?htmlentities($this->m_sUsername,ENT_QUOTES,'UTF-8'):$this->m_sUsername);
+        return ((1 == $iFilter) ? htmlentities($this->m_sUsername, ENT_QUOTES, 'UTF-8') : $this->m_sUsername);
     }
 
-   /**
+    /**
      * function: SetUsername
      * description: set username value
      * parameter: STRING|sValue - username
@@ -203,10 +201,10 @@ final class CAuth
      * author: Olivier JULLIEN - 2010-02-04
      * update: Olivier JULLIEN - 2010-06-15 - recode
      */
-    public function SetUsername( $sValue )
+    public function SetUsername($sValue)
     {
         $this->UnsetAuthentication();
-        $this->m_sUsername = $this->Sanitize( $sValue, GetRegExPatternName() );
+        $this->m_sUsername = $this->Sanitize($sValue, GetRegExPatternName());
     }
 
     /**
@@ -222,7 +220,7 @@ final class CAuth
         return $this->m_sSession;
     }
 
-   /**
+    /**
      * function: SetSession
      * description: set session value
      * parameter: STRING|sValue - session
@@ -230,13 +228,13 @@ final class CAuth
      * author: Olivier JULLIEN - 2010-02-04
      * update: Olivier JULLIEN - 2010-06-15 - use GetRegExPatternSession
      */
-    public function SetSession( $sValue )
+    public function SetSession($sValue)
     {
         $this->UnsetAuthentication();
-        $this->m_sSession = $this->Sanitize( $sValue, GetRegExPatternSession() );
+        $this->m_sSession = $this->Sanitize($sValue, GetRegExPatternSession());
     }
 
-   /**
+    /**
      * function: GetLanguage
      * description: return the language value
      * parameter: none
@@ -248,21 +246,21 @@ final class CAuth
         return $this->m_sLanguage;
     }
 
-   /**
+    /**
      * function: SetLanguage
      * description: Set session value
      * parameter: STRING|sValue - language
      * return: none
      * author: Olivier JULLIEN - 2010-06-15
      */
-    public function SetLanguage( $sValue )
+    public function SetLanguage($sValue)
     {
-        $this->m_sLanguage = $this->Sanitize( $sValue, GetRegExPatternSession() );
-        if( empty($this->m_sLanguage) )
+        $this->m_sLanguage = $this->Sanitize($sValue, GetRegExPatternSession());
+        if (empty($this->m_sLanguage))
             $this->m_sLanguage = CAuth::DEFAULT_LANGUAGE;
     }
 
-   /**
+    /**
      * function: GetForceDesktop
      * description: return the force desktop value
      * parameter: none
@@ -274,7 +272,7 @@ final class CAuth
         return $this->m_bForceDesktop;
     }
 
-   /**
+    /**
      * function: SetForceDesktop
      * description: Set force desktop value
      * parameter: none
@@ -296,7 +294,7 @@ final class CAuth
      */
     public function GetUserBDIdentifier()
     {
-        return (integer)$this->m_iDBIdentifier;
+        return (int)$this->m_iDBIdentifier;
     }
 
     /**
@@ -311,7 +309,7 @@ final class CAuth
         return ($this->IsValid() && $this->m_bDBAuth);
     }
 
-   /**
+    /**
      * function: SetAuthentication
      * description: set DB authentiiation to TRUE
      * parameter: INTEGER|iUserId - user db identifier
@@ -322,14 +320,13 @@ final class CAuth
     public function SetAuthentication($iUserId)
     {
         $this->UnsetAuthentication();
-    	if( is_integer($iUserId) && ($iUserId>0) )
-        {
-        	$this->m_bDBAuth       = TRUE;
-        	$this->m_iDBIdentifier = $iUserId;
-        }//if( is_integer($iUserId) && ($iUserId>0) )
+        if (is_integer($iUserId) && ($iUserId > 0)) {
+            $this->m_bDBAuth       = TRUE;
+            $this->m_iDBIdentifier = $iUserId;
+        } //if( is_integer($iUserId) && ($iUserId>0) )
     }
 
-   /**
+    /**
      * function: UnsetAuthentication
      * description: set DB authentication to FALSE
      * parameter: none
@@ -339,10 +336,10 @@ final class CAuth
     public function UnsetAuthentication()
     {
         $this->m_bDBAuth       = FALSE;
-    	$this->m_iDBIdentifier = 0;
+        $this->m_iDBIdentifier = 0;
     }
 
-   /**
+    /**
      * function: IsValid
      * description: return true if username and session are set
      * parameter:
@@ -352,7 +349,7 @@ final class CAuth
      */
     public function IsValid()
     {
-        return ( (strlen($this->m_sSession)>0) && (strlen($this->m_sUsername)>0) );
+        return ((strlen($this->m_sSession) > 0) && (strlen($this->m_sUsername) > 0));
     }
 
     /**
@@ -370,6 +367,4 @@ final class CAuth
     }
 }
 
-define ('PBR_AUTH_LOADED',1);
-
-?>
+define('PBR_AUTH_LOADED', 1);

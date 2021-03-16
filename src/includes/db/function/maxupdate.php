@@ -103,5 +103,3 @@ function MaxUpdate( $sLogin, $sSession, $sInet, CMaxRentPerMonthList $pParameter
 
     return $iReturn;
 }
-
-?>

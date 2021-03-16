@@ -185,8 +185,8 @@ final class CContact
         $sReturn = '';
         if( is_scalar($sValue) && is_scalar($sFilter) )
         {
-			// Trim
-			$sReturn = trim($sValue);
+            // Trim
+            $sReturn = trim($sValue);
             // Authorized caracteres
             if( !empty($sFilter) )
             {
@@ -293,7 +293,7 @@ final class CContact
     {
         $sValue = TruncMe( $sValue, CContact::COMMENTLENGTH);
         $this->m_sComment = $this->Sanitize($sValue);
-	}
+    }
     public function SetCreationDate($sValue){$this->m_sCreationDate=$this->Sanitize($sValue);}
     public function SetCreationUser($sValue){$this->m_sCreationUser=$this->Sanitize($sValue,GetRegExPatternName());}
     public function SetUpdateDate($sValue){$this->m_sUpdateDate=$this->Sanitize($sValue);}
@@ -443,5 +443,3 @@ final class CContact
     }
 
 }
-
-?>

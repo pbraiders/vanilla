@@ -54,13 +54,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function RentMax( $sLogin, $sSession, $sInet, CDate $pDate)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pDate->GetRequestMonth().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -70,8 +70,8 @@ function RentMax( $sLogin, $sSession, $sInet, CDate $pDate)
     {
         try
         {
-		    // Prepare
-	        $sSQL = 'SELECT IFNULL(MAX(r.`rent_max`),0) AS "rent_max" FROM `'.PBR_DB_DBN.'`.`reservation` AS r WHERE r.`year`=:iYear AND r.`month`=:iMonth AND r.`day`=:iDay';
+            // Prepare
+            $sSQL = 'SELECT IFNULL(MAX(r.`rent_max`),0) AS "rent_max" FROM `'.PBR_DB_DBN.'`.`reservation` AS r WHERE r.`year`=:iYear AND r.`month`=:iMonth AND r.`day`=:iDay';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iDay',$pDate->GetRequestDay(),PDO::PARAM_INT);
@@ -88,14 +88,14 @@ function RentMax( $sLogin, $sSession, $sInet, CDate $pDate)
                     $iReturn = $tabResult[0]['rent_max'];
             }//if( is_array($tabResult) && isset($tabResult[0]) && is_array($tabResult[0]) )
 
-			/** Select default max rent
+            /** Select default max rent
              **************************/
             if( $iReturn<=0 )
             {
                 // Free resource
                 $pPDOStatement = NULL;
-    			// Prepare
-    	        $sSQL = 'SELECT c.`value` AS "rent_max" FROM `'.PBR_DB_DBN.'`.`config` AS c WHERE c.`name` LIKE CONCAT_WS("_","max_rent",:iMonth)';
+                // Prepare
+                $sSQL = 'SELECT c.`value` AS "rent_max" FROM `'.PBR_DB_DBN.'`.`config` AS c WHERE c.`name` LIKE CONCAT_WS("_","max_rent",:iMonth)';
                 $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
                 // Bind
                 $pPDOStatement->bindValue(':iMonth',$pDate->GetRequestMonth(),PDO::PARAM_INT);
@@ -127,5 +127,3 @@ function RentMax( $sLogin, $sSession, $sInet, CDate $pDate)
 
     return $iReturn;
 }
-
-?>

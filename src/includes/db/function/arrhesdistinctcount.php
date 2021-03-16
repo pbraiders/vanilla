@@ -53,13 +53,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function ArrhesDistinctCount( $sLogin, $sSession, $sInet, CDate $pDate, COption $pInterval)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pInterval->GetValue().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -109,5 +109,3 @@ function ArrhesDistinctCount( $sLogin, $sSession, $sInet, CDate $pDate, COption 
 
     return $iReturn;
 }
-
-?>

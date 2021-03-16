@@ -100,5 +100,3 @@ function MaxGet( $sLogin, $sSession, $sInet)
 
     return $iReturn;
 }
-
-?>

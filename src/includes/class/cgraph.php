@@ -557,5 +557,3 @@ abstract class CGraph
     abstract public function Draw( &$tRecordset, $iYLine=CGraph::GRID_LINE_DEFAULT );
 
 }
-
-?>

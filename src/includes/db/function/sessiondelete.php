@@ -52,14 +52,14 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function SessionDelete( $sLogin, $sSession, $sInet)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated])';
     $iUnixTimestamp = time();
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -76,7 +76,7 @@ function SessionDelete( $sLogin, $sSession, $sInet)
             $pPDOStatement->bindValue(':iUnixTimestamp',$iUnixTimestamp,PDO::PARAM_INT);
             // Execute
             $pPDOStatement->execute();
-			// Count
+            // Count
             $iReturn = $pPDOStatement->rowCount();
         }
         catch(PDOException $e)
@@ -95,5 +95,3 @@ function SessionDelete( $sLogin, $sSession, $sInet)
 
     return $iReturn;
 }
-
-?>

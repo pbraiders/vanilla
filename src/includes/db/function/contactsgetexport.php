@@ -56,7 +56,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function ContactsGetExport( $sLogin, $sSession, $sInet, CContact $pSearch, CPaging $pPaging, COption $pOrder, COption $pSort, CCSV $pCCSV)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sSearch = $pSearch->GetLastName();
@@ -64,7 +64,7 @@ function ContactsGetExport( $sLogin, $sSession, $sInet, CContact $pSearch, CPagi
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.','.$sSearch.','.$pPaging->GetOffset().','.$pPaging->GetLimit().','.$pOrder->GetValue().','.$pSort->GetValue().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -134,7 +134,7 @@ function ContactsGetExport( $sLogin, $sSession, $sInet, CContact $pSearch, CPagi
                 $pPDOStatement->bindValue(':sSearch',$sSearch,PDO::PARAM_STR);
             }//if( $bSearch )
             $pPDOStatement->bindValue(':iOffset',$pPaging->GetOffset(),PDO::PARAM_INT);
-  			$pPDOStatement->bindValue(':iLimit',$pPaging->GetLimit(),PDO::PARAM_INT);
+              $pPDOStatement->bindValue(':iLimit',$pPaging->GetLimit(),PDO::PARAM_INT);
             // Execute
             $pPDOStatement->execute();
             // Fetch
@@ -179,5 +179,3 @@ function ContactsGetExport( $sLogin, $sSession, $sInet, CContact $pSearch, CPagi
 
     return $iReturn;
 }
-
-?>

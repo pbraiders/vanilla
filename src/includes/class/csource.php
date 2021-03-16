@@ -177,5 +177,3 @@ final class CSource
     }
 
 }
-
-?>

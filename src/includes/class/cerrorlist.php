@@ -233,5 +233,3 @@ final class CErrorList implements Iterator
 }
 
 define('PBR_ERROR_LOADED',1);
-
-?>

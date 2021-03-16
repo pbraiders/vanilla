@@ -186,5 +186,3 @@ final class COption
     }
 
 }
-
-?>

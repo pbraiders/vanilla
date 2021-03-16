@@ -53,13 +53,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function RentsGetCount( $sLogin, $sSession, $sInet, CDate $pDate)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pDate->GetRequestDay().','.$pDate->GetRequestMonth().','.$pDate->GetRequestYear().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -70,7 +70,7 @@ function RentsGetCount( $sLogin, $sSession, $sInet, CDate $pDate)
         try
         {
             // Prepare
-			$sSQL = 'SELECT COUNT(r.`idreservation`) AS "rent_count" FROM `'.PBR_DB_DBN.'`.`reservation` AS r WHERE r.`year`=:iYear AND r.`month`=:iMonth AND r.`day`=:iDay';
+            $sSQL = 'SELECT COUNT(r.`idreservation`) AS "rent_count" FROM `'.PBR_DB_DBN.'`.`reservation` AS r WHERE r.`year`=:iYear AND r.`month`=:iMonth AND r.`day`=:iDay';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iDay',$pDate->GetRequestDay(),PDO::PARAM_INT);
@@ -103,5 +103,3 @@ function RentsGetCount( $sLogin, $sSession, $sInet, CDate $pDate)
 
     return $iReturn;
 }
-
-?>

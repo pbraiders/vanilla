@@ -53,13 +53,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') || !defined('PBR_AUTH_L
   */
 function RentUpdate( $sLogin, $sSession, $sInet, CRent $pRent)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pRent->GetIdentifier().',...)';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -68,33 +68,33 @@ function RentUpdate( $sLogin, $sSession, $sInet, CRent $pRent)
      && IsStringNotEmpty($sInet)
      && ($pRent->GetIdentifier()>0) )
     {
-    	/** Start transaction
-    	 ********************/
+        /** Start transaction
+         ********************/
         CDBLayer::GetInstance()->BeginTransaction($sLogin);
 
         try
         {
-     		/** Update max for all the reservation of the day
-    		 ************************************************/
+             /** Update max for all the reservation of the day
+             ************************************************/
 
             // Prepare
-	        $sSQL = 'UPDATE `'.PBR_DB_DBN.'`.`reservation` AS r INNER JOIN `'.PBR_DB_DBN.'`.`reservation` AS s USING(`year`,`month`,`day`) SET r.`rent_max`=:iMax WHERE s.`idreservation`=:iIdentifier';
-			$pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
-			// Bind
+            $sSQL = 'UPDATE `'.PBR_DB_DBN.'`.`reservation` AS r INNER JOIN `'.PBR_DB_DBN.'`.`reservation` AS s USING(`year`,`month`,`day`) SET r.`rent_max`=:iMax WHERE s.`idreservation`=:iIdentifier';
+            $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
+            // Bind
             $pPDOStatement->bindValue(':iMax',$pRent->GetMax(),PDO::PARAM_INT);
             $pPDOStatement->bindValue(':iIdentifier',$pRent->GetIdentifier(),PDO::PARAM_INT);
-    		// Execute
-    		$pPDOStatement->execute();
-    		// Count
-    		$iReturn = $pPDOStatement->rowCount();
-    		// Free resource
-    		$pPDOStatement = NULL;
+            // Execute
+            $pPDOStatement->execute();
+            // Count
+            $iReturn = $pPDOStatement->rowCount();
+            // Free resource
+            $pPDOStatement = NULL;
 
-     		/** Update rent
-    		 *************/
+             /** Update rent
+             *************/
 
             // Prepare
-	        $sSQL = 'UPDATE `'.PBR_DB_DBN.'`.`reservation` SET `rent_real`=:iReal, `rent_planned`=:iPlanned, `rent_canceled`=:iCanceled, `age`=:iAge, `arrhe`=:iArrhes, `comment`=:sComment, `update_date`=SYSDATE(), `update_iduser`=:iUserId WHERE `idreservation`=:iIdentifier';
+            $sSQL = 'UPDATE `'.PBR_DB_DBN.'`.`reservation` SET `rent_real`=:iReal, `rent_planned`=:iPlanned, `rent_canceled`=:iCanceled, `age`=:iAge, `arrhe`=:iArrhes, `comment`=:sComment, `update_date`=SYSDATE(), `update_iduser`=:iUserId WHERE `idreservation`=:iIdentifier';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iIdentifier',$pRent->GetIdentifier(),PDO::PARAM_INT);
@@ -104,14 +104,14 @@ function RentUpdate( $sLogin, $sSession, $sInet, CRent $pRent)
             $pPDOStatement->bindValue(':iAge',$pRent->GetAge(),PDO::PARAM_INT);
             $pPDOStatement->bindValue(':iArrhes',$pRent->GetArrhes(),PDO::PARAM_INT);
             $pPDOStatement->bindValue(':sComment',$pRent->GetComment(),PDO::PARAM_STR);
-			$pPDOStatement->bindValue(':iUserId',CAuth::GetInstance()->GetUserBDIdentifier(),PDO::PARAM_INT);
-    		// Execute
-    		$pPDOStatement->execute();
-    		// Count
-    		$iReturn = $iReturn + $pPDOStatement->rowCount();
+            $pPDOStatement->bindValue(':iUserId',CAuth::GetInstance()->GetUserBDIdentifier(),PDO::PARAM_INT);
+            // Execute
+            $pPDOStatement->execute();
+            // Count
+            $iReturn = $iReturn + $pPDOStatement->rowCount();
 
-    		/** Commit transaction
-    		 *********************/
+            /** Commit transaction
+             *********************/
             CDBLayer::GetInstance()->Commit($sLogin);
 
         }
@@ -132,5 +132,3 @@ function RentUpdate( $sLogin, $sSession, $sInet, CRent $pRent)
 
     return $iReturn;
 }
-
-?>

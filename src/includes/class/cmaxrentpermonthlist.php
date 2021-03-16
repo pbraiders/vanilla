@@ -244,5 +244,3 @@ final class CMaxRentPerMonthList implements Iterator
     }
 
 }
-
-?>

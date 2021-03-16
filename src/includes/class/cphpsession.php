@@ -288,5 +288,3 @@ final class CPHPSession
 }
 
 define('PBR_SESSION_LOADED',1);
-
-?>

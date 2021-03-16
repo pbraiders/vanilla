@@ -53,13 +53,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function RentDel( $sLogin, $sSession, $sInet, CRent $pRent)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pRent->GetIdentifier().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -71,14 +71,14 @@ function RentDel( $sLogin, $sSession, $sInet, CRent $pRent)
         try
         {
             // Prepare
-    		$sSQL = 'DELETE FROM `'.PBR_DB_DBN.'`.`reservation` WHERE `idreservation`=:iIdentifier';
+            $sSQL = 'DELETE FROM `'.PBR_DB_DBN.'`.`reservation` WHERE `idreservation`=:iIdentifier';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iIdentifier',$pRent->GetIdentifier(),PDO::PARAM_INT);
-    		// Execute
-    		$pPDOStatement->execute();
-    		// Count
-    		$iReturn = $pPDOStatement->rowCount();
+            // Execute
+            $pPDOStatement->execute();
+            // Count
+            $iReturn = $pPDOStatement->rowCount();
         }
         catch(PDOException $e)
         {
@@ -96,5 +96,3 @@ function RentDel( $sLogin, $sSession, $sInet, CRent $pRent)
 
     return $iReturn;
 }
-
-?>

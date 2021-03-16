@@ -174,12 +174,12 @@ function GetIP($iFormat=1)
   */
 function GetMessageCode()
 {
-	$iReturn = 0;
-	if( filter_has_var(INPUT_GET, 'error') )
-	{
-		$tFilter = array('options' => array('min_range' => 1, 'max_range' => 10));
-		$iReturn=(integer)filter_input( INPUT_GET, 'error', FILTER_VALIDATE_INT, $tFilter);
-	}//if( filter_has_var(INPUT_GET, 'error') )
+    $iReturn = 0;
+    if( filter_has_var(INPUT_GET, 'error') )
+    {
+        $tFilter = array('options' => array('min_range' => 1, 'max_range' => 10));
+        $iReturn=(integer)filter_input( INPUT_GET, 'error', FILTER_VALIDATE_INT, $tFilter);
+    }//if( filter_has_var(INPUT_GET, 'error') )
     return $iReturn;
 }
 
@@ -339,5 +339,3 @@ function DisplayUsage( $fBegin )
     $sReturn .= 'memory usage: '.GetMemoryUsage();
     return $sReturn;
 }
-
-?>

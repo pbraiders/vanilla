@@ -54,14 +54,14 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function UserAdd( $sLogin, $sSession, $sInet, CUser $pUser)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],...)';
     $pUser->SetIdentifier(0);
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -115,5 +115,3 @@ function UserAdd( $sLogin, $sSession, $sInet, CUser $pUser)
 
     return $iReturn;
 }
-
-?>

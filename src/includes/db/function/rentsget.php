@@ -66,13 +66,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function RentsGet( $sLogin, $sSession, $sInet, CDate $pDate, CPaging $pPaging)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pDate->GetRequestDay().','.$pDate->GetRequestMonth().','.$pDate->GetRequestYear().','.$pPaging->GetOffset().','.$pPaging->GetLimit().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -83,7 +83,7 @@ function RentsGet( $sLogin, $sSession, $sInet, CDate $pDate, CPaging $pPaging)
         try
         {
             // Prepare
-			$sSQL = 'SELECT 0 AS "reservation_id", IFNULL(SUM(r.`rent_real`),0) AS "reservation_real", IFNULL(SUM(r.`rent_planned`),0) AS "reservation_planned", IFNULL(SUM(r.`rent_canceled`),0) AS "reservation_canceled", IFNULL(MAX(r.`rent_max`),0) AS "reservation_arrhes", NULL AS "contact_lastname", NULL AS "contact_firstname", NULL AS "contact_phone", NULL AS "reservation_comment" FROM `'.PBR_DB_DBN.'`.`reservation` AS r INNER JOIN `'.PBR_DB_DBN.'`.`contact` AS c ON r.`idcontact`=c.`idcontact` WHERE r.`year`=:iYear AND r.`month`=:iMonth AND r.`day`=:iDay UNION (SELECT r.`idreservation` AS "reservation_id", r.`rent_real` AS "reservation_real", r.`rent_planned` AS "reservation_planned", r.`rent_canceled` AS "reservation_canceled", r.`arrhe` AS "reservation_arrhes", c.`lastname` AS "contact_lastname", c.`firstname` AS "contact_firstname", c.`tel` AS "contact_phone", r.`comment` AS "reservation_comment" FROM `'.PBR_DB_DBN.'`.`reservation` AS r INNER JOIN `'.PBR_DB_DBN.'`.`contact` AS c ON r.`idcontact`=c.`idcontact` WHERE r.`year`=:iYear AND r.`month`=:iMonth AND r.`day`=:iDay LIMIT :iLimit OFFSET :iOffset)';
+            $sSQL = 'SELECT 0 AS "reservation_id", IFNULL(SUM(r.`rent_real`),0) AS "reservation_real", IFNULL(SUM(r.`rent_planned`),0) AS "reservation_planned", IFNULL(SUM(r.`rent_canceled`),0) AS "reservation_canceled", IFNULL(MAX(r.`rent_max`),0) AS "reservation_arrhes", NULL AS "contact_lastname", NULL AS "contact_firstname", NULL AS "contact_phone", NULL AS "reservation_comment" FROM `'.PBR_DB_DBN.'`.`reservation` AS r INNER JOIN `'.PBR_DB_DBN.'`.`contact` AS c ON r.`idcontact`=c.`idcontact` WHERE r.`year`=:iYear AND r.`month`=:iMonth AND r.`day`=:iDay UNION (SELECT r.`idreservation` AS "reservation_id", r.`rent_real` AS "reservation_real", r.`rent_planned` AS "reservation_planned", r.`rent_canceled` AS "reservation_canceled", r.`arrhe` AS "reservation_arrhes", c.`lastname` AS "contact_lastname", c.`firstname` AS "contact_firstname", c.`tel` AS "contact_phone", r.`comment` AS "reservation_comment" FROM `'.PBR_DB_DBN.'`.`reservation` AS r INNER JOIN `'.PBR_DB_DBN.'`.`contact` AS c ON r.`idcontact`=c.`idcontact` WHERE r.`year`=:iYear AND r.`month`=:iMonth AND r.`day`=:iDay LIMIT :iLimit OFFSET :iOffset)';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iDay',$pDate->GetRequestDay(),PDO::PARAM_INT);
@@ -115,5 +115,3 @@ function RentsGet( $sLogin, $sSession, $sInet, CDate $pDate, CPaging $pPaging)
 
     return $iReturn;
 }
-
-?>

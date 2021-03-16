@@ -58,7 +58,7 @@ require(PBR_PATH.'/includes/db/function/rentmax.php');
   */
 function RentAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $pDate, CRent $pRent)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
@@ -71,9 +71,9 @@ function RentAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $pDate, 
 
     /** Get max rent for the requested month
      ***************************************/
-	$iMaxRent = RentMax( $sLogin, $sSession, $sInet, $pDate);
+    $iMaxRent = RentMax( $sLogin, $sSession, $sInet, $pDate);
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -123,5 +123,3 @@ function RentAdd( $sLogin, $sSession, $sInet, CContact $pContact, CDate $pDate, 
 
     return $iReturn;
 }
-
-?>

@@ -54,14 +54,14 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') || !defined('PBR_AUTH_L
   */
 function ContactAdd( $sLogin, $sSession, $sInet, CContact $pContact)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ . '('.$sLogin.','.$sSession.',[obfuscated],'.$pContact->GetLastName().','.$pContact->GetFirstName().','.$pContact->GetTel().')';
     $pContact->SetIdentifier(0);
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -69,12 +69,12 @@ function ContactAdd( $sLogin, $sSession, $sInet, CContact $pContact)
      && IsStringNotEmpty($sSession)
      && IsStringNotEmpty($sInet) )
     {
-	    try
-	    {
-	        // Prepare
-	        $sSQL = 'INSERT INTO `'.PBR_DB_DBN.'`.`contact`(`lastname`, `firstname`, `tel`, `email`, `address`, `address_more`, `city`, `zip`, `create_date`, `create_iduser`, `update_date`, `update_iduser`) VALUES (:sLastName, :sFirstName, :sTel, :sEmail, :sAddress, :sAddressMore, :sCity, :sZip, SYSDATE(), :iUserId, NULL, NULL)';
-			$pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
-			// Bind
+        try
+        {
+            // Prepare
+            $sSQL = 'INSERT INTO `'.PBR_DB_DBN.'`.`contact`(`lastname`, `firstname`, `tel`, `email`, `address`, `address_more`, `city`, `zip`, `create_date`, `create_iduser`, `update_date`, `update_iduser`) VALUES (:sLastName, :sFirstName, :sTel, :sEmail, :sAddress, :sAddressMore, :sCity, :sZip, SYSDATE(), :iUserId, NULL, NULL)';
+            $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
+            // Bind
             $pPDOStatement->bindValue(':sLastName',$pContact->GetLastName(),PDO::PARAM_STR);
             $pPDOStatement->bindValue(':sFirstName',$pContact->GetFirstName(),PDO::PARAM_STR);
             $pPDOStatement->bindValue(':sTel',$pContact->GetTel(),PDO::PARAM_STR);
@@ -83,19 +83,19 @@ function ContactAdd( $sLogin, $sSession, $sInet, CContact $pContact)
             $pPDOStatement->bindValue(':sAddressMore',$pContact->GetAddressMore(),PDO::PARAM_STR);
             $pPDOStatement->bindValue(':sCity',$pContact->GetCity(),PDO::PARAM_STR);
             $pPDOStatement->bindValue(':sZip',$pContact->GetZip(),PDO::PARAM_STR);
-			$pPDOStatement->bindValue(':iUserId',CAuth::GetInstance()->GetUserBDIdentifier(),PDO::PARAM_INT);
+            $pPDOStatement->bindValue(':iUserId',CAuth::GetInstance()->GetUserBDIdentifier(),PDO::PARAM_INT);
             // Execute
             $pPDOStatement->execute();
             // Last insert id
             $iReturn = CDBLayer::GetInstance()->GetLastInsertId();
             $pContact->SetIdentifier($iReturn);
 
-       	}
-      	catch(PDOException $e)
-       	{
-       	    $iReturn = FALSE;
-       	    $sMessage = $e->getMessage();
-       	}//try
+           }
+          catch(PDOException $e)
+           {
+               $iReturn = FALSE;
+               $sMessage = $e->getMessage();
+           }//try
 
         // Free resource
         $pPDOStatement=NULL;
@@ -107,5 +107,3 @@ function ContactAdd( $sLogin, $sSession, $sInet, CContact $pContact)
 
     return $iReturn;
 }
-
-?>

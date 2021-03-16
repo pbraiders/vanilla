@@ -54,13 +54,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function UserUpdate( $sLogin, $sSession, $sInet, CUser $pUser)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pUser->GetIdentifier().',...)';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -89,10 +89,10 @@ function UserUpdate( $sLogin, $sSession, $sInet, CUser $pUser)
             {
                 $pPDOStatement->bindValue(':sPassword',$pUser->GetPassword(),PDO::PARAM_STR);
             }//if( strlen($pUser->GetPassword())>0 )
-    		// Execute
-    		$pPDOStatement->execute();
-    		// Count
-    		$iReturn = $pPDOStatement->rowCount();
+            // Execute
+            $pPDOStatement->execute();
+            // Count
+            $iReturn = $pPDOStatement->rowCount();
         }
         catch(PDOException $e)
         {
@@ -110,5 +110,3 @@ function UserUpdate( $sLogin, $sSession, $sInet, CUser $pUser)
 
     return $iReturn;
 }
-
-?>

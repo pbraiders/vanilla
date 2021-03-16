@@ -63,7 +63,7 @@
     $pPaging = null;
     $iMessageCode = 0;
 
-	/** Read input parameters
+    /** Read input parameters
      ************************/
 
     // Read the message code
@@ -129,4 +129,3 @@
     unset($pPaging);
     unset($pHeader);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

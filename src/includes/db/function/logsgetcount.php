@@ -52,13 +52,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function LogsGetCount( $sLogin, $sSession, $sInet )
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated])';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -69,7 +69,7 @@ function LogsGetCount( $sLogin, $sSession, $sInet )
         try
         {
             // Prepare
-			$sSQL = 'SELECT COUNT(l.`idlog`) AS "log_count" FROM `'.PBR_DB_DBN.'`.`log` AS l';
+            $sSQL = 'SELECT COUNT(l.`idlog`) AS "log_count" FROM `'.PBR_DB_DBN.'`.`log` AS l';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Execute
             $pPDOStatement->execute();
@@ -98,5 +98,3 @@ function LogsGetCount( $sLogin, $sSession, $sInet )
 
     return $iReturn;
 }
-
-?>

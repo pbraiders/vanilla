@@ -56,13 +56,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function LogsGet( $sLogin, $sSession, $sInet, CPaging $pPaging)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pPaging->GetOffset().','.$pPaging->GetLimit().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -73,11 +73,11 @@ function LogsGet( $sLogin, $sSession, $sInet, CPaging $pPaging)
         try
         {
             // Prepare
-			$sSQL='SELECT l.`logged` AS "log_date", l.`username` AS "log_user", l.`type` AS "log_type", l.`title` AS "log_title", l.`description` AS "log_description", l.`mysqluser` AS "log_mysqluser", l.`mysqlcurrentuser` AS "log_mysqlcurrentuser" FROM `'.PBR_DB_DBN.'`.`log` AS l ORDER BY l.`logged` DESC LIMIT :iLimit OFFSET :iOffset';
+            $sSQL='SELECT l.`logged` AS "log_date", l.`username` AS "log_user", l.`type` AS "log_type", l.`title` AS "log_title", l.`description` AS "log_description", l.`mysqluser` AS "log_mysqluser", l.`mysqlcurrentuser` AS "log_mysqlcurrentuser" FROM `'.PBR_DB_DBN.'`.`log` AS l ORDER BY l.`logged` DESC LIMIT :iLimit OFFSET :iOffset';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iOffset',$pPaging->GetOffset(),PDO::PARAM_INT);
-    		$pPDOStatement->bindValue(':iLimit',$pPaging->GetLimit(),PDO::PARAM_INT);
+            $pPDOStatement->bindValue(':iLimit',$pPaging->GetLimit(),PDO::PARAM_INT);
             // Execute
             $pPDOStatement->execute();
             // Fetch
@@ -101,5 +101,3 @@ function LogsGet( $sLogin, $sSession, $sInet, CPaging $pPaging)
 
     return $iReturn;
 }
-
-?>

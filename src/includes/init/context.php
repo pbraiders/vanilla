@@ -160,5 +160,3 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') )
         }
     }//if( $tabBuffer!==FALSE && !empty($tabBuffer) )
     unset($tabBuffer);
-
-?>

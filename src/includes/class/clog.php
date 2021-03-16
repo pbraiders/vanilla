@@ -236,5 +236,3 @@ final class CLog extends CDirectoryFileManagement
 }
 
 define('PBR_LOG_LOADED',1);
-
-?>

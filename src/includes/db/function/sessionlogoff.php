@@ -52,13 +52,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function SessionLogOff( $sLogin, $sSession, $sInet)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated])';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -75,7 +75,7 @@ function SessionLogOff( $sLogin, $sSession, $sInet)
             $pPDOStatement->bindValue(':sLogin',$sLogin,PDO::PARAM_STR);
             // Execute
             $pPDOStatement->execute();
-			// Count
+            // Count
             $iReturn = $pPDOStatement->rowCount();
         }
         catch(PDOException $e)
@@ -94,5 +94,3 @@ function SessionLogOff( $sLogin, $sSession, $sInet)
 
     return $iReturn;
 }
-
-?>

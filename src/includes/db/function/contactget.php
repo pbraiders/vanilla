@@ -56,13 +56,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function ContactGet( $sLogin, $sSession, $sInet, CContact $pContact)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pContact->GetIdentifier().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -74,8 +74,8 @@ function ContactGet( $sLogin, $sSession, $sInet, CContact $pContact)
         $iReturn = 0;
         try
         {
-    		// Prepare
-    		$sSQL = 'SELECT c.`idcontact` AS "contact_id",c.`lastname` AS "contact_lastname",c.`firstname` AS "contact_firstname",c.`tel` AS "contact_tel",c.`email` AS "contact_email",c.`address` AS "contact_address",c.`address_more` AS "contact_addressmore",c.`city` AS "contact_addresscity",c.`zip` AS "contact_addresszip",c.`comment` AS "contact_comment",c.`create_date` AS "creation_date",u.`login` AS "creation_username",c.`update_date` AS "update_date",v.`login` AS "update_username" FROM `'.PBR_DB_DBN.'`.`contact` AS c INNER JOIN `'.PBR_DB_DBN.'`.`user` AS u ON c.`create_iduser`=u.`iduser` LEFT JOIN `'.PBR_DB_DBN.'`.`user` AS v ON c.`update_iduser`=v.`iduser` WHERE c.`idcontact`=:iIdentifier';
+            // Prepare
+            $sSQL = 'SELECT c.`idcontact` AS "contact_id",c.`lastname` AS "contact_lastname",c.`firstname` AS "contact_firstname",c.`tel` AS "contact_tel",c.`email` AS "contact_email",c.`address` AS "contact_address",c.`address_more` AS "contact_addressmore",c.`city` AS "contact_addresscity",c.`zip` AS "contact_addresszip",c.`comment` AS "contact_comment",c.`create_date` AS "creation_date",u.`login` AS "creation_username",c.`update_date` AS "update_date",v.`login` AS "update_username" FROM `'.PBR_DB_DBN.'`.`contact` AS c INNER JOIN `'.PBR_DB_DBN.'`.`user` AS u ON c.`create_iduser`=u.`iduser` LEFT JOIN `'.PBR_DB_DBN.'`.`user` AS v ON c.`update_iduser`=v.`iduser` WHERE c.`idcontact`=:iIdentifier';
             $pPDOStatement = CDBlayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iIdentifier',$pContact->GetIdentifier(),PDO::PARAM_INT);
@@ -88,9 +88,9 @@ function ContactGet( $sLogin, $sSession, $sInet, CContact $pContact)
             {
                 $pContact->ResetMe();
                 if( array_key_exists( 'contact_id', $tabResult[0]) )
-        			$pContact->SetIdentifier((integer)$tabResult[0]['contact_id']);
+                    $pContact->SetIdentifier((integer)$tabResult[0]['contact_id']);
                 if( array_key_exists( 'contact_lastname', $tabResult[0]) )
-    			    $pContact->SetLastName($tabResult[0]['contact_lastname']);
+                    $pContact->SetLastName($tabResult[0]['contact_lastname']);
                 if( array_key_exists( 'contact_firstname', $tabResult[0]) )
                     $pContact->SetFirstName($tabResult[0]['contact_firstname']);
                 if( array_key_exists( 'contact_tel', $tabResult[0]) )
@@ -134,5 +134,3 @@ function ContactGet( $sLogin, $sSession, $sInet, CContact $pContact)
 
     return $iReturn;
 }
-
-?>

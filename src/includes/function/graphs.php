@@ -336,5 +336,3 @@ function ExportDistinct( CCSV $pCCSV, $tRecordset, $tLabels )
 
     return $bReturn;
 }
-
-?>

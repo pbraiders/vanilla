@@ -63,12 +63,12 @@ function ErrorLog( $sLogin, $sTitle, $sDescription, $iType, $bLogToDB)
             $sType = 'warning';
             break;
         default:
-        	$sDescription = 'Information: '.$sDescription;
+            $sDescription = 'Information: '.$sDescription;
             $sBuffer = $sDescription.' ('.$sTitle.')';
             $sType = 'notice';
     }//switch($iType)
 
-	// Add to list
+    // Add to list
     CErrorList::GetInstance()->Add($sBuffer);
 
     // Add to log
@@ -77,8 +77,8 @@ function ErrorLog( $sLogin, $sTitle, $sDescription, $iType, $bLogToDB)
     // Add to database
     if( defined('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
     {
-		CDBLayer::GetInstance()->ErrorInsert( PBR_DB_DBN, $sLogin, $sType, $sTitle, $sDescription);
-	}//if( define('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
+        CDBLayer::GetInstance()->ErrorInsert( PBR_DB_DBN, $sLogin, $sType, $sTitle, $sDescription);
+    }//if( define('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
 }
 
 /**
@@ -105,24 +105,24 @@ function ErrorDBLog( $sLogin, $sTitle, $sDescription, $iCode, $bLogToDB)
         }
         elseif( $iCode==-1 )
         {
-        	$sDescription = 'mauvais paramètre(s)';
+            $sDescription = 'mauvais paramètre(s)';
             $sBuffer = 'Une erreur est survenue dans '.$sTitle.': '.$sDescription;
         }
         elseif( ($iCode==-2) || ($iCode==-3) )
         {
-			$sDescription = 'authentification erronée';
+            $sDescription = 'authentification erronée';
             $sBuffer = 'Une erreur est survenue dans '.$sTitle.': '.$sDescription;
             $bLogToDB = FALSE;
             $sType = 'warning';
         }
         elseif( $iCode==-4 )
         {
-        	$sDescription = 'données dupliquées';
+            $sDescription = 'données dupliquées';
             $sBuffer = 'Une erreur est survenue dans '.$sTitle.': '.$sDescription;
         }
         else
         {
-        	$sDescription = 'erreur inattendue';
+            $sDescription = 'erreur inattendue';
             $sBuffer = 'Une erreur inattendue est survenue dans '.$sTitle;
         }//if( ...
 
@@ -135,7 +135,7 @@ function ErrorDBLog( $sLogin, $sTitle, $sDescription, $iCode, $bLogToDB)
         // Add to database
         if( defined('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
         {
-			CDBLayer::GetInstance()->ErrorInsert( PBR_DB_DBN, $sLogin, $sType, $sTitle, $sDescription);
+            CDBLayer::GetInstance()->ErrorInsert( PBR_DB_DBN, $sLogin, $sType, $sTitle, $sDescription);
         }//if( define('PBR_DB_LOADED') && ($bLogToDB===TRUE) )
 
     }//if( ($iCode===FALSE) || ($iCode<0) )
@@ -153,16 +153,14 @@ function ErrorDBLog( $sLogin, $sTitle, $sDescription, $iCode, $bLogToDB)
   */
 function RedirectError( $iError, $sFile, $iLine)
 {
-	$sUrl = PBR_URL.'logout.php?error=';
+    $sUrl = PBR_URL.'logout.php?error=';
     $iOption = 1;
     if( ($iError==-2) || ($iError==-3) )
-	{
+    {
         $sTitle='fichier: '.basename($sFile).', ligne:'.$iLine;
         ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'possible tentative de piratage', E_USER_WARNING, FALSE);
         $iOption = 2;
-	}//if( ($iError==-2) || ($iError==-3) )
-	include(PBR_PATH.'/includes/init/clean.php');
-	header('Location: '.$sUrl.$iOption);
+    }//if( ($iError==-2) || ($iError==-3) )
+    include(PBR_PATH.'/includes/init/clean.php');
+    header('Location: '.$sUrl.$iOption);
 }
-
-?>

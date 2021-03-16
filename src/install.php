@@ -66,11 +66,11 @@
     $sPHPVersionRequired   = '5.2';
     $sMYSQLVersionRequired = '5.0';
     $sPHPVersion   = phpversion();
-	if( function_exists( 'mysql_get_client_info' )) {
-	    $sMYSQLVersion = mysql_get_client_info();
-	} else {
-		$sMYSQLVersion = '5.0';
-	}
+    if( function_exists( 'mysql_get_client_info' )) {
+        $sMYSQLVersion = mysql_get_client_info();
+    } else {
+        $sMYSQLVersion = '5.0';
+    }
 
     /** Prerequiste test
      ******************/
@@ -78,7 +78,7 @@
      && !version_compare( $sMYSQLVersion, $sMYSQLVersionRequired, '>=') )
     {
         $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-		ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'les versions ne sont pas valides', E_USER_ERROR, FALSE);
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'les versions ne sont pas valides', E_USER_ERROR, FALSE);
         $tMessageCode[] = 3;
     }//if( !version_compare( $sPHPVersion, $sPHPVersionRequired, '>=') )
 
@@ -91,7 +91,7 @@
         {
             // Parameters are not valid
             $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-	        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'les paramètres ne sont pas valides', E_USER_ERROR, FALSE);
+            ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'les paramètres ne sont pas valides', E_USER_ERROR, FALSE);
             $tMessageCode[] = 4;
         }//if( $pUser->IsValidNew()===FALSE )
     }//if( ($iMessageCode==0) && filter_has_var( INPUT_POST, 'install') )
@@ -124,5 +124,3 @@
     *****************/
     unset($pUser,$pHeader);
     include(PBR_PATH.'/includes/init/clean.php');
-
-?>

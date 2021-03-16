@@ -74,7 +74,7 @@
     $iMessageCode = 0;
     $bSended = FALSE;
 
-	/** Read input parameters
+    /** Read input parameters
      ************************/
 
     // Read the options
@@ -176,7 +176,7 @@
          **************/
 
         // Paging
-    	$pPaging->Compute( PBR_PAGE_CONTACTS, $iReturn );
+        $pPaging->Compute( PBR_PAGE_CONTACTS, $iReturn );
 
         // Get contact list
         require(PBR_PATH.'/includes/db/function/contactsget.php');
@@ -224,5 +224,3 @@
      *****************/
     unset( $pPaging, $pSearch, $pCCSV, $pHeader, $pOrder, $pSort );
     include(PBR_PATH.'/includes/init/clean.php');
-
-?>

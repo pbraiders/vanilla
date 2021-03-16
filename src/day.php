@@ -251,4 +251,3 @@
      *****************/
     unset( $pDate, $pContact, $pRent, $pPaging);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

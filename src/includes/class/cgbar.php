@@ -283,5 +283,3 @@ final class CGBar extends CGraph
     }
 
 }
-
-?>

@@ -137,4 +137,3 @@
      *****************/
     unset( $pDate, $pPaging);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

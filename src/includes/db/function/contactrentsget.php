@@ -59,13 +59,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function ContactRentsGet( $sLogin, $sSession, $sInet, CContact $pContact, CPaging $pPaging )
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pContact->GetIdentifier().','.$pPaging->GetOffset().','.$pPaging->GetLimit().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -77,7 +77,7 @@ function ContactRentsGet( $sLogin, $sSession, $sInet, CContact $pContact, CPagin
         try
         {
             // Prepare
-			$sSQL = 'SELECT r.`idreservation` AS "reservation_id", r.`year` AS "reservation_year", r.`month` AS "reservation_month", r.`day` AS "reservation_day", r.`rent_real` AS "reservation_real", r.`rent_planned` AS "reservation_planned", r.`rent_canceled` AS "reservation_canceled", r.`age` AS "reservation_age", r.`arrhe` AS "reservation_arrhes", r.`comment` AS "reservation_comment", r.`rent_max` AS "reservation_max" FROM `'.PBR_DB_DBN.'`.`reservation` AS r WHERE r.`idcontact`=:iIdentifier ORDER BY r.`year` DESC, r.`month` DESC, r.`day` DESC LIMIT :iLimit OFFSET :iOffset';
+            $sSQL = 'SELECT r.`idreservation` AS "reservation_id", r.`year` AS "reservation_year", r.`month` AS "reservation_month", r.`day` AS "reservation_day", r.`rent_real` AS "reservation_real", r.`rent_planned` AS "reservation_planned", r.`rent_canceled` AS "reservation_canceled", r.`age` AS "reservation_age", r.`arrhe` AS "reservation_arrhes", r.`comment` AS "reservation_comment", r.`rent_max` AS "reservation_max" FROM `'.PBR_DB_DBN.'`.`reservation` AS r WHERE r.`idcontact`=:iIdentifier ORDER BY r.`year` DESC, r.`month` DESC, r.`day` DESC LIMIT :iLimit OFFSET :iOffset';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iIdentifier',$pContact->GetIdentifier(),PDO::PARAM_INT);
@@ -107,5 +107,3 @@ function ContactRentsGet( $sLogin, $sSession, $sInet, CContact $pContact, CPagin
 
     return $iReturn;
 }
-
-?>

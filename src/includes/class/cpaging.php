@@ -197,7 +197,7 @@ final class CPaging
      */
     public function SetMax( $iValue )
     {
-    	$this->m_iMax = $this->SanitizeInt( $iValue, CPaging::PAGEMIN, CPaging::PAGEMAX, CPaging::PAGEMIN);
+        $this->m_iMax = $this->SanitizeInt( $iValue, CPaging::PAGEMIN, CPaging::PAGEMAX, CPaging::PAGEMIN);
     }
 
     /**
@@ -210,7 +210,7 @@ final class CPaging
      */
     public function SetOffset( $iValue )
     {
-    	$this->m_iOffset = $this->SanitizeInt( $iValue, CPaging::OFFSETMIN, CPaging::OFFSETMAX, CPaging::OFFSETMIN);
+        $this->m_iOffset = $this->SanitizeInt( $iValue, CPaging::OFFSETMIN, CPaging::OFFSETMAX, CPaging::OFFSETMIN);
     }
 
     /**
@@ -223,7 +223,7 @@ final class CPaging
      */
     public function SetLimit( $iValue )
     {
-    	$this->m_iLimit = $this->SanitizeInt( $iValue, 1, CPaging::OFFSETMAX, CPaging::OFFSETMAX);;
+        $this->m_iLimit = $this->SanitizeInt( $iValue, 1, CPaging::OFFSETMAX, CPaging::OFFSETMAX);;
     }
 
     /**
@@ -241,7 +241,7 @@ final class CPaging
     public function Compute( $iLimit, $iRows )
     {
         // Set the limit
-		$this->SetLimit( $iLimit );
+        $this->SetLimit( $iLimit );
 
         // Sanitize the numbers of records
         $iRows = $this->SanitizeInt( $iRows, CPaging::OFFSETMIN, CPaging::OFFSETMAX, CPaging::OFFSETMIN);
@@ -251,7 +251,7 @@ final class CPaging
         $this->SetMax($iBuffer);
         if( $this->m_iCurrent > $this->m_iMax )
         {
-			$this->SetCurrent(1);
+            $this->SetCurrent(1);
         }//if( $this->m_iCurrent > $this->m_iMax )
         $this->SetOffset($this->m_iLimit * ($this->m_iCurrent-1));
     }
@@ -271,7 +271,7 @@ final class CPaging
         {
             $tFilter = array('options' => array('min_range' => CPaging::PAGEMIN,
                                                 'max_range' => CPaging::PAGEMAX) );
-        	$this->SetCurrent( filter_input( INPUT_GET, CPaging::PAGETAG, FILTER_VALIDATE_INT, $tFilter));
+            $this->SetCurrent( filter_input( INPUT_GET, CPaging::PAGETAG, FILTER_VALIDATE_INT, $tFilter));
             $bReturn = TRUE;
         }//if( filter_has_var(INPUT_GET, 'pag') )
         return $bReturn;
@@ -293,5 +293,3 @@ final class CPaging
     }
 
 }
-
-?>

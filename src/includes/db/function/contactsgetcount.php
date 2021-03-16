@@ -53,7 +53,7 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function ContactsGetCount( $sLogin, $sSession, $sInet, CContact $pSearch)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sSearch = $pSearch->GetLastName();
@@ -61,7 +61,7 @@ function ContactsGetCount( $sLogin, $sSession, $sInet, CContact $pSearch)
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$sSearch.')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -70,14 +70,14 @@ function ContactsGetCount( $sLogin, $sSession, $sInet, CContact $pSearch)
      && IsStringNotEmpty($sInet) )
     {
         // Build query
-		$sSQL = 'SELECT COUNT(c.`idcontact`) AS "contact_count" FROM `'.PBR_DB_DBN.'`.`contact` AS c';
+        $sSQL = 'SELECT COUNT(c.`idcontact`) AS "contact_count" FROM `'.PBR_DB_DBN.'`.`contact` AS c';
 
         // Sanitize Search
         if( $bSearch )
         {
             $sSearch = str_replace('*', '%', $sSearch);
             $sSQL .= ' WHERE c.`lastname` LIKE :sSearch';
-		}//if( $bSearch )
+        }//if( $bSearch )
 
         // try
         try
@@ -116,5 +116,3 @@ function ContactsGetCount( $sLogin, $sSession, $sInet, CContact $pSearch)
 
     return $iReturn;
 }
-
-?>

@@ -53,13 +53,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function ContactRentsGetCount( $sLogin, $sSession, $sInet, CContact $pContact )
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ . '('.$sLogin.','.$sSession.',[obfuscated],'.$pContact->GetIdentifier().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -101,5 +101,3 @@ function ContactRentsGetCount( $sLogin, $sSession, $sInet, CContact $pContact )
 
     return $iReturn;
 }
-
-?>

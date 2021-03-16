@@ -113,4 +113,3 @@
      *****************/
     unset($pDate, $pChoice, $pInteval, $pHeader);
     include(PBR_PATH.'/includes/init/clean.php');
-?>

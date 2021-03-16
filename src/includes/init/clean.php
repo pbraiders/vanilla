@@ -44,4 +44,3 @@ if( !defined('PBR_VERSION') )
     if(defined('PBR_AUTH_LOADED')) CAuth::DeleteInstance();
     if(defined('PBR_COOKIE_LOADED')) CCookie::DeleteInstance();
     if(defined('PBR_ERROR_LOADED')) CErrorList::DeleteInstance();
-?>

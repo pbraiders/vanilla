@@ -55,13 +55,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function RentsMonthGet( $sLogin, $sSession, $sInet, CDate $pDate)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pDate->GetRequestMonth().','.$pDate->GetRequestYear().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -72,7 +72,7 @@ function RentsMonthGet( $sLogin, $sSession, $sInet, CDate $pDate)
         try
         {
             // Prepare
-    		$sSQL = 'SELECT r.`day` AS "day", IFNULL(SUM(r.`rent_real`),0) AS "real", IFNULL(SUM(r.`rent_planned`),0) AS "planned", IFNULL(SUM(r.`rent_canceled`),0) AS "canceled", IFNULL(MAX(r.`rent_max`),0) AS "max" FROM `'.PBR_DB_DBN.'`.`reservation` AS r WHERE r.`year`=:iYear AND r.`month`=:iMonth GROUP BY r.`day`';
+            $sSQL = 'SELECT r.`day` AS "day", IFNULL(SUM(r.`rent_real`),0) AS "real", IFNULL(SUM(r.`rent_planned`),0) AS "planned", IFNULL(SUM(r.`rent_canceled`),0) AS "canceled", IFNULL(MAX(r.`rent_max`),0) AS "max" FROM `'.PBR_DB_DBN.'`.`reservation` AS r WHERE r.`year`=:iYear AND r.`month`=:iMonth GROUP BY r.`day`';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iMonth',$pDate->GetRequestMonth(),PDO::PARAM_INT);
@@ -105,5 +105,3 @@ function RentsMonthGet( $sLogin, $sSession, $sInet, CDate $pDate)
 
     return $iReturn;
 }
-
-?>

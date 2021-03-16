@@ -268,8 +268,8 @@ final class CCookie
         {
             // Default expiration time
             if( !is_int($iExpire) )
-			{
-	            $iExpire = time() + $this->m_iExpire;
+            {
+                $iExpire = time() + $this->m_iExpire;
             }
             else
             {
@@ -307,5 +307,3 @@ final class CCookie
 }
 
 define ('PBR_COOKIE_LOADED',1);
-
-?>

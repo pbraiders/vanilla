@@ -55,13 +55,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function UserGet( $sLogin, $sSession, $sInet, CUser $pUser)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle = __FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pUser->GetIdentifier().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -74,7 +74,7 @@ function UserGet( $sLogin, $sSession, $sInet, CUser $pUser)
         try
         {
             // Prepare
-			$sSQL = 'SELECT u.`iduser` AS "user_id", u.`login` AS "user_name", u.`state` AS "user_state" FROM `'.PBR_DB_DBN.'`.`user` AS u WHERE u.`iduser`=:iIdentifier';
+            $sSQL = 'SELECT u.`iduser` AS "user_id", u.`login` AS "user_name", u.`state` AS "user_state" FROM `'.PBR_DB_DBN.'`.`user` AS u WHERE u.`iduser`=:iIdentifier';
             $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
             // Bind
             $pPDOStatement->bindValue(':iIdentifier',$pUser->GetIdentifier(),PDO::PARAM_INT);
@@ -111,5 +111,3 @@ function UserGet( $sLogin, $sSession, $sInet, CUser $pUser)
 
     return $iReturn;
 }
-
-?>

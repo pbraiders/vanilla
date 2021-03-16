@@ -44,8 +44,8 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_DB_DSN') ||
     {
         // Error
         $tMessageCode[] = 1;
-		$sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
-		ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible d\'ouvrir la base de données', E_USER_ERROR, FALSE);
+        $sTitle='fichier: '.basename(__FILE__).', ligne:'.__LINE__;
+        ErrorLog( CAuth::GetInstance()->GetUsername(), $sTitle, 'impossible d\'ouvrir la base de données', E_USER_ERROR, FALSE);
     }
     else
     {
@@ -77,5 +77,3 @@ if( !defined('PBR_VERSION') || !defined('PBR_PATH') || !defined('PBR_DB_DSN') ||
         $pPDOStatement = NULL;
 
     }//if(...
-
-?>

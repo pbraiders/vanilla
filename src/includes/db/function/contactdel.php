@@ -53,13 +53,13 @@ if( !defined('PBR_VERSION') || !defined('PBR_DB_LOADED') )
   */
 function ContactDel( $sLogin, $sSession, $sInet, CContact $pContact)
 {
-	/** Initialize
+    /** Initialize
      *************/
     $iReturn = -1;
     $sMessage = '';
     $sErrorTitle =__FUNCTION__ .'('.$sLogin.','.$sSession.',[obfuscated],'.$pContact->GetIdentifier().')';
 
-	/** Request
+    /** Request
      **********/
     if( (CDBLayer::GetInstance()->IsOpen()===TRUE)
      && IsScalarNotEmpty(PBR_DB_DBN)
@@ -68,50 +68,50 @@ function ContactDel( $sLogin, $sSession, $sInet, CContact $pContact)
      && IsStringNotEmpty($sInet)
      && ($pContact->GetIdentifier()>0) )
     {
-    	/** Start transaction
-    	 ********************/
-    	CDBLayer::GetInstance()->BeginTransaction($sLogin);
+        /** Start transaction
+         ********************/
+        CDBLayer::GetInstance()->BeginTransaction($sLogin);
 
-    	try
-    	{
-    		/** Delete rents
-    		 ***************/
+        try
+        {
+            /** Delete rents
+             ***************/
 
-    		// Prepare
-    		$sSQL = 'DELETE FROM `'.PBR_DB_DBN.'`.`reservation` WHERE `idcontact`=:iIdentifier';
-    		$pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
-    		// Bind
-    		$pPDOStatement->bindValue(':iIdentifier',$pContact->GetIdentifier(),PDO::PARAM_INT);
-   			// Execute
-   			$pPDOStatement->execute();
-   			// Count
-   			$iReturn = $pPDOStatement->rowCount();
-   			// Free resource
-   			$pPDOStatement = NULL;
+            // Prepare
+            $sSQL = 'DELETE FROM `'.PBR_DB_DBN.'`.`reservation` WHERE `idcontact`=:iIdentifier';
+            $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
+            // Bind
+            $pPDOStatement->bindValue(':iIdentifier',$pContact->GetIdentifier(),PDO::PARAM_INT);
+               // Execute
+               $pPDOStatement->execute();
+               // Count
+               $iReturn = $pPDOStatement->rowCount();
+               // Free resource
+               $pPDOStatement = NULL;
 
-   			/** Delete contact
-   			 *****************/
+               /** Delete contact
+                *****************/
 
-   			// Prepare
-   			$sSQL = 'DELETE FROM `'.PBR_DB_DBN.'`.`contact` WHERE `idcontact`=:iIdentifier';
-   			$pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
-    		// Bind
-    		$pPDOStatement->bindValue(':iIdentifier',$pContact->GetIdentifier(),PDO::PARAM_INT);
-   			// Execute
-   			$pPDOStatement->execute();
-   			// Count
-   			$iReturn = $iReturn + $pPDOStatement->rowCount();
+               // Prepare
+               $sSQL = 'DELETE FROM `'.PBR_DB_DBN.'`.`contact` WHERE `idcontact`=:iIdentifier';
+               $pPDOStatement = CDBLayer::GetInstance()->GetDriver()->prepare($sSQL);
+            // Bind
+            $pPDOStatement->bindValue(':iIdentifier',$pContact->GetIdentifier(),PDO::PARAM_INT);
+               // Execute
+               $pPDOStatement->execute();
+               // Count
+               $iReturn = $iReturn + $pPDOStatement->rowCount();
 
-   			/** Commit transaction
+               /** Commit transaction
              *********************/
-    		CDBLayer::GetInstance()->Commit($sLogin);
+            CDBLayer::GetInstance()->Commit($sLogin);
 
         }
         catch(PDOException $e)
         {
             $iReturn = FALSE;
             $sMessage = $e->getMessage();
-   			CDBLayer::GetInstance()->RollBack($sLogin);
+               CDBLayer::GetInstance()->RollBack($sLogin);
         }//try
 
         // Free resource
@@ -120,9 +120,7 @@ function ContactDel( $sLogin, $sSession, $sInet, CContact $pContact)
     }//if( ...
 
     // Error
-	ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
+    ErrorDBLog( $sLogin, $sErrorTitle, $sMessage, $iReturn, TRUE);
 
     return $iReturn;
 }
-
-?>
